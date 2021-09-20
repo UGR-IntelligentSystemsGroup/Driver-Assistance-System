@@ -1,11 +1,11 @@
 (define (domain GantaBi)
     (:requirements :adl :typing :fluents :derived-predicates :htn-expansion :durative-actions :equality :metatags :timed-initial-literals)
 
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
     ; TYPES
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
     (:types
-        Jornada ;; cada simbolo de tipo Jornada representa una jornada diaria de trabajo
+        Jornada ; cada simbolo de tipo Jornada representa una jornada diaria de trabajo
         TaskSymbol
         TaskInstanceSymbol
         TipoAccion
@@ -17,9 +17,9 @@
             - object
     )
 
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
     ; CONSTANTS
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
 
     (:constants
         DIA_CONSUMIDO SECUENCIA_TERMINADA BREAK_CONSIDERED_REST PAUSE_CONSIDERED_BREAK FALLO_LATASK- Mensaje
@@ -36,9 +36,9 @@
         na - context
     )
 
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
     ; PREDICATES
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
 
     (:predicates
         (modo_generar)
@@ -46,8 +46,8 @@
 
         (dia_consumido)
 
-        (es_jornada ?j - Jornada);; predicado usado en los timed initial literals
-        (task_failed ?t - TaskSymbol) ;;para saber si una task ha fallado, se añade como efecto en los métodos de fallo de tarea
+        (es_jornada ?j - Jornada); predicado usado en los timed initial literals
+        (task_failed ?t - TaskSymbol) ;para saber si una task ha fallado, se añade como efecto en los métodos de fallo de tarea
         (modo_conduccion ?c - Driver ?modo - TipoConduccion)
 
         (inicio_semana ?s - Semana ?i - number)
@@ -61,14 +61,14 @@
         (weekly-context ?weectxt - context)
         (monthly-context ?monctxt - context)
 
-        ;;;***********************************
-        ;;; TOKEN conditions
-        ;;;**********************************
+        ;;***********************************
+        ;; TOKEN conditions
+        ;;**********************************
         (current_action_is_a_break_greater_15)
 
-        ;;;**********************************
-        ;;;	 FEASIBILITIY conditions
-        ;;;**********************************
+        ;;**********************************
+        ;;	 FEASIBILITIY conditions
+        ;;**********************************
         (conditions_NDD ?c - Driver)
         (less_than_15min ?c)
 
@@ -88,35 +88,35 @@
         (secuencia_entrada_no_vacia)
         (fin_secuencia_entrada)
 
-        ;;REPRESENTACION DE UNA ACCION PRIMITIVA EN EL PROBLEMA
-        (is_action ?sa - TaskInstanceSymbol) ;; cada accion tiene un simbolo asociado este simbolo es de tipo accion 
+        ;REPRESENTACION DE UNA ACCION PRIMITIVA EN EL PROBLEMA
+        (is_action ?sa - TaskInstanceSymbol) ; cada accion tiene un simbolo asociado este simbolo es de tipo accion 
         (index_action ?sa - TaskInstanceSymbol ?i - number); UN array simulado: cada simbolo de accion tiene asociado un indice, que empieza en 0, el indice indica la posición en la secuencia
         
-        ;;(= (start_action C1) "01/07/2018 00:00:00");; las acciones tienen un punto de inicio. Ejemplo de Representación como funcion
+        ;(= (start_action C1) "01/07/2018 00:00:00"); las acciones tienen un punto de inicio. Ejemplo de Representación como funcion
         (start_action ?sa - TaskInstanceSymbol ?s - number); Todavía no se que representacion es mejor: como predicado o commo funcion
-        ;;(= (end_action C1) "01/07/2018 00:37:00");; ... y un punto de fin
+        ;(= (end_action C1) "01/07/2018 00:37:00"); ... y un punto de fin
         (end_action ?sa - TaskInstanceSymbol ?e - number)
-        ;;(= (duration_action C1) 37);; ... y una duracion
+        ;(= (duration_action C1) 37); ... y una duracion
         (duration_action ?sa - TaskInstanceSymbol ?d - number)
 
-        ;;PREDICADOS PARA REPRESENTAR DE QUÉ TIPO ES CADA ACCION
-        (is_typeC ?sa - TaskInstanceSymbol) ;; es una accion de tipo conducir ... 
-        (is_typeO ?sa - TaskInstanceSymbol) ;; es una accion de tipo OTROS    ... 
-        (is_typeP ?sa - TaskInstanceSymbol) ;; es una accion de tipo PAUSA   ... 	
-        (is_typeE ?sa - TaskInstanceSymbol) ;; es una accion de tipo ESPERA;; 
+        ;PREDICADOS PARA REPRESENTAR DE QUÉ TIPO ES CADA ACCION
+        (is_typeC ?sa - TaskInstanceSymbol) ; es una accion de tipo conducir ... 
+        (is_typeO ?sa - TaskInstanceSymbol) ; es una accion de tipo OTROS    ... 
+        (is_typeP ?sa - TaskInstanceSymbol) ; es una accion de tipo PAUSA   ... 	
+        (is_typeE ?sa - TaskInstanceSymbol) ; es una accion de tipo ESPERA; 
 
-        ;;asi es como se representa un "hecho de tipo accion"
-        (parameters_typeC ?sa - TaskInstanceSymbol ?d - Driver);; interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
-        (parameters_typeO ?sa - TaskInstanceSymbol ?d - Driver);; interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
-        (parameters_typeP ?sa - TaskInstanceSymbol ?d - Driver);; interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
-        (parameters_typeE ?sa - TaskInstanceSymbol ?d - Driver);; interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
+        ;asi es como se representa un "hecho de tipo accion"
+        (parameters_typeC ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
+        (parameters_typeO ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
+        (parameters_typeP ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
+        (parameters_typeE ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
 
         (currentindex_es_typeC ?k - number ?sa - TaskInstanceSymbol)
         (currentindex_es_typeO ?k - number ?sa - TaskInstanceSymbol)
         (currentindex_es_typeP ?k - number ?sa - TaskInstanceSymbol)
         (currentindex_es_typeE ?k - number ?sa - TaskInstanceSymbol)
 
-        ;; Depuración
+        ; Depuración
         (write_hola ?p - number)
         (write_debug ?p - number)
         (modo_depuracion)
@@ -124,34 +124,34 @@
 
     )
 
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
     ; FUNCTIONS
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
 
     (:functions
-        (current_index_action) ;; represnta el indice actual que apunta a la accion que hay que procesar en modo reconocer
+        (current_index_action) ; represnta el indice actual que apunta a la accion que hay que procesar en modo reconocer
 
-        ;;ACUMULADORES TOTALES
+        ;ACUMULADORES TOTALES
         (tiempo_conduccion ?c - Driver)
         (tiempo_otros ?c - Driver)
         (tiempo_parada ?c - Driver)
         (tiempo_espera ?c - Driver)
 
-        ;;ACUMULADORES POR SEMANA
+        ;ACUMULADORES POR SEMANA
         (tiempo_conduccion_semana ?c - Driver)
         (tiempo_otros_semana ?c - Driver)
         (tiempo_parada_semana ?c - Driver)
         (tiempo_espera_semana ?c - Driver)
 
-        ;;ACUMULADORES POR DIA
+        ;ACUMULADORES POR DIA
         (dt_day ?c - Driver)
-        (dt_current_slice) ;;driving time current detected subsequence 
+        (dt_current_slice) ;driving time current detected subsequence 
         (bt_current_slice)
-        (dt_last_slice) ;;driving time last detected subsequence
+        (dt_last_slice) ;driving time last detected subsequence
         (dt_current_cdd_t2_slice)
         (bt_current_cdd_t2_slice)
-        (dt_current_cdd_t2_sequence) ;;accumulated driving time of the current cdd_t2 sequence detected
-        (bt_current_cdd_t2_sequence) ;;accumulated break time of the current cdd_t2 sequence detected
+        (dt_current_cdd_t2_sequence) ;accumulated driving time of the current cdd_t2 sequence detected
+        (bt_current_cdd_t2_sequence) ;accumulated break time of the current cdd_t2 sequence detected
         (dt_current_CDD_T1_start)
         (dt_current_CDD_T1_END)
         (dt_current_CDD_T2_END)
@@ -165,8 +165,8 @@
         (tiempo_parada_dia ?c - Driver)
         (tiempo_espera_dia ?c - Driver)
 
-        (current_rt) ;;tiempo de descanso actual, se entiende que el recién reconocido
-        (current_dt) ;;current driving time of the recently recognized activity
+        (current_rt) ;tiempo de descanso actual, se entiende que el recién reconocido
+        (current_dt) ;current driving time of the recently recognized activity
 
         (duracion_conduccion ?c - Driver)
 
@@ -174,10 +174,10 @@
 
         (contador_veces_AMPLIADA_en_semana)
 
-        ;; en el  modo generar la duración de la conducción dependerá del tipo de conductor
-        ;; esto es un ejemplo y se podría hacer directamente sin codigo python 
+        ; en el  modo generar la duración de la conducción dependerá del tipo de conductor
+        ; esto es un ejemplo y se podría hacer directamente sin codigo python 
         (calcula_duracion_C ?c) { return 4 }
-        (calcula_duracion_O ?c) { return 2 } ;; lo mismo para OPE
+        (calcula_duracion_O ?c) { return 2 } ; lo mismo para OPE
         (calcula_duracion_P ?c) { return 2 }
         (calcula_duracion_E ?c) { return 2 }
 
@@ -223,9 +223,9 @@
 	    }
     )
 
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
     ; DERIVED
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
 
     ; Depuración
     (:derived (write_hola ?p) { 
@@ -284,16 +284,16 @@
     (:derived (fin_secuencia_entrada)
         (AND
             (bind ?k
-                (current_index_action));;calcula el valor del  index ACTUAL
-            (not (index_action ?una_accion ?k));;comprueba que no  hay alguna accion con index+1 asociado
+                (current_index_action));calcula el valor del  index ACTUAL
+            (not (index_action ?una_accion ?k));comprueba que no  hay alguna accion con index+1 asociado
         )
     )
 
     (:derived (secuencia_entrada_no_vacia)
         (AND
             (bind ?k
-                (current_index_action));;calcula el valor de index
-            (index_action ?una_accion ?k);;comprueba si hay alguna accion con index asociado
+                (current_index_action));calcula el valor de index
+            (index_action ?una_accion ?k);comprueba si hay alguna accion con index asociado
         )
     )
 
@@ -326,14 +326,14 @@
         )
     )
 
-    ;;***********************************************
+    ;***********************************************
 
     ; (:task conduce_un_dia
     ; 	:parameters (?c - Driver)
     ; 	(:method normal
     ; 		:precondition ()
     ; 		:tasks (
-    ; 				;;INICIALIZAR ACUMULADORES DE CADA DIA
+    ; 				;INICIALIZAR ACUMULADORES DE CADA DIA
     ; 				(:inline () (and (assign (minutos_consumidos) 0)
     ; 								 (assign (dt_day ?c) 0)
     ; 								 (assign (tiempo_otros_dia ?c) 0)
@@ -346,7 +346,7 @@
     ; 	(:method ampliada
     ; 		:precondition ()
     ; 		:tasks (
-    ; 				;;INICIALIZAR ACUMULADORES DE CADA DIA
+    ; 				;INICIALIZAR ACUMULADORES DE CADA DIA
     ; 				(:inline () (and (assign (minutos_consumidos) 0)
     ; 								 (assign (dt_day ?c) 0)
     ; 								 (assign (tiempo_otros_dia ?c) 0)
@@ -357,9 +357,9 @@
 
     ; )
 
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
     ; TASKS
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
 
     ; Buscar nueva secuencia
     (:task reset_counters
@@ -389,6 +389,10 @@
     )
 
     ; -------------------------------------------------------------------------
+    
+    ; ****************************
+    ; Rests
+    ; ****************************
 
     (:task RD
         :parameters (?c - Driver) 
@@ -422,7 +426,7 @@
             )
         ) 
         
-        (:method B_T6 ;;B_T3: BREAK OF [11h, 24h)
+        (:method B_T6 ;B_T3: BREAK OF [11h, 24h)
             :precondition ()
             :tasks (
                 (b_tk R_g11)
@@ -455,10 +459,14 @@
 
     ; -------------------------------------------------------------------------
 
+    ; ****************************
+    ; Breaks
+    ; ****************************
+
     ; Break tipo 1
     (:task B_T1
         :parameters (?c - Driver)
-        (:method B_T1;;B_T1: BREAK OF [45min, 3h)
+        (:method B_T1;B_T1: BREAK OF [45min, 3h)
             :precondition ()
             :tasks (
                 ;(b_tk B_T1)		
@@ -544,7 +552,7 @@
     ; Break tipo 3
     (:task B_T3
         :parameters (?c - Driver) 
-        (:method SINGLE ;;B_T3: BREAK OF [30min, 45min); ahora lo he puesto  [30min, 3h)
+        (:method SINGLE ;B_T3: BREAK OF [30min, 45min); ahora lo he puesto  [30min, 3h)
             :precondition ()
             :tasks (
                 ;(b_tk B_T3)		
@@ -629,7 +637,7 @@
             )
         ) 
         
-        (:method B_T0 ;; BREAK of [0,15min)
+        (:method B_T0 ; BREAK of [0,15min)
             :precondition ()
             :tasks (
                 ;(break)	
@@ -658,7 +666,7 @@
             )
         ) 
         
-        (:method B_T2 ;;B_T2: BREAK of [15min, 30min)
+        (:method B_T2 ;B_T2: BREAK of [15min, 30min)
             :precondition ()
             :tasks (
                 (P ?c ?dur)
@@ -688,7 +696,7 @@
             )
         ) 
         
-        (:method B_T3;;B_T3: BREAK OF [30min, 45min)
+        (:method B_T3;B_T3: BREAK OF [30min, 45min)
             :precondition ()
             :tasks (
                 (P ?c ?dur)
@@ -718,7 +726,7 @@
             )
         ) 
         
-        (:method B_T1;;B_T1: BREAK OF [45min, 3h)
+        (:method B_T1;B_T1: BREAK OF [45min, 3h)
             :precondition ()
             :tasks (
                 (P ?c ?dur)
@@ -774,7 +782,7 @@
 
     ; -------------------------------------------------------------------------
 
-    ;;recognizes a sequence of activities (D|O|B|I) such that dur(B)< 15mins
+    ;recognizes a sequence of activities (D|O|B|I) such that dur(B)< 15mins
     (:task A
         :parameters (?c - Driver) 
         (:method recurrir
@@ -798,11 +806,11 @@
                 (:inline
                     ()
                     (increase (dt_current_slice) (current_dt))
-                );;calculates driving time of current subsequence
+                );calculates driving time of current subsequence
                 (A ?c))
         ) 
         
-        ;;aquí viene porque se encontró una P con una duración mayor de 15 mins
+        ;aquí viene porque se encontró una P con una duración mayor de 15 mins
         (:method caso_base0
             :precondition (and 
                 (current_action_is_a_break_greater_15) 
@@ -813,7 +821,7 @@
             );(MSG_INFO PAUSE_CONSIDERED_BREAK) 
         ) 
         
-        ;; aquí se acabó el día. Cuando sale por aquí ha reconocido una secuencia de 24 horas. CORRECTO  Y DEBE CONTINUAR
+        ; aquí se acabó el día. Cuando sale por aquí ha reconocido una secuencia de 24 horas. CORRECTO  Y DEBE CONTINUAR
         (:method caso_base1
             :precondition (dia_consumido)
             :tasks (
@@ -828,7 +836,7 @@
             (EndOfSequece);(MSG_INFO SECUENCIA_TERMINADA) )
         ) 
         
-        ;; AQUÍ HA HABIDO UN FALLO: SE DAN las condiciones de recursión, pero NO SE HA PODIDO PROCESAR si continua recursion y no ha entrado en ninguno de los metodos anteriores
+        ; AQUÍ HA HABIDO UN FALLO: SE DAN las condiciones de recursión, pero NO SE HA PODIDO PROCESAR si continua recursion y no ha entrado en ninguno de los metodos anteriores
         (:method fallar
             :precondition (
                 :print "FALLO_LATASK"
@@ -842,11 +850,12 @@
 
     )
 
-    ;;***************************************************************************************
-    ;;** AQUI es donde se añaden tareas para marcar el inicio y fin de cada contexto
+    ;***************************************************************************************
+    ;** AQUI es donde se añaden tareas para marcar el inicio y fin de cada contexto
 
     (:task CDD_T2_Slice
-        :parameters (?d - Driver) (:method Alt_1
+        :parameters (?d - Driver) 
+        (:method Alt_1
             :precondition()
             :tasks (
                 (b_tk A)
@@ -929,7 +938,8 @@
     ; -------------------------------------------------------------------------
 
     (:task CDD_T2_SEQUENCE
-        :parameters (?d - Driver) (:method caso_base0
+        :parameters (?d - Driver) 
+        (:method caso_base0
             :precondition()
             :tasks (
                 (b_slice CDD_T2_slice)
@@ -1064,7 +1074,7 @@
             :precondition()
             :tasks (
                 (CDD_T2_SEQUENCE ?d)
-                ;;(print_result ?x)
+                ;(print_result ?x)
                 (b_tk A)
                 (A ?d)
                 (e_tk A)
@@ -1246,7 +1256,7 @@
 
     ; -------------------------------------------------------------------------
 
-    ;; PROCESS ACTIVITY
+    ; PROCESS ACTIVITY
 
     (:derived
         (DEBUG ?mensaje)
@@ -1271,7 +1281,7 @@
 
     ; -------------------------------------------------------------------------
 
-    ;;SUBSECUENCIA TERMINADA EN B_T3
+    ;SUBSECUENCIA TERMINADA EN B_T3
 
     (:task A_B_T3
         :parameters (?d - Driver) 
@@ -1280,20 +1290,20 @@
             :tasks (
                 (cdd_t2_slice ?d); (A ?d)  (B_T3 ?d) 
                 (cdd ?d) ;(A ?d) (B_T1 ?d) (A ?d) (RD ?d)
-                ;;(ndd ?d);;  
+                ;(ndd ?d);  
                 (A ?d)
-                (RD ?d) ;;2º descanso diario, row 21 excel, index 19 pddl
+                (RD ?d) ;2º descanso diario, row 21 excel, index 19 pddl
                 ;(ndd ?d)	
                 (CDD_T2_START ?d)
-                ; (CDD_T2_slice ?d);;(A ?d) (B_T2 ?d) ; excel 23, indez 21
+                ; (CDD_T2_slice ?d);(A ?d) (B_T2 ?d) ; excel 23, indez 21
                 ; (print_result ?x)
-                ; (CDD_T2_slice ?d);;(A ?d) (B_T1 ?d) ; excel 26, index 24
+                ; (CDD_T2_slice ?d);(A ?d) (B_T1 ?d) ; excel 26, index 24
                 ; (print_result ?y)
-                ; (cdd_t2_slice ?d);;(A ?d) (B_T2 ?d) ;;excel 28, index 26
+                ; (cdd_t2_slice ?d);(A ?d) (B_T2 ?d) ;excel 28, index 26
                 ; (print_result ?z)
-                ; (cdd_t2_slice ?d);;(A ?d) (B_T1 ?d) ; EXCEL 30, index 28
+                ; (cdd_t2_slice ?d);(A ?d) (B_T1 ?d) ; EXCEL 30, index 28
                 ; (print_result ?w)
-                (CDD_T1_END ?d);(A ?d) (RD ?d);; EXCEL 33, index 31 DESCANSO DIARIO DE 9 HORAS Y SOLO SE PODRÍAN HACER 3 POR SEMANA
+                (CDD_T1_END ?d);(A ?d) (RD ?d); EXCEL 33, index 31 DESCANSO DIARIO DE 9 HORAS Y SOLO SE PODRÍAN HACER 3 POR SEMANA
                 ;(reset_counters)   
                 (ndd ?d)
                 ;(cdds_s ?d)	
@@ -1337,9 +1347,9 @@
         )
     )
 
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
     ; Actions
-    ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ; =========================================================================
 
     (:durative-action result
         :parameters (?x - number)

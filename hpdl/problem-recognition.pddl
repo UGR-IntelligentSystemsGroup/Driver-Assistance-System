@@ -38,6 +38,7 @@ E1 E2 E3 - TaskInstanceSymbol
 
  	    (modo_reconocer)
  	    (modo_depuracion)
+		 
  		;;INICIALIZAR FUNCIONES
  		(= (tiempo_conduccion driver1) 0)
  		(= (tiempo_conduccion driver2) 0)

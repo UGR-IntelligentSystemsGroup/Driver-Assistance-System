@@ -1,8 +1,11 @@
 # Documentation
-doc/
+doc/*
 # *.zip
 # *.pdf
 # *.docx
+
+# Except graphs
+!doc/graphs
 
 # Data
 data/
