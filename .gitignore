@@ -1,0 +1,25 @@
+# Documentation
+doc/
+# *.zip
+# *.pdf
+# *.docx
+
+# Data
+data/
+# *.xls
+# *.xlsx
+
+# Output
+out/**
+# *.csv
+# *.plan
+
+# Planner
+siadex3.8/
+planner/
+
+# Grammar
+grammar/
+
+# Old HPDL files
+hpdl/old/
