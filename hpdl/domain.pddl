@@ -1315,7 +1315,8 @@
                 ; (print_breaking_time ?x1)
 
                 ; (CDD_T2_SLICE ?d);(A ?d) (B_T3 ?d); 
-                ;(reset_counters)												; (print_result ?y)
+                ;(reset_counters)												
+                ; (print_result ?y)
                 ; (print_breaking_time ?x2)
                 ;(cdds_s ?d)			
                 ;(CDD_T2_END ?d)

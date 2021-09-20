@@ -208,8 +208,10 @@
 					(monthly-context ?monctxt))
 				()
 			)
-			((and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-				(C_p2 ?driver ?dur ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt))
+			(
+				(and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
+			 	(C_p2 ?driver ?dur ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt)
+			)
 		)
 	)
 
@@ -223,8 +225,10 @@
 					(duration_action ?sa ?dur))
 				()
 			)
-			((and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-				(O_p ?driver ?dur))
+			(
+				(and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
+				(O_p ?driver ?dur)
+			)
 		)
 	)
 
@@ -248,8 +252,10 @@
 					(monthly-context ?monctxt))
 				()
 			)
-			((and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-				(P_p2 ?driver ?dur ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt))
+			(
+				(and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
+				(P_p2 ?driver ?dur ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt)
+			)
 		)
 	)
 
@@ -263,8 +269,10 @@
 					(duration_action ?sa ?dur))
 				()
 			)
-			((and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-				(E_p ?driver ?dur))
+			(
+				(and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
+				(E_p ?driver ?dur)
+			)
 		)
 	)
 	)
@@ -347,8 +355,8 @@
 	:parameters (?ctxt - context) 
 	(:method unico
 		:precondition ()
-		:tasks
-		(:inline
+		:tasks (
+			:inline
 			(legal-slice-context ?current)
 			(and (legal-slice-context ?ctxt) (not (legal-slice-context ?current)))
 		)
@@ -359,8 +367,8 @@
 	:parameters (?ctxt - context) 
 	(:method unico
 		:precondition ()
-		:tasks
-		(:inline
+		:tasks (
+			:inline
 			()
 			(and (not (legal-slice-context ?ctxt)) (legal-slice-context na))
 		)
@@ -374,8 +382,8 @@
 	:parameters (?ctxt - context) 
 	(:method unico
 		:precondition ()
-		:tasks
-		(:inline
+		:tasks (
+			:inline
 			(daily-context ?current)
 			(and (daily-context ?ctxt) (not (daily-context ?current)))
 		)
@@ -386,8 +394,8 @@
 	:parameters (?ctxt - context) 
 	(:method unico
 		:precondition ()
-		:tasks
-		(:inline
+		:tasks (
+			:inline
 			()
 			(and (not (daily-context ?ctxt)) (daily-context na))
 		)

@@ -50,13 +50,29 @@ Integrating Machine Learning with Automated Planning
 
 - Cierta inconsistencia en la nomenclatura al nombrar tareas y métodos. B_T1 - B_T1 vs B_T2 - SINGLE
 
+- task break es para un salto de línea?
+
+- Completar notación.
+
+- La secuencia b_tk - A - e_tk - RD se repite varias veces. Agruparla?
+
 ## Commands
 
 ./planner/planner -d hpdl/domain.pddl -p hpdl/problema-recognition.pddl
 
 ## Notes
 
-Tipos de descansos:
+### Notation
+
+- B = Break
+
+- A = Activity ?
+
+- CDD = Continuos Driving Activity?
+
+- NDD = Non-Driving Activity?
+
+### Tipos de descansos
 
 ```
 B_T0; BREAK LESSER THAN 15 mins
