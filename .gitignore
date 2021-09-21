@@ -21,7 +21,8 @@ out/**
 planner/
 
 # Grammar
-grammar/
+grammar/old
+grammar/.antlr
 
 # Old HPDL files
 hpdl/old/

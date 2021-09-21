@@ -80,6 +80,14 @@ Integrating Machine Learning with Automated Planning
 
 - Los breaks no cambian el contexto, por qué?
 
+- cdd_t2  means  continued daily driving of type 3???? Lo he pasado a 2 en la gramática
+
+- La gramática de atributos es puramente informativa?
+
+- Habrá que modelar también el Team Daily Driving?
+
+- R_g9 = Rest 9h? idem con R_g11?
+
 ## Commands
 
 ./planner/planner -d hpdl/domain.pddl -p hpdl/problem-recognition.pddl
@@ -88,14 +96,16 @@ Integrating Machine Learning with Automated Planning
 
 ## Notes
 
+- El tacógrafo abarca más de un día
+
 ### Notation
 
 | Símbolo | Actividad        | Tipo Acción | Índice Registro |
 |---------|------------------|-------------|-----------------|
-| C (D)   | Conducción       | typeC       | 0               |
-| E       | Espera           | typeE       | 1               |
-| O       | Otros            | typeO       | 2               |
-| P       | Pausa            | typeP       | 3               |
+| C (D)   | Conducción (Drive) | typeC       | 0               |
+| E (I)   | Espera (Idle)      | typeE       | 1               |
+| O (O)   | Otros  (Other)     | typeO       | 2               |
+| P (B)   | Pausa  (Break)     | typeP       | 3               |
 | N       | Descanso Diario  | typeN       | 4               |
 | S       | Descanso Semanal | typeS       | 5               |
 
@@ -103,19 +113,24 @@ Integrating Machine Learning with Automated Planning
 |-----|----|
 | B | Break |
 | A | Actividad (si break -> B < 15m)|
-| CDD | Continuos Daily Driving?
-| CDDs_S | Continuos Driving Days Start
-| CDDs_E | Continuos Driving Days End
+| P_A | Process Activity, trozo de A
+| CDD | Continuos Daily Driving
+| CDD_T1 | Continued Daily Driving of type 1 (normal, sin partición)
+| CDD_T2 | Continued Daily Driving of type 2 (particionada)
+| CDDs_S | Continuos Daily Driving Start
+| CDDs_E | Continuos Daily Driving End
 | NDD | Normal Daily Driving
-| EDD | Extended Daily Driving
+| EDD | Extended Daily Driving - En total <10h
+| RD | Daily Rest
+| RW | Weekly Rest
+| TDD | Team Daily Driving
+| SRDD | Split Rest Daily Driving
+| WD | Weekly Driving
+|||
 | slice | Subsequence
 | rt | Rest time
 | dt | Driving time
-| WD | 
 | BWD |
-| RD | Daily Rest
-| RW | Weekly Rest
-| P_A | Principal Activity?
 | A_B_T3 | SUBSECUENCIA TERMINADA EN B_T3
 | elt | element
 | baseq | basic sequence
@@ -151,3 +166,8 @@ B_T10: BREAK OF [45h,infty)
 | (end_action O5 "03/01/2017 18:40") | Datetime de fin
 | (duration_action O5 1) | Duración en segundos
 | (parameters_typeO O5 driver1) | Conductor asociado
+
+
+
+CDD_T1 (Driving continous): A(4.5th) - B_T1(45m) - A - RD(>9h)
+CDD_T2 (Driving split): A(4.5h) - B_T1/2/3 - A - B_T1/2/3   (Si el primero fue 3, luego 1, e viceversa? O siempre la primera de 15)
