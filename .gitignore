@@ -18,7 +18,6 @@ out/**
 # *.plan
 
 # Planner
-siadex3.8/
 planner/
 
 # Grammar

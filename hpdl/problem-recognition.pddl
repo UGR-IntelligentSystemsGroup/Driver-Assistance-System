@@ -1,29 +1,25 @@
-(define (problem prueba0) (:domain GantaBi)
-	
- (:customization
-	;(= :time-format "%d/%m/%Y %H:%M:%S")
-	(= :time-format "%d/%m/%Y %H:%M")
-	(= :time-horizon-relative 86400) ;; que son los minutos que tienen 2 meses
-	(= :time-start "01/01/2017 00:00:00")
-	(= :time-unit :minutes)
+(define (problem prueba0) (:domain GantaBi)	
+	(:customization
+		;(= :time-format "%d/%m/%Y %H:%M:%S")
+		(= :time-format "%d/%m/%Y %H:%M")
+		(= :time-horizon-relative 86400) ;; que son los minutos que tienen 2 meses
+		(= :time-start "01/01/2017 00:00:00")
+		(= :time-unit :minutes)
 	)
 
-(:objects
-
+	(:objects
 		driver1 driver2 driver3 - Driver
 		jornada1 jornada2 jornada3 jornada4 jornada5 jornada6 jornada7
 		jornada8 jornada9 jornada10 jornada11 jornada12 jornada13 jornada14 - Jornada
 
 		C1 C2 C3 C4 C5 C6 C7 C8 C9 C10 C11 C12 C13 C14 C15 C16 C17 C18 C19 C20 C21 C22 C23 C24 C25 C26 C27 C28 C29 C30 C31 C32 C33 C34 C35 C36 C37 C38 C39 C40 C41 C42 C43 C44 C45 C46 C47 C48 C49 C50 C51 C52 C53 C54 C55 C56 C57 C58 C59 C60 C61 C62 C63 C64 C65 C66 C67 C68
-O1 O2 O3 O4 O5 O6 O7 O8 O9 O10 O11 O12 O13 O14 O15 O16 O17 O18 O19 O20 O21 O22 O23 O24 O25 O26 O27 O28
-P1 P2 P3 P4 P5 P6 P7 P8 P9 P10 P11 P12 P13 P14 P15 P16 P17 P18 P19 P20 P21 P22 P23 P24 P25 P26 P27 P28 P29 P30 P31 P32 P33 P34 P35 P36 P37 P38 P39 P40 P41 P42 P43 P44 P45 P46 P47 P48 P49 P50 P51 P52 P53 P54 P55
-E1 E2 E3 - TaskInstanceSymbol
+		O1 O2 O3 O4 O5 O6 O7 O8 O9 O10 O11 O12 O13 O14 O15 O16 O17 O18 O19 O20 O21 O22 O23 O24 O25 O26 O27 O28
+		P1 P2 P3 P4 P5 P6 P7 P8 P9 P10 P11 P12 P13 P14 P15 P16 P17 P18 P19 P20 P21 P22 P23 P24 P25 P26 P27 P28 P29 P30 P31 P32 P33 P34 P35 P36 P37 P38 P39 P40 P41 P42 P43 P44 P45 P46 P47 P48 P49 P50 P51 P52 P53 P54 P55
+		E1 E2 E3 - TaskInstanceSymbol
 		S1 S2 S3 S4 S5 - Semana
 	)
 
- (:init
-
-
+	(:init
         (token-context na)
 		(slice-context na)
   	    (legal-slice-context na)
@@ -36,6 +32,7 @@ E1 E2 E3 - TaskInstanceSymbol
  		;;(inicio_semana S1 "1/01/2018 00:00:00")
  		;;(fin_semana S1 "7/01/2018 23:59:59")
 
+		; (modo_generar)
  	    (modo_reconocer)
  	    (modo_depuracion)
 		 
@@ -88,6 +85,9 @@ E1 E2 E3 - TaskInstanceSymbol
 		;;(3 E1 typeE "01/07/2018 05:00:00" "01/07/2018 06:59:00" 120 driver1)
 		;;(4 C2 typeC "01/07/2018 07:00:00" "01/07/2018 07:59:00" 60 driver1)
 		;;(5 O2 typeO "01/07/2018 10:00:00" "01/07/2018 10:59:00" 60 driver1)
+
+		( = (current_rt) 0)
+		( = (dt_current_slice) 0)
 
 (index_action P1 0)
 (is_action P1)
@@ -1314,48 +1314,23 @@ E1 E2 E3 - TaskInstanceSymbol
 (end_action C68 "15/01/2017 00:24")
 (duration_action C68 121)
 (parameters_typeC C68 driver1)
-
-
-
-
-
-
-		;;TIEMPO DE JORNADAS DE TRABAJO
-		
-		
- 	
- 		;(at 37 (personal_time Jane dinner)+
- 		; 	;;meal_3 breakfast dinner breakfast_dinner - TimePref
- 		; (between "01/07/2018 00:00:00" and "01/01/2019 23:59:59" and every 24 (es_jornada jornada1))
- 		; (= (start_jornada jornada1) "01/07/2018 00:00:00")
- 		; (= (end_jornada jornada1) "01/07/2018 23:59:59")
-
- 	
-( = (current_rt) 0)
-( = (dt_current_slice) 0)
  	)
  		
-
-
-
-
-	
-
 	(:tasks-goal
 		:tasks 
 				;(P driver1 ?dur)
 				;(add_the_current_action_to_plan typeP ?dur)	
 				;(PROCESA_accion_normal driver1)
 				(
-				 ; 	(P_A driver1)
+				 	; (P_A driver1)
 					; (P_A driver1)
 					; (P_A driver1)
 					; (P_A driver1)
 					; (P_A driver1)
 					; (P_A driver1)
 					
-					;(A driver1)
-					(A_B_T3 driver1);;success
+					; (A driver1)
+					(A_B_T3 driver1) ;;success
 
 
 				)

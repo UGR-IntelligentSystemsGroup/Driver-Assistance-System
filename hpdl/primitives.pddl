@@ -1,6 +1,6 @@
 ;CADA tarea primitva PUEDE AÑADIRSE AL PLAN EN DOS MODOS DISTINTOS: modo reconocer "token" o modo generar
 ;Por tanto cada tarea primitiva tiene asociada una tarea compuesta con dos metodos, uno para el modo reconocer plan y otro para el modo generar plan
-; el modo GENERAR plan es el de siempre: se añande directamente la primitiva al plan (y si no se pueden coumplir las restricciones/condiciones pues fallará ). 
+; el modo GENERAR plan es el de siempre: se añade directamente la primitiva al plan (y si no se pueden cumplir las restricciones/condiciones pues fallará ). 
 ; el modo RECONOCER parte de que en el estado inicial hay una secuencia de acciones que hay que reconocer
 ; IMPORTANTE: estos dos metodos no son alternativas de hacer una tarea, son  dos formas excluyentes de hacer una tarea, e.d., si entra por un metodo y falla, 
 ; entonces no entra por el otro y la tarea compuesta directamente falla. Por eso tiene el simbolo ! (corte alla PROLOG)

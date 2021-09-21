@@ -121,7 +121,6 @@
         (write_debug ?p - number)
         (modo_depuracion)
         (DEBUG ?msg - Mensaje)
-
     )
 
     ; =========================================================================
@@ -306,7 +305,7 @@
     (:derived (continuar_recursion)
         (AND
             ( <= (minutos_consumidos) (* 24 (hora_en_minutos)))
-            (:print "TODAVÍA no ha consumido 24 horas")
+            (:print "TODAVÍA no ha consumido 24 horas\n")
             (secuencia_entrada_no_vacia)
             (:print "TODAVÍA NO HA LLEGADO AL FIN DE LA SECUENCIA\n")
         )
@@ -394,8 +393,10 @@
     ; Rests
     ; ****************************
 
+    ; Daily rest
     (:task RD
         :parameters (?c - Driver) 
+        ; Reduced daily rest
         (:method B_T5 ;B_T4: break of [9h, 11h)
             :precondition ()
             :tasks (
@@ -426,6 +427,7 @@
             )
         ) 
         
+        ; Normal daily rest
         (:method B_T6 ;B_T3: BREAK OF [11h, 24h)
             :precondition ()
             :tasks (
@@ -791,7 +793,7 @@
                 (P_A ?c)
 
                 (:inline
-                    (:print "pASA POR AQUI")
+                    (:print "pASA POR AQUI\n")
                     ()
                 )
                 (:inline
@@ -799,7 +801,7 @@
                     ()
                 )
                 (:inline
-                    (:print "Menor que 15")
+                    (:print "Menor que 15\n")
                     ()
                 )
 
@@ -814,7 +816,7 @@
         (:method caso_base0
             :precondition (and 
                 (current_action_is_a_break_greater_15) 
-                (:print PAUSE_CONSIDERED_BREAK)
+                (:print "PAUSE_CONSIDERED_BREAK\n")
             ) 
             :tasks(
 
@@ -839,7 +841,7 @@
         ; AQUÍ HA HABIDO UN FALLO: SE DAN las condiciones de recursión, pero NO SE HA PODIDO PROCESAR si continua recursion y no ha entrado en ninguno de los metodos anteriores
         (:method fallar
             :precondition (
-                :print "FALLO_LATASK"
+                :print "FALLO_LATASK\n"
             )
             :tasks (
                 :inline
@@ -1101,6 +1103,7 @@
 
     ; -------------------------------------------------------------------------
 
+    ; Start
     (:task CDDs_S
         :parameters (?d - Driver) 
         (:method t1
@@ -1135,6 +1138,7 @@
 
     ; -------------------------------------------------------------------------
 
+    ; End
     (:task CDDs_E
         :parameters (?d - Driver) 
         (:method t1
