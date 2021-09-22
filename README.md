@@ -88,6 +88,8 @@ Integrating Machine Learning with Automated Planning
 
 - R_g9 = Rest 9h? idem con R_g11?
 
+- **IMPORTANTE** Si cada vez que se llama a las tareas semi-básicas (A, B_T1...) se cambia de contexto, no podría hacerse dentro de ellas?. En los Breaks está comentado, por qué?
+
 ## Commands
 
 ./planner/planner -d hpdl/domain.pddl -p hpdl/problem-recognition.pddl
@@ -117,8 +119,8 @@ Integrating Machine Learning with Automated Planning
 | CDD | Continuos Daily Driving
 | CDD_T1 | Continued Daily Driving of type 1 (normal, sin partición)
 | CDD_T2 | Continued Daily Driving of type 2 (particionada)
-| CDDs_S | Continuos Daily Driving Start
-| CDDs_E | Continuos Daily Driving End
+| CDDs_S | Continuos Daily Driving - Start
+| CDDs_E | Continuos Daily Driving - End
 | NDD | Normal Daily Driving
 | EDD | Extended Daily Driving - En total <10h
 | RD | Daily Rest
