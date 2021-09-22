@@ -20,12 +20,12 @@
 	)
 
 	(:init
-        (token-context na)
-		(slice-context na)
-  	    (legal-slice-context na)
-		(daily-context na)
-		(weekly-context na)
-		(monthly-context na)
+        (token-context none)
+		(slice-context none)
+  	    (legal-slice-context none)
+		(daily-context none)
+		(weekly-context none)
+		(monthly-context none)
 
 
 

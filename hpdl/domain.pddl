@@ -33,7 +33,7 @@
         ndd edd 
         wd bwd
         month
-        na - context
+        none - context
     )
 
     ; =========================================================================
@@ -987,7 +987,7 @@
         (:method SINGLE ;B_T3: BREAK OF [30min, 45min); ahora lo he puesto  [30min, 3h)
             :precondition ()
             :tasks (
-                ;(b_tk B_T3)		
+                ;(b_tk B_T3)	
                 (B ?c ?dur)
                 (:inline
                     (and (>= ?dur 30) (< ?dur (hours_in_mins 3)))
@@ -1023,8 +1023,8 @@
     )
     
     ; -------------------------------------------------------------------------
+    ; Recognizes a sequence of Activities (D|O|B|I) such that dur(B)< 15mins
 
-    ;recognizes a sequence of activities (D|O|B|I) such that dur(B)< 15mins
     (:task A
         :parameters (?c - Driver) 
         (:method recurrir

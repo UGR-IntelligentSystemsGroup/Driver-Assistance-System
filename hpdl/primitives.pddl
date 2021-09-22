@@ -314,7 +314,7 @@
 ; 		)
 ; 	:duration (= ?duration 0)
 ; 	:condition()
-; 	:effect (and (not (token-context ?ctxt)) (token-context na)))
+; 	:effect (and (not (token-context ?ctxt)) (token-context none)))
 
 ; -------------------------------------------------------------------------
 ; Contexts
@@ -339,7 +339,7 @@
 		:precondition ()
 		:tasks (
 			:inline ()
-			(and (not (token-context ?ctxt)) (token-context na))
+			(and (not (token-context ?ctxt)) (token-context none))
 		)
 	)
 )
@@ -365,7 +365,7 @@
 		:tasks (
 			:inline
 			()
-			(and (not (slice-context ?ctxt)) (slice-context na))
+			(and (not (slice-context ?ctxt)) (slice-context none))
 		)
 
 	)
@@ -392,7 +392,7 @@
 		:tasks (
 			:inline
 			()
-			(and (not (legal-slice-context ?ctxt)) (legal-slice-context na))
+			(and (not (legal-slice-context ?ctxt)) (legal-slice-context none))
 		)
 
 	)
@@ -419,7 +419,7 @@
 		:tasks (
 			:inline
 			()
-			(and (not (daily-context ?ctxt)) (daily-context na))
+			(and (not (daily-context ?ctxt)) (daily-context none))
 		)
 
 	)

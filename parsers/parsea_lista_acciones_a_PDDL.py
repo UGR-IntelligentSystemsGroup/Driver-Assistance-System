@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import sys
-
 import os
 
 print 'Number of arguments:', len(sys.argv), 'arguments.'
