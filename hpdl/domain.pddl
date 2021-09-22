@@ -832,7 +832,7 @@
             :precondition ()
             :tasks (
                 (b_tk R_g9)
-                (P ?c ?dur)
+                (B ?c ?dur)
                 (:inline
                     (and (>= ?dur (hours_in_mins 9)) (< ?dur (hours_in_mins 11)))
                     ()
@@ -863,7 +863,7 @@
             :precondition ()
             :tasks (
                 (b_tk R_g11)
-                (P ?c ?dur)
+                (B ?c ?dur)
                 (:inline
                     (and (>= ?dur (hours_in_mins 11)) (< ?dur (hours_in_mins 24)))
                     ()
@@ -902,7 +902,7 @@
             :precondition ()
             :tasks (
                 ;(b_tk B_T1)		
-                (P ?c ?dur)
+                (B ?c ?dur)
                 (:inline
                     (and (>= ?dur 45) (< ?dur (hours_in_mins 3)))
                     ()
@@ -945,7 +945,7 @@
             :precondition ()
             :tasks (
                 ;(b_tk B_T2)
-                (P ?c ?dur)
+                (B ?c ?dur)
                 (:inline
                     (and (>= ?dur 15) (< ?dur 30))
                     ()
@@ -988,7 +988,7 @@
             :precondition ()
             :tasks (
                 ;(b_tk B_T3)		
-                (P ?c ?dur)
+                (B ?c ?dur)
                 (:inline
                     (and (>= ?dur 30) (< ?dur (hours_in_mins 3)))
                     ()
@@ -1095,10 +1095,11 @@
 
     (:task P_A
         :parameters (?c - Driver) 
-        (:method CXX
+        ; Driving
+        (:method DXX
             :precondition ()
             :tasks (
-                (C ?c ?dur)
+                (D ?c ?dur)
                 (:inline
                     ()
                     (increase (minutos_consumidos) ?dur))
@@ -1116,6 +1117,7 @@
             )
         ) 
         
+        ; Other
         (:method OXX
             :precondition ()
             :tasks (
@@ -1142,7 +1144,7 @@
             :precondition ()
             :tasks (
                 ;(break)	
-                (P ?c ?dur)
+                (B ?c ?dur)
                 ;(break)
                 (:inline
                     (and (< ?dur 15))
@@ -1170,7 +1172,7 @@
         (:method B_T2 ;B_T2: BREAK of [15min, 30min)
             :precondition ()
             :tasks (
-                (P ?c ?dur)
+                (B ?c ?dur)
                 (:inline
                     (and (>= ?dur 15) (< ?dur 30))
                     ()
@@ -1200,7 +1202,7 @@
         (:method B_T3;B_T3: BREAK OF [30min, 45min)
             :precondition ()
             :tasks (
-                (P ?c ?dur)
+                (B ?c ?dur)
                 (:inline
                     (and (>= ?dur 30) (< ?dur (hours_in_mins 3)))
                     ()
@@ -1230,7 +1232,7 @@
         (:method B_T1;B_T1: BREAK OF [45min, 3h)
             :precondition ()
             :tasks (
-                (P ?c ?dur)
+                (B ?c ?dur)
                 (:inline
                     (and (>= ?dur 45) (< ?dur (hours_in_mins 3)))
                     ()
@@ -1257,10 +1259,11 @@
             )
         ) 
         
-        (:method EXX
+        ; Idle
+        (:method IXX
             :precondition (puede_espera_NORMAL ?c)
             :tasks (
-                (E ?c ?dur)
+                (I ?c ?dur)
                 (:inline
                     ()
                     (increase (minutos_consumidos) ?dur))
@@ -1292,7 +1295,6 @@
     )
 
     ; -------------------------------------------------------------------------
-
     ; PROCESS ACTIVITY
 
     (:derived
