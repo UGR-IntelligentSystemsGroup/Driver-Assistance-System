@@ -225,9 +225,19 @@
 					(duration_action ?sa ?dur))
 				()
 			)
+			;captura el contexto
+			(:inline
+				(and (token-context ?tkctxt)
+					(slice-context ?slctxt)
+					(legal-slice-context ?lsctxt)
+					(daily-context ?dayctxt)
+					(weekly-context ?weectxt)
+					(monthly-context ?monctxt))
+				()
+			)
 			(
 				(and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-				(O_p ?driver ?dur)
+				(O_p2 ?driver ?dur ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt)
 			)
 		)
 	)
@@ -269,9 +279,19 @@
 					(duration_action ?sa ?dur))
 				()
 			)
+			;captura el contexto
+			(:inline
+				(and (token-context ?tkctxt)
+					(slice-context ?slctxt)
+					(legal-slice-context ?lsctxt)
+					(daily-context ?dayctxt)
+					(weekly-context ?weectxt)
+					(monthly-context ?monctxt))
+				()
+			)
 			(
 				(and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-				(E_p ?driver ?dur)
+				(E_p2 ?driver ?dur ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt)
 			)
 		)
 	)
@@ -296,6 +316,8 @@
 ; 	:condition()
 ; 	:effect (and (not (token-context ?ctxt)) (token-context na)))
 
+; -------------------------------------------------------------------------
+; Contexts
 ; -------------------------------------------------------------------------
 
 (:task b_tk
@@ -404,7 +426,8 @@
 )
 
 ; -------------------------------------------------------------------------
-
+; Primitives
+; -------------------------------------------------------------------------
 
 (:durative-action C_p ;_p es sufijo de primitiva
 	:parameters (?c - Driver ?dur - number)
@@ -428,6 +451,13 @@
 
 (:durative-action O_p
 	:parameters (?c - Driver ?dur - number)
+	:duration (= ?duration ?dur)
+	:condition ()
+	:effect (increase (tiempo_otros ?c) ?dur)
+)
+
+(:durative-action O_p2
+	:parameters (?c - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
 		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     PARADA ?dur")
 		; (:tag prettyprint "?c,?start,?end,?duration,OTRO TRABAJO,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
@@ -451,7 +481,7 @@
 	:meta (
 		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     PARADA ?dur")
 		; (:tag prettyprint "?c,?start,?end,?duration,PARADA,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
-		(:tag prettyprint "?c	?start	?end	?duration	Pause	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
+		(:tag prettyprint "?c	?start	?end	?duration	Break	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition ()
 		:effect (increase (tiempo_parada ?c) ?dur)
@@ -461,9 +491,16 @@
 
 (:durative-action E_p
 	:parameters (?c - Driver ?dur - number)
+	:duration (= ?duration ?dur)
+	:condition ()
+	:effect (increase (tiempo_espera ?c) ?dur)
+)
+
+(:durative-action E_p2
+	:parameters (?c - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
-		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     PARADA ?dur")
-		(:tag prettyprint "?c,?start,?end,?duration,ESPERA,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
+		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     ESPERA ?dur")
+		(:tag prettyprint "?c	?start	?end	?duration	Idle	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition ()
 		:effect (increase (tiempo_espera ?c) ?dur)

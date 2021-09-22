@@ -28,6 +28,7 @@ Integrating Machine Learning with Automated Planning
   - Para conduce_un_dia falta conduce_un_dia_AMPLIADA
 
 - Por dónde empiezo? Qué fallos tiene?
+  - Entiendo que uno de los fallos son los NA, no reconoce si es NDD o EDD
 
 - task RD, method B_T5: Por qué está comentado B_T4? idem con B_T6. Es que falta añadir esos métodos?
 
@@ -91,11 +92,13 @@ Integrating Machine Learning with Automated Planning
 - **IMPORTANTE** Si cada vez que se llama a las tareas semi-básicas (A, B_T1...) se cambia de contexto, no podría hacerse dentro de ellas?. En los Breaks está comentado, por qué?
 
 - **IMPORTANTE** Cuál tiene que ser la salida? (Formato)
-  - Driver - DatetimeStart - DatetimeEnd - Duration - Activity (DOPI) -- Day (ndd/edd) - DrivingPeriod (split/continuos) - Sequence (cdds/cdde) - Token (elt/B_T2/rd_red/B_T3...) ???
+  - Driver - DatetimeStart - DatetimeEnd - Duration - Activity (DOBI) -- Day (ndd/edd) - DrivingPeriod (split/continuos) - Sequence (cdds/cdde) - Token (elt/B_T2/rd_red/B_T3...) ???
 
-- En los prettyprint de las acciones DOPI he sustituido ; por ,
+- En los prettyprint de las acciones DOBI he pasado de CSV con ; a TSV. La salida es más legible de por sí, y a la hora de pasarlo a un dataset no habría problema.
 
 - Por qué no hay O_p2 ni E_p2? Los he cambiado para que haya alternativa con contexto
+
+- **IMPORTANTE** La regulación HOS cambió en junio de 2020: https://www.fmcsa.dot.gov/regulations/hours-of-service
 
 ## Commands
 
