@@ -360,6 +360,33 @@
     ; TASKS
     ; =========================================================================
 
+    ; DailyDriving
+    (:task DD
+        :parameters (?d - Driver)
+        (:method ndd
+            :precondition ()
+            :tasks ( 
+                (NDD ?d)
+                (DD ?d)
+            )
+        )
+
+        (:method ndd
+            :precondition ()
+            :tasks ( 
+                (NDD ?d)
+                (DD ?d)
+            )
+        )
+
+        (:method base
+            :precondition ()
+            :tasks ()
+        )
+    )
+
+    ; -------------------------------------------------------------------------
+
     ; Normal Daily Driving
     (:task NDD
         :parameters (?d - Driver) 

@@ -92,7 +92,7 @@ Integrating Machine Learning with Automated Planning
 - **IMPORTANTE** Si cada vez que se llama a las tareas semi-básicas (A, B_T1...) se cambia de contexto, no podría hacerse dentro de ellas?. En los Breaks está comentado, por qué?
 
 - **IMPORTANTE** Cuál tiene que ser la salida? (Formato)
-  - Driver - DatetimeStart - DatetimeEnd - Duration - Activity (DOBI) -- Day (ndd/edd) - DrivingPeriod (split/continuos) - Sequence (cdds/cdde) - Token (elt/B_T2/rd_red/B_T3...) ???
+  - Driver - DatetimeStart - DatetimeEnd - Duration - Activity (DOBI) -- Day (ndd/edd) - DrivingPeriod (split/continuos) - Sequence (cdds/cdde) - Token (elt, b_t1, b_t2, b_t3, rd_normal, rd_reduced, wr_normal, wr_reduced) ???
 
 - En los prettyprint de las acciones DOBI he pasado de CSV con ; a TSV. La salida es más legible de por sí, y a la hora de pasarlo a un dataset no habría problema.
 
@@ -195,3 +195,8 @@ B_T10: BREAK OF [45h,infty)
 
 CDD_T1 (Driving continous): A(4.5th) - B_T1(45m) - A - RD(>9h)
 CDD_T2 (Driving split): A(4.5h) - B_T1/2/3 - A - B_T1/2/3   (Si el primero fue 3, luego 1, e viceversa? O siempre la primera de 15)
+
+Posible task 0: 
+  DailyDriving
+    base:
+    m0: NDD

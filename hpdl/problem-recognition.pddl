@@ -1331,9 +1331,9 @@
 					
 					; (A driver1)
 					; (A_B_T3 driver1) ;;success
-					(NDD driver1)
 
-
+					; (NDD driver1)
+					(DD driver1)
 				)
 		       			
 		    	; (conduce_un_dia driver1)
