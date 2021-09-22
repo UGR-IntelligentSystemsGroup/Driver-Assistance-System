@@ -107,7 +107,7 @@
 				(:inline
 					()
 					(increase (current_index_action) 1)
-				)
+				)				
 			)
 		)
 	)
@@ -446,7 +446,13 @@
 		; (:tag prettyprint "?d,?start,?end,?duration,CONDUCIENDO,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
 		(:tag prettyprint "?d	?start	?end	?duration	Driving	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
-		:condition ()
+		:condition (and
+			(:print "Recognized [DRIVING] task for driver ")
+			(:print ?d)
+			(:print " of ")
+			(:print ?dur)
+			(:print "minutes\n")
+		)
 		:effect (increase (tiempo_conduccion ?d) ?dur)
 )
 
@@ -467,7 +473,13 @@
 		; (:tag prettyprint "?d,?start,?end,?duration,OTRO TRABAJO,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
 		(:tag prettyprint "?d	?start	?end	?duration	Other	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
-		:condition ()
+		:condition (and
+			(:print "Recognized [OTHER] task for driver ")
+			(:print ?d)
+			(:print " of ")
+			(:print ?dur)
+			(:print "minutes\n")
+		)
 		:effect (increase (tiempo_otros ?d) ?dur)
 )
 
@@ -488,7 +500,13 @@
 		; (:tag prettyprint "?d,?start,?end,?duration,PARADA,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
 		(:tag prettyprint "?d	?start	?end	?duration	Break	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
-		:condition ()
+		:condition (and
+			(:print "Recognized [BREAK] task for driver ")
+			(:print ?d)
+			(:print " of ")
+			(:print ?dur)
+			(:print "minutes\n")
+		)
 		:effect (increase (tiempo_parada ?d) ?dur)
 )
 
@@ -508,7 +526,13 @@
 		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     ESPERA ?dur")
 		(:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
-		:condition ()
+		:condition (and
+			(:print "Recognized [IDLE] task for driver ")
+			(:print ?d)
+			(:print " of ")
+			(:print ?dur)
+			(:print "minutes\n")
+		)
 		:effect (increase (tiempo_espera ?d) ?dur)
 )
 

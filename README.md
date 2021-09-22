@@ -119,6 +119,8 @@ Integrating Machine Learning with Automated Planning
 
 - Por qué esa nomenclatura en los Breaks (1,2,3), no sería más legible que estén ordenados?
 
+- **IMPORTANTE** Los logs tienen muchas pausas o patrones (Breaks y Drivings muy cortos, muchos Other) que se alejan de la normativa (o continuo o particionado). Esto es difícil de modelar con planificación.
+
 ## Commands
 
 ./planner/planner -d hpdl/domain.pddl -p hpdl/problem-recognition.pddl

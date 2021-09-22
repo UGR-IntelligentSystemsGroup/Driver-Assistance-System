@@ -1034,7 +1034,7 @@
         (:method recurrir
             :precondition (continuar_recursion)
             :tasks (
-                (P_A ?d)
+                (Process_A ?d)
 
                 (:inline
                     (:print "pASA POR AQUI\n")
@@ -1097,7 +1097,8 @@
 
     ; -------------------------------------------------------------------------
 
-    (:task P_A
+    ; Process activity
+    (:task Process_A
         :parameters (?d - Driver) 
         ; Driving
         (:method DXX
@@ -1173,7 +1174,7 @@
             )
         ) 
         
-        (:method B_T2 ;B_T2: BREAK of [15min, 30min)
+        (:method B_T2 ; BREAK of [15min, 30min)
             :precondition ()
             :tasks (
                 (B ?d ?dur)
@@ -1203,7 +1204,7 @@
             )
         ) 
         
-        (:method B_T3;B_T3: BREAK OF [30min, 45min)
+        (:method B_T3 ; BREAK OF [30min, 45min)
             :precondition ()
             :tasks (
                 (B ?d ?dur)
