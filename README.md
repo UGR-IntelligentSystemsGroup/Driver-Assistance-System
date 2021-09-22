@@ -90,6 +90,13 @@ Integrating Machine Learning with Automated Planning
 
 - **IMPORTANTE** Si cada vez que se llama a las tareas semi-básicas (A, B_T1...) se cambia de contexto, no podría hacerse dentro de ellas?. En los Breaks está comentado, por qué?
 
+- **IMPORTANTE** Cuál tiene que ser la salida? (Formato)
+  - Driver - DatetimeStart - DatetimeEnd - Duration - Activity (DOPI) -- Day (ndd/edd) - DrivingPeriod (split/continuos) - Sequence (cdds/cdde) - Token (elt/B_T2/rd_red/B_T3...) ???
+
+- En los prettyprint de las acciones DOPI he sustituido ; por ,
+
+- Por qué no hay O_p2 ni E_p2? Los he cambiado para que haya alternativa con contexto
+
 ## Commands
 
 ./planner/planner -d hpdl/domain.pddl -p hpdl/problem-recognition.pddl
@@ -100,14 +107,26 @@ Integrating Machine Learning with Automated Planning
 
 - El tacógrafo abarca más de un día
 
+- C_p2 ;_p es sufijo de primitiva; 2 is because action as contexts in parameters
+
+- Los metatags son una extensión del lenguaje que actualmente está en fase experimental, por lo que puede cambiar en futuras versiones. El concepto subyacente a los metatags es poder incluir
+información extra en el dominio, que aunque no sea directamente utilizable por el planificador,
+pueda ser utilizada por otros módulos, o en un análisis posterior del plan resultante.
+
+- El corte (!) es otro de los conceptos introducidos para mejorar la eficiencia del proceso de planificación. Este concepto está tomado del lenguaje PROLOG [PROLOG] donde se utiliza para “olvidar” las unificaciones previas si se vuelve por backtracking. Obviamente el uso del corte afecta a la completitud del proceso de refutación, por lo que debe de ser utilizado con cuidado. En HTN-PDDL es posible usar el corte para parar el backtracking en dos lugares distintos:
+
+  - En la definición de precondiciones: Su uso es exactamente el mismo que el corte de PROLOG. Se toma de la lista de posibles unificaciones una de forma no determinista y se descarta el resto. Si se vuelve por backtracking no se vuelven a considerar el resto de las unificaciones. En dominios con muchas unificaciones usado con cuidado puede utilizarse para acelerar mucho el procesamiento y reducir el backtracking, sin que por ello se vea afectada la completitud.
+
+  - En la lista de métodos de una tarea abstracta. Sirve para que una vez que se han probado como ciertas las precondiciones de un método se descarte probar con el resto de métodos. Nuevamente usado con cuidado este corte tampoco tiene por que afectar a la completitud del algoritmo. El escritor de dominios puede conocer que los métodos son mutuamente excluyentes y que una vez que se prueba con uno, el resto ya son inválidos.
+
 ### Notation
 
 | Símbolo | Actividad        | Tipo Acción | Índice Registro |
 |---------|------------------|-------------|-----------------|
-| C (D)   | Conducción (Drive) | typeC       | 0               |
-| E (I)   | Espera (Idle)      | typeE       | 1               |
-| O (O)   | Otros  (Other)     | typeO       | 2               |
-| P (B)   | Pausa  (Break)     | typeP       | 3               |
+| C (D)   | Conducción (Drive) | typeC     | 0               |
+| E (I)   | Espera (Idle)      | typeE     | 1               |
+| O (O)   | Otros  (Other)     | typeO     | 2               |
+| P (B)   | Pausa  (Break)     | typeP     | 3               |
 | N       | Descanso Diario  | typeN       | 4               |
 | S       | Descanso Semanal | typeS       | 5               |
 

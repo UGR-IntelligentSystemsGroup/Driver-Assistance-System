@@ -405,16 +405,6 @@
 
 ; -------------------------------------------------------------------------
 
-(:durative-action C_p2 ;_p es sufijo de primitiva; 2 is because action as conexts in parameters
-	:parameters (?c - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
-	:meta(
-		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt   CONDUCIENDO ?dur")
-		(:tag prettyprint "?c;?start;?end;?duration;CONDUCIENDO;?dayctxt;?lsctxt;?slctxt;?tkctxt")
-		)
-		:duration (= ?duration ?dur)
-		:condition ()
-		:effect (increase (tiempo_conduccion ?c) ?dur)
-	)
 
 (:durative-action C_p ;_p es sufijo de primitiva
 	:parameters (?c - Driver ?dur - number)
@@ -423,32 +413,31 @@
 	:effect (increase (tiempo_conduccion ?c) ?dur)
 )
 
+(:durative-action C_p2 ;_p es sufijo de primitiva; 2 is because action as contexts in parameters
+	:parameters (?c - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
+	:meta (
+		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt   CONDUCIENDO ?dur")
+		; (:tag prettyprint "?c,?start,?end,?duration,CONDUCIENDO,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
+		(:tag prettyprint "?c	?start	?end	?duration	Driving	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
+		:duration (= ?duration ?dur)
+		:condition ()
+		:effect (increase (tiempo_conduccion ?c) ?dur)
+)
+
 ; -------------------------------------------------------------------------
 
 (:durative-action O_p
 	:parameters (?c - Driver ?dur - number)
-	:meta
-	(
+	:meta (
 		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     PARADA ?dur")
-		(:tag prettyprint "?c;?start;?end;?duration;OTRO TRABAJO;?dayctxt;?lsctxt;?slctxt;?tkctxt")
-		):duration (= ?duration ?dur)
-		:condition ()
-		:effect (increase (tiempo_otros ?c) ?dur)
-	)
-
-; -------------------------------------------------------------------------
-
-(:durative-action P_p2
-	:parameters (?c - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
-	:meta
-	(
-		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     PARADA ?dur")
-		(:tag prettyprint "?c;?start;?end;?duration;PARADA;?dayctxt;?lsctxt;?slctxt;?tkctxt")
-		)
+		; (:tag prettyprint "?c,?start,?end,?duration,OTRO TRABAJO,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
+		(:tag prettyprint "?c	?start	?end	?duration	Other	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition ()
-		:effect (increase (tiempo_parada ?c) ?dur)
-	)
+		:effect (increase (tiempo_otros ?c) ?dur)
+)
+
+; -------------------------------------------------------------------------
 
 (:durative-action P_p
 	:parameters (?c - Driver ?dur - number)
@@ -457,36 +446,33 @@
 	:effect (increase (tiempo_parada ?c) ?dur)
 )
 
+(:durative-action P_p2
+	:parameters (?c - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
+	:meta (
+		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     PARADA ?dur")
+		; (:tag prettyprint "?c,?start,?end,?duration,PARADA,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
+		(:tag prettyprint "?c	?start	?end	?duration	Pause	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
+		:duration (= ?duration ?dur)
+		:condition ()
+		:effect (increase (tiempo_parada ?c) ?dur)
+)
+
 ; -------------------------------------------------------------------------
 
 (:durative-action E_p
 	:parameters (?c - Driver ?dur - number)
-	:meta
-	(
+	:meta (
 		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     PARADA ?dur")
-		(:tag prettyprint "?c;?start;?end;?duration;ESPERA;?dayctxt;?lsctxt;?slctxt;?tkctxt")
-		)
+		(:tag prettyprint "?c,?start,?end,?duration,ESPERA,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition ()
 		:effect (increase (tiempo_espera ?c) ?dur)
-	)
-
-	; (:derived (diferente ?x ?y) {return ?x != ?y})
-	; (:derived (igual ?x ?x) ())
+)
 
 ; -------------------------------------------------------------------------
 
-(:action dummy
-	:parameters ()
-	:precondition ()
-	:effect ()
-)
-
-(:action dummy_2
-	:parameters ()
-	:precondition ()
-	:effect ()
-)
+; (:derived (diferente ?x ?y) {return ?x != ?y})
+; (:derived (igual ?x ?x) ())
 				
 (:action break
 	:parameters ()
