@@ -6,7 +6,8 @@
 ; entonces no entra por el otro y la tarea compuesta directamente falla. Por eso tiene el simbolo ! (corte alla PROLOG)
 
 (:task D
-	:parameters (?c - Driver ?dur - number) (!
+	:parameters (?c - Driver ?dur - number) 
+	(!
 		(:method modo_generar
 			:precondition (modo_generar)
 			:tasks
@@ -56,87 +57,88 @@
 ;*********************************************************************************************************
 
 (:task O
-	:parameters (?c - Driver ?dur - number) (!
-	(:method modo_generar
-		:precondition (modo_generar)
-		:tasks (
-			(:inline
-				(bind ?dur
-					(calcula_duracion_O ?c))
-				()
+	:parameters (?c - Driver ?dur - number) 
+	(!
+		(:method modo_generar
+			:precondition (modo_generar)
+			:tasks (
+				(:inline
+					(bind ?dur
+						(calcula_duracion_O ?c))
+					()
+				)
+				(O_p ?c ?dur)
 			)
-			(O_p ?c ?dur)
 		)
-	)
 
-	(:method modo_reconocer
-		:precondition (modo_reconocer)
-		:tasks (
-			(add_the_current_action_to_plan typeO ?dur)
-			;incrementar el current index para reconocer la siguiente accion de la secuencia)
-			(:inline
-				()
-				(increase (current_index_action) 1)
+		(:method modo_reconocer
+			:precondition (modo_reconocer)
+			:tasks (
+				(add_the_current_action_to_plan typeO ?dur)
+				;incrementar el current index para reconocer la siguiente accion de la secuencia)
+				(:inline
+					()
+					(increase (current_index_action) 1)
+				)
 			)
 		)
-	)
 	)
 )
 
 (:task B
-	:parameters (?c - Driver ?dur - number) (!
-	(:method modo_generar
-		:precondition (modo_generar)
-		:tasks (
-			(:inline
-				(bind ?dur
-					(calcula_duracion_P ?c))
-				()
-			)
-			(B_p ?c ?dur)
-		)
-	)
-	(:method modo_reconocer
-		:precondition (modo_reconocer)
-		:tasks (
-			(add_the_current_action_to_plan typeP ?dur)
-			;incrementar el current index para reconocer la siguiente accion de la secuencia)
-			(:inline
-				()
-				(increase (current_index_action) 1)
+	:parameters (?c - Driver ?dur - number) 
+	(!
+		(:method modo_generar
+			:precondition (modo_generar)
+			:tasks (
+				(:inline
+					(bind ?dur
+						(calcula_duracion_P ?c))
+					()
+				)
+				(B_p ?c ?dur)
 			)
 		)
+		(:method modo_reconocer
+			:precondition (modo_reconocer)
+			:tasks (
+				(add_the_current_action_to_plan typeP ?dur)
+				;incrementar el current index para reconocer la siguiente accion de la secuencia)
+				(:inline
+					()
+					(increase (current_index_action) 1)
+				)
+			)
+		)
 	)
-	)
-
 )
 
 (:task I
-	:parameters (?c - Driver ?dur - number) (!
-	(:method modo_generar
-		:precondition (modo_generar)
-		:tasks (
-			(:inline
-				(bind ?dur
-					(calcula_duracion_E ?c))
-				()
-			)
-			(I_p ?c ?dur)
-		)
-	)
-	(:method modo_reconocer
-		:precondition (modo_reconocer)
-		:tasks (
-			(add_the_current_action_to_plan typeE ?dur)
-			;incrementar el current index para reconocer la siguiente accion de la secuencia)
-			(:inline
-				()
-				(increase (current_index_action) 1)
+	:parameters (?c - Driver ?dur - number) 
+	(!
+		(:method modo_generar
+			:precondition (modo_generar)
+			:tasks (
+				(:inline
+					(bind ?dur
+						(calcula_duracion_E ?c))
+					()
+				)
+				(I_p ?c ?dur)
 			)
 		)
+		(:method modo_reconocer
+			:precondition (modo_reconocer)
+			:tasks (
+				(add_the_current_action_to_plan typeE ?dur)
+				;incrementar el current index para reconocer la siguiente accion de la secuencia)
+				(:inline
+					()
+					(increase (current_index_action) 1)
+				)
+			)
+		)
 	)
-	)
-
 )
 
 ; =========================================================================

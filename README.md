@@ -30,6 +30,8 @@ Integrating Machine Learning with Automated Planning
 - Por dónde empiezo? Qué fallos tiene?
   - Entiendo que uno de los fallos son los NA, no reconoce si es NDD o EDD
 
+  - Tambien veo que hay Breaks que marca con contexto de Activity. Parece que son los de <15m. Se deberían marcar como Idle? La cosa es que en el dataset vienen que son pausas, lo pongo entonces como B_T0. Técnicamente si está cerca de 15 y viene después de una conducción debería considerarse como Break, pero si es de pocos minutos es más lógico considerarlo como Idle.
+
 - task RD, method B_T5: Por qué está comentado B_T4? idem con B_T6. Es que falta añadir esos métodos?
 
 - Ejemplo_Dataset_Anonimizado: Datos erróneos.
@@ -91,11 +93,15 @@ Integrating Machine Learning with Automated Planning
 
 - **IMPORTANTE** Si cada vez que se llama a las tareas semi-básicas (A, B_T1...) se cambia de contexto, no podría hacerse dentro de ellas?. En los Breaks está comentado, por qué?
   - Si fuera para usar en unas b_tk, en otras b_slice y b_legal_slice lo entendería, pero no es el caso.
+
   - Concretely, every task in the right hand side of a production {a : b1 .. bn }, is extended as {a : sb1 b1 eb1 ... sbn bn ebn} where the new tasks sbi,ebi are used to (1) delimit the start (sbi) and end (ebi) of the decomposition of a task (sbi), (2) add to the state information about the label corresponding to that task (which can be interpreted as the current decomposition context). For example the production {cdd : cdds cdde} is extended as {cdd : scdds cdds ecdds scdde cdde ecdde}, scdds asserts the context ’cdds’ to the state, and ecdds retracts that context. Finallly, the primitive durative actions associated with each event are extended with new parameters (one for each type of label) and tasks devoted to recognize events (as the one shown in Figure 4) are extended to capture the information added to the state by the newly added delimiting tasks, and adding primitive tasks which embody information about the context.
 
 - **IMPORTANTE** Cuál tiene que ser la salida? (Formato)
-  - Driver - DatetimeStart - DatetimeEnd - Duration - Activity (DOBI) -- Day (ndd/edd) - DrivingPeriod (split/continuos) - Sequence (cdds/cdde) - Token (elt, b_t1, b_t2, b_t3, rd_normal, rd_reduced, wr_normal, wr_reduced) ???
+  - Driver - DatetimeStart - DatetimeEnd - Duration - Activity (DOBI) -- DrivingDayType (ndd/edd) - DrivingPeriod (split/continuos) - Sequence (cdds/cdde) - Token (elt=A, b_t1, b_t2, b_t3, rd_normal=Rg11, rd_reduced=Rg3, wr_normal=Rg45, wr_reduced=Rg24) ???
+
   - Because of that, every event in the event log is annotated with four labels3 according to the contexts day (with possible values ndd or edd), driving period (continuous or splitted), sequence (cdds or cdde) and token (elt, b t1, b t2, b t3, rd normal, rd reduced, wr normal, wr reduced).
+
+  - La cosa es que la salida no es lo mismo que pone aquí, verdad?
 
 - En los prettyprint de las acciones DOBI he pasado de CSV con ; a TSV. La salida es más legible de por sí, y a la hora de pasarlo a un dataset no habría problema.
 
@@ -104,6 +110,8 @@ Integrating Machine Learning with Automated Planning
 - **IMPORTANTE** La regulación HOS cambió en junio de 2020: https://www.fmcsa.dot.gov/regulations/hours-of-service
 
 - DXX, OXX... las XX significan algo?
+
+- En general no entiendo bien los contextos. En el paper sí, pero no lo implementado.
 
 ## Commands
 
@@ -127,7 +135,7 @@ pueda ser utilizada por otros módulos, o en un análisis posterior del plan res
 
   - En la lista de métodos de una tarea abstracta. Sirve para que una vez que se han probado como ciertas las precondiciones de un método se descarte probar con el resto de métodos. Nuevamente usado con cuidado este corte tampoco tiene por que afectar a la completitud del algoritmo. El escritor de dominios puede conocer que los métodos son mutuamente excluyentes y que una vez que se prueba con uno, el resto ya son inválidos.
 
-- NA context by default or after daily_reset
+- NA context by default or after daily_reset -> Lo cambio a NONE
 
 ### Notation
 

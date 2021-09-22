@@ -23,17 +23,21 @@
 
     (:constants
         DIA_CONSUMIDO SECUENCIA_TERMINADA BREAK_CONSIDERED_REST PAUSE_CONSIDERED_BREAK FALLO_LATASK- Mensaje
-        task_A conduce_un_dia conduce_un_dia_NORMAL conduce_un_dia_AMPLIADA Procesa_Accion - TaskSymbol
-        conduccion_diaria_normal conduccion_diaria_ampliada - TipoConduccion
-        typeC typeO typeP typeE - TipoAccion
-        A B_T1 B_T2 B_T3 R_g3 R_g9 R_g11 R_g24 R_g45
-        cdd_t2_slice cdd_t2_sequence 
-        cdd_t1_start cdd_t1_end cdd_t2_start cdd_t2_end
 
-        ndd edd 
-        wd bwd
-        month
-        none - context
+        task_A conduce_un_dia conduce_un_dia_NORMAL conduce_un_dia_AMPLIADA Procesa_Accion - TaskSymbol
+        
+        conduccion_diaria_normal conduccion_diaria_ampliada - TipoConduccion
+
+        typeC typeO typeP typeE - TipoAccion
+
+        ; Token
+        A B_T1 B_T2 B_T3 R_g3 R_g9 R_g11 R_g24 R_g45
+
+        cdd_t2_slice cdd_t2_sequence 
+        cdd_t1_start cdd_t1_end 
+        cdd_t2_start cdd_t2_end
+        
+        ndd edd wd bwd month none - context
     )
 
     ; =========================================================================
