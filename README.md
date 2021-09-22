@@ -113,6 +113,12 @@ Integrating Machine Learning with Automated Planning
 
 - En general no entiendo bien los contextos. En el paper sí, pero no lo implementado.
 
+- B_T3 pasa como máximo de 45m a 3h, pero si pasa de 45 debería ser una anomalía. No sería mejor modelarlo con otra tarea?
+
+- B_T1/2/3 solo cambian en la condición, no sería mejor usar when?
+
+- Por qué esa nomenclatura en los Breaks (1,2,3), no sería más legible que estén ordenados?
+
 ## Commands
 
 ./planner/planner -d hpdl/domain.pddl -p hpdl/problem-recognition.pddl
@@ -180,9 +186,9 @@ pueda ser utilizada por otros módulos, o en un análisis posterior del plan res
 B_T0; BREAK LESSER THAN 15 mins
 
 //From 15 mins a pause is considered a BREAK
-B_T1: BREAK OF [45min, 3h)
 B_T2: BREAK of [15min, 30min)
 B_T3: BREAK OF [30min, 45min)
+B_T1: BREAK OF [45min, 3h)
 
 // RESTS are breaks of at least 3 hours.
 B_T4: break of [3h, 9h)

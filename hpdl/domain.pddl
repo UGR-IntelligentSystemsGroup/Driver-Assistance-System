@@ -52,7 +52,7 @@
 
         (es_jornada ?j - Jornada); predicado usado en los timed initial literals
         (task_failed ?t - TaskSymbol) ;para saber si una task ha fallado, se añade como efecto en los métodos de fallo de tarea
-        (modo_conduccion ?c - Driver ?modo - TipoConduccion)
+        (modo_conduccion ?d - Driver ?modo - TipoConduccion)
 
         (inicio_semana ?s - Semana ?i - number)
         (fin_semana ?s - Semana ?f - number)
@@ -73,17 +73,17 @@
         ;;**********************************
         ;;	 FEASIBILITIY conditions
         ;;**********************************
-        (conditions_NDD ?c - Driver)
-        (less_than_15min ?c)
+        (conditions_NDD ?d - Driver)
+        (less_than_15min ?d)
 
-        (puede_otros_NORMAL ?c - Driver)
-        (puede_parada_NORMAL ?c - Driver)
-        (puede_espera_NORMAL ?c - Driver)
+        (puede_otros_NORMAL ?d - Driver)
+        (puede_parada_NORMAL ?d - Driver)
+        (puede_espera_NORMAL ?d - Driver)
 
-        (puede_conducir_AMPLIADA ?c - Driver)
-        (puede_otros_AMPLIADA ?c - Driver)
-        (puede_parada_AMPLIADA ?c - Driver)
-        (puede_espera_AMPLIADA ?c - Driver)
+        (puede_conducir_AMPLIADA ?d - Driver)
+        (puede_otros_AMPLIADA ?d - Driver)
+        (puede_parada_AMPLIADA ?d - Driver)
+        (puede_espera_AMPLIADA ?d - Driver)
 
         (continuar_recursion)
         (continuar_recursion_A)
@@ -135,19 +135,19 @@
         (current_index_action) ; represnta el indice actual que apunta a la accion que hay que procesar en modo reconocer
 
         ;ACUMULADORES TOTALES
-        (tiempo_conduccion ?c - Driver)
-        (tiempo_otros ?c - Driver)
-        (tiempo_parada ?c - Driver)
-        (tiempo_espera ?c - Driver)
+        (tiempo_conduccion ?d - Driver)
+        (tiempo_otros ?d - Driver)
+        (tiempo_parada ?d - Driver)
+        (tiempo_espera ?d - Driver)
 
         ;ACUMULADORES POR SEMANA
-        (tiempo_conduccion_semana ?c - Driver)
-        (tiempo_otros_semana ?c - Driver)
-        (tiempo_parada_semana ?c - Driver)
-        (tiempo_espera_semana ?c - Driver)
+        (tiempo_conduccion_semana ?d - Driver)
+        (tiempo_otros_semana ?d - Driver)
+        (tiempo_parada_semana ?d - Driver)
+        (tiempo_espera_semana ?d - Driver)
 
         ;ACUMULADORES POR DIA
-        (dt_day ?c - Driver)
+        (dt_day ?d - Driver)
         (dt_current_slice) ;driving time current detected subsequence 
         (bt_current_slice)
         (dt_last_slice) ;driving time last detected subsequence
@@ -164,14 +164,14 @@
         (dt_last_CDDs_S)
         (dt_current_cdd)
 
-        (tiempo_otros_dia ?c - Driver)
-        (tiempo_parada_dia ?c - Driver)
-        (tiempo_espera_dia ?c - Driver)
+        (tiempo_otros_dia ?d - Driver)
+        (tiempo_parada_dia ?d - Driver)
+        (tiempo_espera_dia ?d - Driver)
 
         (current_rt) ;tiempo de descanso actual, se entiende que el recién reconocido
         (current_dt) ;current driving time of the recently recognized activity
 
-        (duracion_conduccion ?c - Driver)
+        (duracion_conduccion ?d - Driver)
 
         (minutos_consumidos)
 
@@ -179,10 +179,10 @@
 
         ; en el  modo generar la duración de la conducción dependerá del tipo de conductor
         ; esto es un ejemplo y se podría hacer directamente sin codigo python 
-        (calcula_duracion_C ?c) { return 4 }
-        (calcula_duracion_O ?c) { return 2 } ; lo mismo para OPE
-        (calcula_duracion_P ?c) { return 2 }
-        (calcula_duracion_E ?c) { return 2 }
+        (calcula_duracion_C ?d) { return 4 }
+        (calcula_duracion_O ?d) { return 2 } ; lo mismo para OPE
+        (calcula_duracion_P ?d) { return 2 }
+        (calcula_duracion_E ?d) { return 2 }
 
         ; Valores constantes
         (one_year) { return 365.0*24.0 }
@@ -251,33 +251,33 @@
 
     ; -------------------------------------------------------------------------
 
-    (:derived (conditions_NDD ?c)
+    (:derived (conditions_NDD ?d)
         (AND
-            (<= (dt_day ?c) (* 9 (hora_en_minutos)))
+            (<= (dt_day ?d) (* 9 (hora_en_minutos)))
         )
     )
 
-    (:derived (puede_otros_NORMAL ?c)
+    (:derived (puede_otros_NORMAL ?d)
         (AND
-            (<= (tiempo_otros_dia ?c) (* 5 (hora_en_minutos)))
+            (<= (tiempo_otros_dia ?d) (* 5 (hora_en_minutos)))
         )
     )
 
-    (:derived (puede_parada_NORMAL ?c)
+    (:derived (puede_parada_NORMAL ?d)
         (AND
-            (<= (tiempo_parada_dia ?c) (* 5 (hora_en_minutos)))
+            (<= (tiempo_parada_dia ?d) (* 5 (hora_en_minutos)))
         )
     )
 
-    (:derived (puede_espera_NORMAL ?c)
+    (:derived (puede_espera_NORMAL ?d)
         (AND
-            (<= (tiempo_espera_dia ?c) (* 5 (hora_en_minutos)))
+            (<= (tiempo_espera_dia ?d) (* 5 (hora_en_minutos)))
         )
     )
 
-    (:derived (puede_conducir_AMPLIADA ?c)
+    (:derived (puede_conducir_AMPLIADA ?d)
         (AND
-            (<= (dt_day ?c) (* 10 (hora_en_minutos)))
+            (<= (dt_day ?d) (* 10 (hora_en_minutos)))
             (<= (contador_veces_AMPLIADA_en_semana) 2)
         )
     )
@@ -315,9 +315,9 @@
         )
     )
 
-    (:derived (less_than_15min ?c)
+    (:derived (less_than_15min ?d)
         (AND
-            (<= (dt_day ?c) (* 9 (hora_en_minutos)))
+            (<= (dt_day ?d) (* 9 (hora_en_minutos)))
         )
     )
 
@@ -332,18 +332,18 @@
     ;***********************************************
 
     ; (:task conduce_un_dia
-    ; 	:parameters (?c - Driver)
+    ; 	:parameters (?d - Driver)
     ; 	(:method normal
     ; 		:precondition ()
     ; 		:tasks (
     ; 				;INICIALIZAR ACUMULADORES DE CADA DIA
     ; 				(:inline () (and (assign (minutos_consumidos) 0)
-    ; 								 (assign (dt_day ?c) 0)
-    ; 								 (assign (tiempo_otros_dia ?c) 0)
-    ; 								 (assign (tiempo_parada_dia ?c) 0)
-    ; 								 (assign (tiempo_espera_dia ?c) 0)))
-    ; 				;(NDD ?c)
-    ; 				(NDD ?c))
+    ; 								 (assign (dt_day ?d) 0)
+    ; 								 (assign (tiempo_otros_dia ?d) 0)
+    ; 								 (assign (tiempo_parada_dia ?d) 0)
+    ; 								 (assign (tiempo_espera_dia ?d) 0)))
+    ; 				;(NDD ?d)
+    ; 				(NDD ?d))
     ; 		)
 
     ; 	(:method ampliada
@@ -351,11 +351,11 @@
     ; 		:tasks (
     ; 				;INICIALIZAR ACUMULADORES DE CADA DIA
     ; 				(:inline () (and (assign (minutos_consumidos) 0)
-    ; 								 (assign (dt_day ?c) 0)
-    ; 								 (assign (tiempo_otros_dia ?c) 0)
-    ; 								 (assign (tiempo_parada_dia ?c) 0)
-    ; 								 (assign (tiempo_espera_dia ?c) 0)))
-    ; 				(conduce_un_dia_AMPLIADA ?c))
+    ; 								 (assign (dt_day ?d) 0)
+    ; 								 (assign (tiempo_otros_dia ?d) 0)
+    ; 								 (assign (tiempo_parada_dia ?d) 0)
+    ; 								 (assign (tiempo_espera_dia ?d) 0)))
+    ; 				(conduce_un_dia_AMPLIADA ?d))
     ; 		)
 
     ; )
@@ -830,13 +830,13 @@
 
     ; Daily rest
     (:task RD
-        :parameters (?c - Driver) 
+        :parameters (?d - Driver) 
         ; Reduced daily rest
         (:method B_T5 ;B_T4: break of [9h, 11h)
             :precondition ()
             :tasks (
                 (b_tk R_g9)
-                (B ?c ?dur)
+                (B ?d ?dur)
                 (:inline
                     (and (>= ?dur (hours_in_mins 9)) (< ?dur (hours_in_mins 11)))
                     ()
@@ -849,7 +849,7 @@
 
                 (:inline
                     ()
-                    (increase (tiempo_parada_dia ?c) ?dur)
+                    (increase (tiempo_parada_dia ?d) ?dur)
                 )
                 (:inline
                     ()
@@ -867,7 +867,7 @@
             :precondition ()
             :tasks (
                 (b_tk R_g11)
-                (B ?c ?dur)
+                (B ?d ?dur)
                 (:inline
                     (and (>= ?dur (hours_in_mins 11)) (< ?dur (hours_in_mins 24)))
                     ()
@@ -880,7 +880,7 @@
 
                 (:inline
                     ()
-                    (increase (tiempo_parada_dia ?c) ?dur)
+                    (increase (tiempo_parada_dia ?d) ?dur)
                 )
                 (:inline
                     ()
@@ -901,12 +901,12 @@
 
     ; Break tipo 1
     (:task B_T1
-        :parameters (?c - Driver)
+        :parameters (?d - Driver)
         (:method B_T1;B_T1: BREAK OF [45min, 3h)
             :precondition ()
             :tasks (
                 ;(b_tk B_T1)		
-                (B ?c ?dur)
+                (B ?d ?dur)
                 (:inline
                     (and (>= ?dur 45) (< ?dur (hours_in_mins 3)))
                     ()
@@ -918,7 +918,7 @@
                     (increase (minutos_consumidos) ?dur))
                 (:inline
                     ()
-                    (increase (tiempo_parada_dia ?c) ?dur)
+                    (increase (tiempo_parada_dia ?d) ?dur)
                 )
                 (:inline
                     ()
@@ -944,12 +944,12 @@
 
     ; Break tipo 2
     (:task B_T2
-        :parameters (?c - Driver) 
+        :parameters (?d - Driver) 
         (:method SINGLE
             :precondition ()
             :tasks (
                 ;(b_tk B_T2)
-                (B ?c ?dur)
+                (B ?d ?dur)
                 (:inline
                     (and (>= ?dur 15) (< ?dur 30))
                     ()
@@ -961,7 +961,7 @@
                     (increase (minutos_consumidos) ?dur))
                 (:inline
                     ()
-                    (increase (tiempo_parada_dia ?c) ?dur)
+                    (increase (tiempo_parada_dia ?d) ?dur)
                 )
                 (:inline
                     ()
@@ -987,12 +987,12 @@
 
     ; Break tipo 3
     (:task B_T3
-        :parameters (?c - Driver) 
+        :parameters (?d - Driver) 
         (:method SINGLE ;B_T3: BREAK OF [30min, 45min); ahora lo he puesto  [30min, 3h)
             :precondition ()
             :tasks (
                 ;(b_tk B_T3)	
-                (B ?c ?dur)
+                (B ?d ?dur)
                 (:inline
                     (and (>= ?dur 30) (< ?dur (hours_in_mins 3)))
                     ()
@@ -1004,7 +1004,7 @@
                     (increase (minutos_consumidos) ?dur))
                 (:inline
                     ()
-                    (increase (tiempo_parada_dia ?c) ?dur)
+                    (increase (tiempo_parada_dia ?d) ?dur)
                 )
                 (:inline
                     ()
@@ -1030,11 +1030,11 @@
     ; Recognizes a sequence of Activities (D|O|B|I) such that dur(B)< 15mins
 
     (:task A
-        :parameters (?c - Driver) 
+        :parameters (?d - Driver) 
         (:method recurrir
             :precondition (continuar_recursion)
             :tasks (
-                (P_A ?c)
+                (P_A ?d)
 
                 (:inline
                     (:print "pASA POR AQUI\n")
@@ -1053,7 +1053,7 @@
                     ()
                     (increase (dt_current_slice) (current_dt))
                 );calculates driving time of current subsequence
-                (A ?c))
+                (A ?d))
         ) 
         
         ;aquí viene porque se encontró una P con una duración mayor de 15 mins
@@ -1098,18 +1098,18 @@
     ; -------------------------------------------------------------------------
 
     (:task P_A
-        :parameters (?c - Driver) 
+        :parameters (?d - Driver) 
         ; Driving
         (:method DXX
             :precondition ()
             :tasks (
-                (D ?c ?dur)
+                (D ?d ?dur)
                 (:inline
                     ()
                     (increase (minutos_consumidos) ?dur))
                 (:inline
                     ()
-                    (increase (dt_day ?c) ?dur))
+                    (increase (dt_day ?d) ?dur))
                 (:inline
                     ()
                     (assign (current_rt) 0)
@@ -1125,13 +1125,13 @@
         (:method OXX
             :precondition ()
             :tasks (
-                (O ?c ?dur)
+                (O ?d ?dur)
                 (:inline
                     ()
                     (increase (minutos_consumidos) ?dur))
                 (:inline
                     ()
-                    (increase (tiempo_otros_dia ?c) ?dur)
+                    (increase (tiempo_otros_dia ?d) ?dur)
                 )
                 (:inline
                     ()
@@ -1148,7 +1148,7 @@
             :precondition ()
             :tasks (
                 ;(break)	
-                (B ?c ?dur)
+                (B ?d ?dur)
                 ;(break)
                 (:inline
                     (and (< ?dur 15))
@@ -1159,7 +1159,7 @@
                     (increase (minutos_consumidos) ?dur))
                 (:inline
                     ()
-                    (increase (tiempo_parada_dia ?c) ?dur)
+                    (increase (tiempo_parada_dia ?d) ?dur)
                 )
                 (:inline
                     ()
@@ -1176,7 +1176,7 @@
         (:method B_T2 ;B_T2: BREAK of [15min, 30min)
             :precondition ()
             :tasks (
-                (B ?c ?dur)
+                (B ?d ?dur)
                 (:inline
                     (and (>= ?dur 15) (< ?dur 30))
                     ()
@@ -1186,7 +1186,7 @@
                     (increase (minutos_consumidos) ?dur))
                 (:inline
                     ()
-                    (increase (tiempo_parada_dia ?c) ?dur)
+                    (increase (tiempo_parada_dia ?d) ?dur)
                 )
                 (:inline
                     ()
@@ -1206,7 +1206,7 @@
         (:method B_T3;B_T3: BREAK OF [30min, 45min)
             :precondition ()
             :tasks (
-                (B ?c ?dur)
+                (B ?d ?dur)
                 (:inline
                     (and (>= ?dur 30) (< ?dur (hours_in_mins 3)))
                     ()
@@ -1216,7 +1216,7 @@
                     (increase (minutos_consumidos) ?dur))
                 (:inline
                     ()
-                    (increase (tiempo_parada_dia ?c) ?dur)
+                    (increase (tiempo_parada_dia ?d) ?dur)
                 )
                 (:inline
                     ()
@@ -1236,7 +1236,7 @@
         (:method B_T1;B_T1: BREAK OF [45min, 3h)
             :precondition ()
             :tasks (
-                (B ?c ?dur)
+                (B ?d ?dur)
                 (:inline
                     (and (>= ?dur 45) (< ?dur (hours_in_mins 3)))
                     ()
@@ -1246,7 +1246,7 @@
                     (increase (minutos_consumidos) ?dur))
                 (:inline
                     ()
-                    (increase (tiempo_parada_dia ?c) ?dur)
+                    (increase (tiempo_parada_dia ?d) ?dur)
                 )
                 (:inline
                     ()
@@ -1265,15 +1265,15 @@
         
         ; Idle
         (:method IXX
-            :precondition (puede_espera_NORMAL ?c)
+            :precondition (puede_espera_NORMAL ?d)
             :tasks (
-                (I ?c ?dur)
+                (I ?d ?dur)
                 (:inline
                     ()
                     (increase (minutos_consumidos) ?dur))
                 (:inline
                     ()
-                    (increase (tiempo_espera_dia ?c) ?dur)
+                    (increase (tiempo_espera_dia ?d) ?dur)
                 )
                 (:inline
                     ()
@@ -1428,7 +1428,7 @@
         :parameters ()
         ;:duration (= ?duration ?dur)
         :precondition ()
-        :effect ();(increase (tiempo_conduccion ?c) ?dur)
+        :effect ();(increase (tiempo_conduccion ?d) ?dur)
     )
 
     ; -------------------------------------------------------------------------
@@ -1437,7 +1437,7 @@
         :parameters ()
         ;:duration (= ?duration ?dur)
         :precondition ()
-        :effect ();(increase (tiempo_conduccion ?c) ?dur)
+        :effect ();(increase (tiempo_conduccion ?d) ?dur)
     )
 
     ; -------------------------------------------------------------------------

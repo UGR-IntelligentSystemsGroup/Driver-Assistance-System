@@ -6,7 +6,7 @@
 ; entonces no entra por el otro y la tarea compuesta directamente falla. Por eso tiene el simbolo ! (corte alla PROLOG)
 
 (:task D
-	:parameters (?c - Driver ?dur - number) 
+	:parameters (?d - Driver ?dur - number) 
 	(!
 		(:method modo_generar
 			:precondition (modo_generar)
@@ -14,10 +14,10 @@
 			(
 				(:inline
 					(bind ?dur
-						(calcula_duracion_C ?c))
+						(calcula_duracion_C ?d))
 					()
 				)
-				(D_p ?c ?dur))
+				(D_p ?d ?dur))
 		)
 		(:method modo_reconocer
 			:precondition (modo_reconocer)
@@ -57,17 +57,17 @@
 ;*********************************************************************************************************
 
 (:task O
-	:parameters (?c - Driver ?dur - number) 
+	:parameters (?d - Driver ?dur - number) 
 	(!
 		(:method modo_generar
 			:precondition (modo_generar)
 			:tasks (
 				(:inline
 					(bind ?dur
-						(calcula_duracion_O ?c))
+						(calcula_duracion_O ?d))
 					()
 				)
-				(O_p ?c ?dur)
+				(O_p ?d ?dur)
 			)
 		)
 
@@ -86,17 +86,17 @@
 )
 
 (:task B
-	:parameters (?c - Driver ?dur - number) 
+	:parameters (?d - Driver ?dur - number) 
 	(!
 		(:method modo_generar
 			:precondition (modo_generar)
 			:tasks (
 				(:inline
 					(bind ?dur
-						(calcula_duracion_P ?c))
+						(calcula_duracion_P ?d))
 					()
 				)
-				(B_p ?c ?dur)
+				(B_p ?d ?dur)
 			)
 		)
 		(:method modo_reconocer
@@ -114,17 +114,17 @@
 )
 
 (:task I
-	:parameters (?c - Driver ?dur - number) 
+	:parameters (?d - Driver ?dur - number) 
 	(!
 		(:method modo_generar
 			:precondition (modo_generar)
 			:tasks (
 				(:inline
 					(bind ?dur
-						(calcula_duracion_E ?c))
+						(calcula_duracion_E ?d))
 					()
 				)
-				(I_p ?c ?dur)
+				(I_p ?d ?dur)
 			)
 		)
 		(:method modo_reconocer
@@ -433,83 +433,83 @@
 ; DRIVING
 
 (:durative-action D_p ;_p es sufijo de primitiva
-	:parameters (?c - Driver ?dur - number)
+	:parameters (?d - Driver ?dur - number)
 	:duration (= ?duration ?dur)
 	:condition ()
-	:effect (increase (tiempo_conduccion ?c) ?dur)
+	:effect (increase (tiempo_conduccion ?d) ?dur)
 )
 
 (:durative-action D_p2 ;_p es sufijo de primitiva; 2 is because action as contexts in parameters
-	:parameters (?c - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
+	:parameters (?d - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
 		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt   CONDUCIENDO ?dur")
-		; (:tag prettyprint "?c,?start,?end,?duration,CONDUCIENDO,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
-		(:tag prettyprint "?c	?start	?end	?duration	Driving	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
+		; (:tag prettyprint "?d,?start,?end,?duration,CONDUCIENDO,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
+		(:tag prettyprint "?d	?start	?end	?duration	Driving	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition ()
-		:effect (increase (tiempo_conduccion ?c) ?dur)
+		:effect (increase (tiempo_conduccion ?d) ?dur)
 )
 
 ; -------------------------------------------------------------------------
 ; OTHER WORK
 
 (:durative-action O_p
-	:parameters (?c - Driver ?dur - number)
+	:parameters (?d - Driver ?dur - number)
 	:duration (= ?duration ?dur)
 	:condition ()
-	:effect (increase (tiempo_otros ?c) ?dur)
+	:effect (increase (tiempo_otros ?d) ?dur)
 )
 
 (:durative-action O_p2
-	:parameters (?c - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
+	:parameters (?d - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
 		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     PARADA ?dur")
-		; (:tag prettyprint "?c,?start,?end,?duration,OTRO TRABAJO,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
-		(:tag prettyprint "?c	?start	?end	?duration	Other	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
+		; (:tag prettyprint "?d,?start,?end,?duration,OTRO TRABAJO,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
+		(:tag prettyprint "?d	?start	?end	?duration	Other	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition ()
-		:effect (increase (tiempo_otros ?c) ?dur)
+		:effect (increase (tiempo_otros ?d) ?dur)
 )
 
 ; -------------------------------------------------------------------------
 ; BREAK
 
 (:durative-action B_p
-	:parameters (?c - Driver ?dur - number)
+	:parameters (?d - Driver ?dur - number)
 	:duration (= ?duration ?dur)
 	:condition ()
-	:effect (increase (tiempo_parada ?c) ?dur)
+	:effect (increase (tiempo_parada ?d) ?dur)
 )
 
 (:durative-action B_p2
-	:parameters (?c - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
+	:parameters (?d - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
 		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     PARADA ?dur")
-		; (:tag prettyprint "?c,?start,?end,?duration,PARADA,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
-		(:tag prettyprint "?c	?start	?end	?duration	Break	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
+		; (:tag prettyprint "?d,?start,?end,?duration,PARADA,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
+		(:tag prettyprint "?d	?start	?end	?duration	Break	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition ()
-		:effect (increase (tiempo_parada ?c) ?dur)
+		:effect (increase (tiempo_parada ?d) ?dur)
 )
 
 ; -------------------------------------------------------------------------
 ; IDLE
 
 (:durative-action I_p
-	:parameters (?c - Driver ?dur - number)
+	:parameters (?d - Driver ?dur - number)
 	:duration (= ?duration ?dur)
 	:condition ()
-	:effect (increase (tiempo_espera ?c) ?dur)
+	:effect (increase (tiempo_espera ?d) ?dur)
 )
 
 (:durative-action I_p2
-	:parameters (?c - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
+	:parameters (?d - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
 		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     ESPERA ?dur")
-		(:tag prettyprint "?c	?start	?end	?duration	Idle	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
+		(:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition ()
-		:effect (increase (tiempo_espera ?c) ?dur)
+		:effect (increase (tiempo_espera ?d) ?dur)
 )
 
 ; -------------------------------------------------------------------------
