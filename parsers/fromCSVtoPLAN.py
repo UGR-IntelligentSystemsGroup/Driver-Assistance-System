@@ -40,9 +40,9 @@ with open('tacografo2.csv', 'r', encoding="ISO-8859-1") as csvfile:  #probar con
 #odict_keys(['Conductor_Anonimizado', 'Dia', 'DMA', 'Hora_inicio', 'Hora_fin', 'Duracion[h]', 'Distancia[km]', 'Estado', 'Oficio', 'Vehiculo', 'Ubicacion_inicio', 'Ubicación_final', 'Latitud_inicio', 'Longitud_inicio', 'Latitud _inicio', 'Latitud _final', 'Iniciar_cuenta[km]', 'Finalizar_cuenta[km]'])
 
     #Asociar un estado del csv con un tipo de tarea según los definidos en el dominio
-    taskType = dict([('Conduciendo', 'typeC'), ('Pausa', 'typeP'), ('En espera', 'typeE'),('Otro trabajo', 'typeO')])
+    taskType = dict([('Conduciendo', 'typeD'), ('Pausa', 'typeB'), ('En espera', 'typeI'),('Otro trabajo', 'typeO')])
     #Asociar un estado con un prefix de simbolo de tarea
-    symbolPrefix = dict([('Conduciendo', 'C'), ('Pausa', 'P'), ('En espera', 'E'),('Otro trabajo', 'O')])
+    symbolPrefix = dict([('Conduciendo', 'D'), ('Pausa', 'B'), ('En espera', 'I'),('Otro trabajo', 'O')])
     #Asociar un contador a cada prefijo de simbolo de tareas
     symbolCounter =  dict([('C', 1), ('P', 1), ('E', 1),('O', 1)])
    

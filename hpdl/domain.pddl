@@ -28,7 +28,7 @@
         
         conduccion_diaria_normal conduccion_diaria_ampliada - TipoConduccion
 
-        typeC typeO typeP typeE - TipoAccion
+        typeD typeO typeB typeI - TipoAccion
 
         ; Token
         A B_T1 B_T2 B_T3 R_g3 R_g9 R_g11 R_g24 R_g45
@@ -104,21 +104,21 @@
         (duration_action ?sa - TaskInstanceSymbol ?d - number)
 
         ;PREDICADOS PARA REPRESENTAR DE QUÉ TIPO ES CADA ACCION
-        (is_typeC ?sa - TaskInstanceSymbol) ; es una accion de tipo conducir ... 
+        (is_typeD ?sa - TaskInstanceSymbol) ; es una accion de tipo conducir ... 
         (is_typeO ?sa - TaskInstanceSymbol) ; es una accion de tipo OTROS    ... 
-        (is_typeP ?sa - TaskInstanceSymbol) ; es una accion de tipo PAUSA   ... 	
-        (is_typeE ?sa - TaskInstanceSymbol) ; es una accion de tipo ESPERA; 
+        (is_typeB ?sa - TaskInstanceSymbol) ; es una accion de tipo PAUSA   ... 	
+        (is_typeI ?sa - TaskInstanceSymbol) ; es una accion de tipo ESPERA; 
 
         ;asi es como se representa un "hecho de tipo accion"
-        (parameters_typeC ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
+        (parameters_typeD ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
         (parameters_typeO ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
-        (parameters_typeP ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
-        (parameters_typeE ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
+        (parameters_typeB ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
+        (parameters_typeI ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
 
-        (currentindex_es_typeC ?k - number ?sa - TaskInstanceSymbol)
+        (currentindex_es_typeD ?k - number ?sa - TaskInstanceSymbol)
         (currentindex_es_typeO ?k - number ?sa - TaskInstanceSymbol)
-        (currentindex_es_typeP ?k - number ?sa - TaskInstanceSymbol)
-        (currentindex_es_typeE ?k - number ?sa - TaskInstanceSymbol)
+        (currentindex_es_typeB ?k - number ?sa - TaskInstanceSymbol)
+        (currentindex_es_typeI ?k - number ?sa - TaskInstanceSymbol)
 
         ; Depuración
         (write_hola ?p - number)
@@ -323,7 +323,7 @@
 
     (:derived (current_action_is_a_break_greater_15)
         (AND
-            (currentindex_es_typeP ?k ?sa)
+            (currentindex_es_typeB ?k ?sa)
             (duration_action ?sa ?dur)
             (>= ?dur 15)
         )

@@ -26,7 +26,7 @@ output =open(outputfile, 'w')
 lines = input.readlines()# lines es una lista de strings
 
 
-# cada linea es de esta guisa => (0 C1 typeC "01/07/2018 00:00:00" "01/07/2018 01:59:00" 120 driver1)
+# cada linea es de esta guisa => (0 C1 typeD "01/07/2018 00:00:00" "01/07/2018 01:59:00" 120 driver1)
 for line in lines:
     #quitar el paréntesis y otras cosas
     line = line.translate(None,'(')

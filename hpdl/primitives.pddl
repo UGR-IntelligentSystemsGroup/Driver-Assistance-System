@@ -23,7 +23,7 @@
 			:precondition (modo_reconocer)
 			:tasks
 			(
-				(add_the_current_action_to_plan typeC ?dur)
+				(add_the_current_action_to_plan typeD ?dur)
 				;incrementar el current index para reconocer la siguiente accion de la secuencia)
 				(:inline
 					()
@@ -41,7 +41,7 @@
 ; Comprobar la condicion de  reconocimiento de token
 ; accion(k) es de tipo Conducir (en el caso de :task C...
 ; Si se cumple la condicion de reconocimiento de token
-; capturar parametros (parameters_typeC (symbol(accion(k))) ?p1 ?p2 ... ?pn) , hay que saber cuantos parameters tiene cada accion
+; capturar parametros (parameters_typeD (symbol(accion(k))) ?p1 ?p2 ... ?pn) , hay que saber cuantos parameters tiene cada accion
 ; capturar inicio, fin, duracion
 ; ( (AND (=?start inicio)(= ?end fin) (= ?duration duracion))
 ;	 (D_p ?p1 ?p2 ... ?pn)
@@ -49,7 +49,7 @@
 
 ; ES IMPORTANTE, CRUCIAL, PASARLE EL TIPO "TypoConduccion" porque la interpretación aquí es:
 ; "El planificador espera que, para que la accion se reconozca como parte de una secuencia <del_tipo_qu_sea>, 
-;	(1) la accion tiene que ser NECESARIAMENTE de tipo <typeC> y
+;	(1) la accion tiene que ser NECESARIAMENTE de tipo <typeD> y
 ;  (2) las restricciones temporales de la accion tienen que ser satisfacibles con el estado actual del plan reconocido"
 
 ;*********************************************************************************************************
@@ -102,7 +102,7 @@
 		(:method modo_reconocer
 			:precondition (modo_reconocer)
 			:tasks (
-				(add_the_current_action_to_plan typeP ?dur)
+				(add_the_current_action_to_plan typeB ?dur)
 				;incrementar el current index para reconocer la siguiente accion de la secuencia)
 				(:inline
 					()
@@ -130,7 +130,7 @@
 		(:method modo_reconocer
 			:precondition (modo_reconocer)
 			:tasks (
-				(add_the_current_action_to_plan typeE ?dur)
+				(add_the_current_action_to_plan typeI ?dur)
 				;incrementar el current index para reconocer la siguiente accion de la secuencia)
 				(:inline
 					()
@@ -149,11 +149,11 @@
 ; =========================================================================
 
 (:derived
-	(currentindex_es_typeC ?k ?sa)	; ?K y ?sa se pasan "POR REFERENCIA" (en HPDL se puede, en OTROS PDDL lenguajes no), ES DECIR, se calculan dentro
+	(currentindex_es_typeD ?k ?sa)	; ?K y ?sa se pasan "POR REFERENCIA" (en HPDL se puede, en OTROS PDDL lenguajes no), ES DECIR, se calculan dentro
 	(and (bind ?k
 			(current_index_action))	; CAPTURO EL INDICE ACTUAL DE SECUENCIA DE ACCIONES
 		(index_action ?sa ?k)		; CAPTURO EL SIMBOLO DE LA ACCIONES(K)
-		(is_typeC ?sa)				; PREGUNTO SI EL SIMBOLO ES typeC
+		(is_typeD ?sa)				; PREGUNTO SI EL SIMBOLO ES typeD
 	)
 )
 
@@ -167,20 +167,20 @@
 )
 
 (:derived
-	(currentindex_es_typeP ?k ?sa)
+	(currentindex_es_typeB ?k ?sa)
 	(and (bind ?k
 			(current_index_action))
 		(index_action ?sa ?k)
-		(is_typeP ?sa)
+		(is_typeB ?sa)
 	)
 )
 
 (:derived
-	(currentindex_es_typeE ?k ?sa)
+	(currentindex_es_typeI ?k ?sa)
 	(and (bind ?k
 			(current_index_action))
 		(index_action ?sa ?k)
-		(is_typeE ?sa)
+		(is_typeI ?sa)
 	)
 )
 
@@ -190,11 +190,11 @@
 	:parameters (?tact - TipoAccion ?dur - number) (!
 	(:method tipo_Conducir
 		; captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
-		; si en la secuencia de entrada hay una accion typeC y "me espero" una acción typeC
-		:precondition (and (currentindex_es_typeC ?k ?sa) (= ?tact typeC))
+		; si en la secuencia de entrada hay una accion typeD y "me espero" una acción typeD
+		:precondition (and (currentindex_es_typeD ?k ?sa) (= ?tact typeD))
 		:tasks (
 			(:inline
-				(and (parameters_typeC ?sa ?driver)
+				(and (parameters_typeD ?sa ?driver)
 					(start_action ?sa ?inicio)
 					(end_action ?sa ?final)
 					(duration_action ?sa ?dur))
@@ -245,10 +245,10 @@
 	)
 
 	(:method tipo_PAUSA
-		:precondition (and (currentindex_es_typeP ?k ?sa) (= ?tact typeP)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
+		:precondition (and (currentindex_es_typeB ?k ?sa) (= ?tact typeB)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
 		:tasks (
 			(:inline
-				(and (parameters_typeP ?sa ?driver)
+				(and (parameters_typeB ?sa ?driver)
 					(start_action ?sa ?inicio)
 					(end_action ?sa ?final)
 					(duration_action ?sa ?dur))
@@ -272,10 +272,10 @@
 	)
 
 	(:method tipo_ESPERA
-		:precondition (and (currentindex_es_typeE ?k ?sa) (= ?tact typeE)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
+		:precondition (and (currentindex_es_typeI ?k ?sa) (= ?tact typeI)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
 		:tasks (
 			(:inline
-				(and (parameters_typeE ?sa ?driver)
+				(and (parameters_typeI ?sa ?driver)
 					(start_action ?sa ?inicio)
 					(end_action ?sa ?final)
 					(duration_action ?sa ?dur))
