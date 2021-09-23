@@ -711,8 +711,8 @@
 (is_action P31)
 (is_typeB P31)
 (start_action P31 "08/01/2017 05:18")
-(end_action P31 "08/01/2017 09:47")
-(duration_action P31 269)
+(end_action P31 "10/01/2017 09:47")
+(duration_action P31 3149)
 (parameters_typeB P31 driver1)
 
 (index_action C36 78)
@@ -1143,8 +1143,8 @@
 (is_action P46)
 (is_typeB P46)
 (start_action P46 "12/01/2017 06:33")
-(end_action P46 "12/01/2017 12:02")
-(duration_action P46 329)
+(end_action P46 "14/01/2017 12:02")
+(duration_action P46 3209)
 (parameters_typeB P46 driver1)
 
 (index_action C59 132)

@@ -126,13 +126,15 @@ Integrating Machine Learning with Automated Planning
 - El primer método de A es recursivo para poder incluir todas las acciones posibles antes del break?
 
 - **IMPORTANTE** En la secuencia de acciones (la que se supone que viene del tacógrafo) esta MAL (ej: 11pm 06 -> 3am 06 -> 4am 07)
-  - En tacografo3.xmlx no está este fallo
+  - En tacografo3.xmlx no está este fallo. El dataset es posiblemente diferente al completo.
 
   - En EjemploDatasetAnonimizado **SI** -> Error: La fecha es única, aunque las horas salten de un día a otro
 
   - Hay que corregir el script fromCSVtoPLAN.py y sacar de nuevo la secuencia de acciones. Hasta asegurarme de qué dataset es el correcto voy a corregir los predicados a mano.
 
   - Es 00:00 del día anterior o del posterior para SIADEX? Si es del segundo hay que cambiar el dataset también.
+
+  - Los datos timestamp **NO** están conectados, hay saltos (ej: 08 a 10) -> **NO HAY SALTOS**, es el problema anterior. Hay que suponer que es la fecha siguiente. -> Hay que corregirlo en el script
 
 ## Commands
 

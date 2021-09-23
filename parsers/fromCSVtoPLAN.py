@@ -1,6 +1,9 @@
 import csv
 import os
 
+# TODO: Corregir endDateTime en caso de que pase medianoche
+# TODO: Asegurarse que si involucra varios días la duración se calcule correctamente
+
 os.chdir('c:\\users\\usuario\\documents\\investigacion\\umuai-v3\\planinteraction\\volcados')
 os.chdir('G:\\Mi unidad\\Transferencia\\GantaBI\\Julio2018')
 
