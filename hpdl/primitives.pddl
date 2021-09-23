@@ -33,7 +33,6 @@
 
 		)
 	)
-
 ) ; observar, ESTO SIGNIFICA lo siguiente
 
 ;add_the corrent action to plan consiste en:
@@ -144,12 +143,12 @@
 ; =========================================================================
 ; PREDICADOS DERIVADOS QUE REPRESENTAN LA "CONDICION DE RECONOCIMIENTO DE TOKEN"
 ; 
-; SE REPLICA LA MISMA CONDICION PARA CADA TIPO DE ACCION PRIMITIVA (COPE)
+; SE REPLICA LA MISMA CONDICION PARA CADA TIPO DE ACCION PRIMITIVA (DOBI)
 ; Solo cambia el (is_type)
 ; =========================================================================
 
 (:derived
-	(currentindex_es_typeD ?k ?sa)	; ?K y ?sa se pasan "POR REFERENCIA" (en HPDL se puede, en OTROS PDDL lenguajes no), ES DECIR, se calculan dentro
+	(currentindex_is_typeD ?k ?sa)	; ?K y ?sa se pasan "POR REFERENCIA" (en HPDL se puede, en OTROS PDDL lenguajes no), ES DECIR, se calculan dentro
 	(and (bind ?k
 			(current_index_action))	; CAPTURO EL INDICE ACTUAL DE SECUENCIA DE ACCIONES
 		(index_action ?sa ?k)		; CAPTURO EL SIMBOLO DE LA ACCIONES(K)
@@ -158,7 +157,7 @@
 )
 
 (:derived
-	(currentindex_es_typeO ?k ?sa)
+	(currentindex_is_typeO ?k ?sa)
 	(and (bind ?k
 			(current_index_action))
 		(index_action ?sa ?k)
@@ -167,7 +166,7 @@
 )
 
 (:derived
-	(currentindex_es_typeB ?k ?sa)
+	(currentindex_is_typeB ?k ?sa)
 	(and (bind ?k
 			(current_index_action))
 		(index_action ?sa ?k)
@@ -176,7 +175,7 @@
 )
 
 (:derived
-	(currentindex_es_typeI ?k ?sa)
+	(currentindex_is_typeI ?k ?sa)
 	(and (bind ?k
 			(current_index_action))
 		(index_action ?sa ?k)
@@ -188,10 +187,10 @@
 
 (:task add_the_current_action_to_plan
 	:parameters (?tact - TipoAccion ?dur - number) (!
-	(:method tipo_Conducir
+	(:method type_Driving
 		; captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
 		; si en la secuencia de entrada hay una accion typeD y "me espero" una acción typeD
-		:precondition (and (currentindex_es_typeD ?k ?sa) (= ?tact typeD))
+		:precondition (and (currentindex_is_typeD ?k ?sa) (= ?tact typeD))
 		:tasks (
 			(:inline
 				(and (parameters_typeD ?sa ?driver)
@@ -217,8 +216,8 @@
 		)
 	)
 
-	(:method tipo_OTROS
-		:precondition (and (currentindex_es_typeO ?k ?sa) (= ?tact typeO)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
+	(:method type_Other
+		:precondition (and (currentindex_is_typeO ?k ?sa) (= ?tact typeO)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
 		:tasks (
 			(:inline
 				(and (parameters_typeO ?sa ?driver)
@@ -244,8 +243,8 @@
 		)
 	)
 
-	(:method tipo_PAUSA
-		:precondition (and (currentindex_es_typeB ?k ?sa) (= ?tact typeB)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
+	(:method type_Break
+		:precondition (and (currentindex_is_typeB ?k ?sa) (= ?tact typeB)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
 		:tasks (
 			(:inline
 				(and (parameters_typeB ?sa ?driver)
@@ -271,8 +270,8 @@
 		)
 	)
 
-	(:method tipo_ESPERA
-		:precondition (and (currentindex_es_typeI ?k ?sa) (= ?tact typeI)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
+	(:method type_Idle
+		:precondition (and (currentindex_is_typeI ?k ?sa) (= ?tact typeI)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
 		:tasks (
 			(:inline
 				(and (parameters_typeI ?sa ?driver)
@@ -442,8 +441,6 @@
 (:durative-action D_p2 ;_p es sufijo de primitiva; 2 is because action as contexts in parameters
 	:parameters (?d - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
-		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt   CONDUCIENDO ?dur")
-		; (:tag prettyprint "?d,?start,?end,?duration,CONDUCIENDO,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
 		(:tag prettyprint "?d	?start	?end	?duration	Driving	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition (and
@@ -469,8 +466,6 @@
 (:durative-action O_p2
 	:parameters (?d - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
-		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     PARADA ?dur")
-		; (:tag prettyprint "?d,?start,?end,?duration,OTRO TRABAJO,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
 		(:tag prettyprint "?d	?start	?end	?duration	Other	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition (and
@@ -496,8 +491,6 @@
 (:durative-action B_p2
 	:parameters (?d - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
-		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     PARADA ?dur")
-		; (:tag prettyprint "?d,?start,?end,?duration,PARADA,?dayctxt,?lsctxt,?slctxt,?tkctxt"))
 		(:tag prettyprint "?d	?start	?end	?duration	Break	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition (and
@@ -523,7 +516,6 @@
 (:durative-action I_p2
 	:parameters (?d - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
-		;(:tag prettyprint "?dayctxt ?lsctxt    ?slctxt ?tkctxt     ESPERA ?dur")
 		(:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition (and
@@ -537,9 +529,6 @@
 )
 
 ; -------------------------------------------------------------------------
-
-; (:derived (diferente ?x ?y) {return ?x != ?y})
-; (:derived (igual ?x ?x) ())
 				
 (:action break
 	:parameters ()

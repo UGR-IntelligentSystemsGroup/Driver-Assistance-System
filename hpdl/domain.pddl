@@ -86,7 +86,7 @@
         (puede_espera_AMPLIADA ?d - Driver)
 
         (continuar_recursion)
-        (continuar_recursion_A)
+        (continuar_recursion_A) ; ¡¡¡ NO SE USA !!!
 
         (secuencia_entrada_vacia)
         (secuencia_entrada_no_vacia)
@@ -115,10 +115,10 @@
         (parameters_typeB ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
         (parameters_typeI ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
 
-        (currentindex_es_typeD ?k - number ?sa - TaskInstanceSymbol)
-        (currentindex_es_typeO ?k - number ?sa - TaskInstanceSymbol)
-        (currentindex_es_typeB ?k - number ?sa - TaskInstanceSymbol)
-        (currentindex_es_typeI ?k - number ?sa - TaskInstanceSymbol)
+        (currentindex_is_typeD ?k - number ?sa - TaskInstanceSymbol)
+        (currentindex_is_typeO ?k - number ?sa - TaskInstanceSymbol)
+        (currentindex_is_typeB ?k - number ?sa - TaskInstanceSymbol)
+        (currentindex_is_typeI ?k - number ?sa - TaskInstanceSymbol)
 
         ; Depuración
         (write_hola ?p - number)
@@ -179,51 +179,18 @@
 
         ; en el  modo generar la duración de la conducción dependerá del tipo de conductor
         ; esto es un ejemplo y se podría hacer directamente sin codigo python 
+        ; PINTA QUE ESTÁ INCOMPLETO, NO? Debería calcular la duración en base al tiempo restante
         (calcula_duracion_C ?d) { return 4 }
         (calcula_duracion_O ?d) { return 2 } ; lo mismo para OPE
         (calcula_duracion_P ?d) { return 2 }
         (calcula_duracion_E ?d) { return 2 }
 
-        ; Valores constantes
+        ; Time constants
         (one_year) { return 365.0*24.0 }
         (one_month) { return 30.0*24.0 }
         (hours_in_mins ?hs) { return ?hs*60 }
         (horas_en_minutos ?horas) { return ?horas*60 }
         (hora_en_minutos) { return 60 }
-
-        (mensaje_fulfill ?x) {
-	    	if (?x == 2):
-	    		s = "Unable to fullfill all administration preferences, trying format and medication_time"
-	    		print s
-	    		return ?x
-	    	elif (?x == 1):
-	    		s = "Unable to fullfill all administration preferences, trying medication_time"
-	    		print s
-	    		return ?x
-	    	elif (?x == 0):
-	    		s = "Unable to fullfill any administration preference, trying a valid Treatment" 
-            
-			print s 
-			return ?x
-		}
-
-        ; Depuración ?
-        (comor) {
-            print "imprimo S "
-            print s 
-            return 0
-        }
-
-        (no_hay_mas) {
-            print "NO HAY MAS"
-            s = raw_input("Continuar?: (0/1)")
-            return int(s)
-        }
-
-	    (entra_en ?x) {
-            print "ENTRA EN ", ?x
-            return ?x
-	    }
     )
 
     ; =========================================================================
@@ -250,6 +217,7 @@
     )
 
     ; -------------------------------------------------------------------------
+    ; Condiciones para realizar una acción
 
     (:derived (conditions_NDD ?d)
         (AND
@@ -323,11 +291,14 @@
 
     (:derived (current_action_is_a_break_greater_15)
         (AND
-            (currentindex_es_typeB ?k ?sa)
+            (currentindex_is_typeB ?k ?sa)
             (duration_action ?sa ?dur)
             (>= ?dur 15)
         )
     )
+
+    ; (:derived (diferente ?x ?y) {return ?x != ?y})
+    ; (:derived (igual ?x ?x) ())
 
     ;***********************************************
 
@@ -364,26 +335,40 @@
     ; TASKS
     ; =========================================================================
 
-    ; DailyDriving
+    ; Daily Driving
     (:task DD
         :parameters (?d - Driver)
         (:method ndd
             :precondition ()
             :tasks ( 
+                (print_new_day)
                 (NDD ?d)
                 (DD ?d)
             )
         )
 
-        (:method ndd
+        (:method edd
             :precondition ()
             :tasks ( 
-                (NDD ?d)
+                (print_new_day)
+                (EDD ?d)
                 (DD ?d)
             )
         )
 
-        (:method base
+        ; NOT WORKING
+        ; (:method ignore_action
+        ;     :precondition (secuencia_entrada_no_vacia)
+        ;     :tasks (
+        ;         (:inline
+		; 			()
+		; 			(increase (current_index_action) 1)
+		; 		)
+        ;         (DD ?d)
+        ;     )
+        ; )
+
+        (:method end
             :precondition ()
             :tasks ()
         )
@@ -1037,7 +1022,7 @@
                 (Process_A ?d)
 
                 (:inline
-                    (:print "pASA POR AQUI\n")
+                    (:print "PASA POR AQUI\n")
                     ()
                 )
                 (:inline
@@ -1056,7 +1041,7 @@
                 (A ?d))
         ) 
         
-        ;aquí viene porque se encontró una P con una duración mayor de 15 mins
+        ;aquí viene porque se encontró un B con una duración mayor de 15 mins
         (:method caso_base0
             :precondition (and 
                 (current_action_is_a_break_greater_15) 
@@ -1234,7 +1219,7 @@
             )
         ) 
         
-        (:method B_T1;B_T1: BREAK OF [45min, 3h)
+        (:method B_T1 ; BREAK OF [45min, 3h)
             :precondition ()
             :tasks (
                 (B ?d ?dur)
@@ -1377,7 +1362,9 @@
         ; 	)	
     )
 
-    ; -------------------------------------------------------------------------
+    ; =========================================================================
+    ; Debug
+    ; =========================================================================
 
     (:task print_result
         :parameters (?dt - number) 
@@ -1392,9 +1379,18 @@
         )
     )
 
-    ; =========================================================================
-    ; Actions
-    ; =========================================================================
+    (:durative-action print_new_day
+	    :parameters ()
+	    :meta (
+            (:tag prettyprint "# ----------------------------------------------------------NEW DAY----------------------------------------------------------
+#Driver	DateTimeStart		DateTimeEnd		Duration (min)	Activity DType	DrivingPeriod	Sequence	Token"))
+            ; (:tag prettyprint "# Driver DateTimeStart   DateTimeEnd Duration (min)  Activity    DrivingDatyType DrivingPeriod   Sequence    Token"))
+            :duration ()
+            :condition ()
+            :effect ()
+    )
+
+    ; -------------------------------------------------------------------------
 
     (:durative-action result
         :parameters (?x - number)
@@ -1423,7 +1419,9 @@
         :effect ()
     )
 
-    ; -------------------------------------------------------------------------
+    ; =========================================================================
+    ; Actions
+    ; =========================================================================
 
     (:action EndOfDay ;
         :parameters ()

@@ -20,21 +20,21 @@
 	)
 
 	(:init
+		; Tarea del problema - Generar o Reconocer
+		; (modo_generar)
+ 	    (modo_reconocer)
+ 	    (modo_depuracion)
+
+ 		;;(inicio_semana S1 "1/01/2018 00:00:00")
+ 		;;(fin_semana S1 "7/01/2018 23:59:59")
+
+		; Inicializar contextos
         (token-context none)
 		(slice-context none)
   	    (legal-slice-context none)
 		(daily-context none)
 		(weekly-context none)
 		(monthly-context none)
-
-
-
- 		;;(inicio_semana S1 "1/01/2018 00:00:00")
- 		;;(fin_semana S1 "7/01/2018 23:59:59")
-
-		; (modo_generar)
- 	    (modo_reconocer)
- 	    (modo_depuracion)
 		 
  		;;INICIALIZAR FUNCIONES
  		(= (tiempo_conduccion driver1) 0)
@@ -67,7 +67,9 @@
 		(= (contador_veces_AMPLIADA_en_semana) 0)
 
 
-		(= (current_index_action) 0) ;; el indice de acciones empieza en 0.
+		(= (current_rt) 0)
+		(= (dt_current_slice) 0)
+		(= (current_index_action) 20) ;; el indice de acciones empieza en 0.
 
 		; (is_action C1) ;; cada accion tiene un simbolo asociado este simbolo es de tipo accion 
 		; (index_action C1 0); cada simbolo de accion tiene asociado un indice, que empieza en 0
@@ -86,8 +88,6 @@
 		;;(4 C2 typeD "01/07/2018 07:00:00" "01/07/2018 07:59:00" 60 driver1)
 		;;(5 O2 typeO "01/07/2018 10:00:00" "01/07/2018 10:59:00" 60 driver1)
 
-		( = (current_rt) 0)
-		( = (dt_current_slice) 0)
 
 (index_action P1 0)
 (is_action P1)

@@ -121,6 +121,10 @@ Integrating Machine Learning with Automated Planning
 
 - **IMPORTANTE** Los logs tienen muchas pausas o patrones (Breaks y Drivings muy cortos, muchos Other) que se alejan de la normativa (o continuo o particionado). Esto es difícil de modelar con planificación.
 
+- Task break vacía sirve para algo? En general mirar todas las que no se utilicen para ver si quitarlas.
+
+- El primer método de A es recursivo para poder incluir todas las acciones posibles antes del break?
+
 ## Commands
 
 ./planner/planner -d hpdl/domain.pddl -p hpdl/problem-recognition.pddl
