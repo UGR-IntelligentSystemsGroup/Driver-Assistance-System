@@ -138,6 +138,10 @@ Integrating Machine Learning with Automated Planning
 
   - Poner una marca para saber cuándo se hace un rest grande (comentada)
 
+- 183 minutos sigue siendo un B_T3 o un B_T4?
+
+- Acción 115: Dos conductores? Va desde 11 17pm a 12 3am, siguiendo sin pausa grande hasta 12 6am -> O eso o es una jornada de 13h, capaz
+
 ## Commands
 
 ./planner/planner -d hpdl/domain.pddl -p hpdl/problem-recognition.pddl

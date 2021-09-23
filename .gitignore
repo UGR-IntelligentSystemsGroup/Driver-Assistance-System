@@ -13,6 +13,7 @@ data/
 # *.xlsx
 
 # Output
+out/output.csv
 # out/**
 # *.csv
 # *.plan

@@ -69,7 +69,7 @@
 
 		(= (current_rt) 0)
 		(= (dt_current_slice) 0)
-		(= (current_index_action) 0) ;; el indice de acciones empieza en 0.
+		(= (current_index_action) 115) ;; el indice de acciones empieza en 0.
 
 		; (is_action C1) ;; cada accion tiene un simbolo asociado este simbolo es de tipo accion 
 		; (index_action C1 0); cada simbolo de accion tiene asociado un indice, que empieza en 0

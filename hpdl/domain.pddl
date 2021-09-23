@@ -367,9 +367,9 @@
         )
 
         ; NOT WORKING ???
-        (:method ignore_action
+        (:method ignore_action ;anomaly
             :precondition (and (secuencia_entrada_no_vacia)
-                (:print "?????????????????????????????????????????")
+                (:print "????????????????????????????????-")
             )
             :tasks (
                 ; (:inline
@@ -1265,7 +1265,37 @@
                     (assign (dt_current_slice) 0)
                 )
             )
-        ) 
+        )
+
+        (:method B_T4 ; BREAK OF [3h, 9h)
+            :precondition ()
+            :tasks (
+                (B ?d ?dur)
+                (:inline
+                    (and (>= ?dur (hours_in_mins 3)) (< ?dur (hours_in_mins 9)))
+                    ()
+                )
+                (:inline
+                    ()
+                    (increase (minutos_consumidos) ?dur))
+                (:inline
+                    ()
+                    (increase (tiempo_parada_dia ?d) ?dur)
+                )
+                (:inline
+                    ()
+                    (assign (current_rt) ?dur)
+                )
+                (:inline
+                    ()
+                    (assign (current_dt) 0)
+                )
+                (:inline
+                    ()
+                    (assign (dt_current_slice) 0)
+                )
+            )
+        )
         
         (:method B_T1 ; BREAK OF [45min, 3h)
             :precondition ()
