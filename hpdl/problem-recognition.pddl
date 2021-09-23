@@ -69,7 +69,7 @@
 
 		(= (current_rt) 0)
 		(= (dt_current_slice) 0)
-		(= (current_index_action) 20) ;; el indice de acciones empieza en 0.
+		(= (current_index_action) 0) ;; el indice de acciones empieza en 0.
 
 		; (is_action C1) ;; cada accion tiene un simbolo asociado este simbolo es de tipo accion 
 		; (index_action C1 0); cada simbolo de accion tiene asociado un indice, que empieza en 0
@@ -559,7 +559,7 @@
 (is_action C27)
 (is_typeD C27)
 (start_action C27 "06/01/2017 23:11")
-(end_action C27 "06/01/2017 03:38")
+(end_action C27 "07/01/2017 03:38")
 (duration_action C27 267)
 (parameters_typeD C27 driver1)
 
@@ -1333,6 +1333,7 @@
 					; (A_B_T3 driver1) ;;success
 
 					; (NDD driver1)
+					(print_new_day)
 					(DD driver1)
 				)
 		       			

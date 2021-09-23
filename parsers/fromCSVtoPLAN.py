@@ -44,10 +44,10 @@ with open('tacografo2.csv', 'r', encoding="ISO-8859-1") as csvfile:  #probar con
     #Asociar un estado con un prefix de simbolo de tarea
     symbolPrefix = dict([('Conduciendo', 'D'), ('Pausa', 'B'), ('En espera', 'I'),('Otro trabajo', 'O')])
     #Asociar un contador a cada prefijo de simbolo de tareas
-    symbolCounter =  dict([('C', 1), ('P', 1), ('E', 1),('O', 1)])
+    symbolCounter =  dict([('D', 1), ('B', 1), ('I', 1),('O', 1)])
    
     
-    diccionario_TaskInstanceSymbol = {k: [] for k in ['C','O','P','E']}
+    diccionario_TaskInstanceSymbol = {k: [] for k in ['D','O','B','I']}
    
     
     

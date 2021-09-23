@@ -341,8 +341,8 @@
         (:method ndd
             :precondition ()
             :tasks ( 
-                (print_new_day)
                 (NDD ?d)
+                (print_new_day)
                 (DD ?d)
             )
         )
@@ -350,23 +350,41 @@
         (:method edd
             :precondition ()
             :tasks ( 
-                (print_new_day)
                 (EDD ?d)
+                (print_new_day)
                 (DD ?d)
             )
         )
 
-        ; NOT WORKING
-        ; (:method ignore_action
-        ;     :precondition (secuencia_entrada_no_vacia)
-        ;     :tasks (
-        ;         (:inline
-		; 			()
-		; 			(increase (current_index_action) 1)
-		; 		)
-        ;         (DD ?d)
-        ;     )
-        ; )
+        ; Anomaly?
+        (:method rest_day
+            :precondition ()
+            :tasks (
+                (RD ?d)
+                (print_new_day)
+                (DD ?d)
+            )
+        )
+
+        ; NOT WORKING ???
+        (:method ignore_action
+            :precondition (and (secuencia_entrada_no_vacia)
+                (:print "?????????????????????????????????????????")
+            )
+            :tasks (
+                ; (:inline
+				; 	()
+				; 	(increase (current_index_action) 1)
+				; )
+                (reset_counters)
+                (b_tk A)
+                (Process_A ?d)
+                (e_tk A)
+
+                ; (print_new_day)
+                (DD ?d)
+            )
+        )
 
         (:method end
             :precondition ()
@@ -1189,7 +1207,7 @@
             )
         ) 
         
-        (:method B_T3 ; BREAK OF [30min, 45min)
+        (:method B_T3 ; BREAK OF [30min, 45min) - Está puesto hasta 3h
             :precondition ()
             :tasks (
                 (B ?d ?dur)
@@ -1386,7 +1404,7 @@
 #Driver	DateTimeStart		DateTimeEnd		Duration (min)	Activity DType	DrivingPeriod	Sequence	Token"))
             ; (:tag prettyprint "# Driver DateTimeStart   DateTimeEnd Duration (min)  Activity    DrivingDatyType DrivingPeriod   Sequence    Token"))
             :duration ()
-            :condition ()
+            :condition (:print "> Full Driving Day processed\n")
             :effect ()
     )
 

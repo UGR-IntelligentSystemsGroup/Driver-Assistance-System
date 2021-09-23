@@ -113,7 +113,7 @@ Integrating Machine Learning with Automated Planning
 
 - En general no entiendo bien los contextos. En el paper sí, pero no lo implementado.
 
-- B_T3 pasa como máximo de 45m a 3h, pero si pasa de 45 debería ser una anomalía. No sería mejor modelarlo con otra tarea?
+- B_T3 pasa como máximo de 45m a 3h, pero si pasa de 45 debería ser una anomalía. No sería mejor modelarlo con otra tarea? Por qué si se quita no funciona?
 
 - B_T1/2/3 solo cambian en la condición, no sería mejor usar when?
 
@@ -124,6 +124,11 @@ Integrating Machine Learning with Automated Planning
 - Task break vacía sirve para algo? En general mirar todas las que no se utilicen para ver si quitarlas.
 
 - El primer método de A es recursivo para poder incluir todas las acciones posibles antes del break?
+
+- **IMPORTANTE** En la secuencia de acciones (la que se supone que viene del tacógrafo) esta MAL (ej: 11pm 06 -> 3am 06 -> 4am 07)
+  - En tacografo3.xmlx no está este fallo
+  - En EjemploDatasetAnonimizado **SI** -> Error: La fecha es única, aunque las horas salten de un día a otro
+  - Hay que corregir el script fromCSVtoPLAN.py y sacar de nuevo la secuencia de acciones. Hasta asegurarme de qué dataset es el correcto voy a corregir los predicados a mano.
 
 ## Commands
 
