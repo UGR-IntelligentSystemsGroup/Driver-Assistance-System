@@ -31,7 +31,7 @@
         typeD typeO typeB typeI - TipoAccion
 
         ; Token
-        A B_T1 B_T2 B_T3 R_g3 R_g9 R_g11 R_g24 R_g45
+        A B_T1 B_T2 B_T3 R_g3 R_g9 R_g11 R_g24 R_g45 B_T10
 
         cdd_t2_slice cdd_t2_sequence 
         cdd_t1_start cdd_t1_end 
@@ -277,9 +277,9 @@
     (:derived (continuar_recursion)
         (AND
             ( <= (minutos_consumidos) (* 24 (hora_en_minutos)))
-            (:print "TODAVÍA no ha consumido 24 horas\n")
+            ; (:print "TODAVÍA no ha consumido 24 horas\n")
             (secuencia_entrada_no_vacia)
-            (:print "TODAVÍA NO HA LLEGADO AL FIN DE LA SECUENCIA\n")
+            ; (:print "TODAVÍA NO HA LLEGADO AL FIN DE LA SECUENCIA\n")
         )
     )
 
@@ -866,7 +866,7 @@
         ) 
         
         ; Normal daily rest
-        (:method B_T6 ;B_T3: BREAK OF [11h, 24h)
+        (:method B_T6 ; BREAK OF [11h, 24h)
             :precondition ()
             :tasks (
                 (b_tk R_g11)
@@ -876,6 +876,36 @@
                     ()
                 )
                 (e_tk R_g11)
+
+                (:inline
+                    ()
+                    (assign (minutos_consumidos) 0))
+
+                (:inline
+                    ()
+                    (increase (tiempo_parada_dia ?d) ?dur)
+                )
+                (:inline
+                    ()
+                    (assign (current_rt) ?dur)
+                )
+                (:inline
+                    ()
+                    (assign (dt_current_slice) 0)
+                )
+            )
+        )
+
+        (:method B_T10 ; BREAK OF [45h,infty)
+            :precondition ()
+            :tasks (
+                (b_tk B_T10)
+                (B ?d ?dur)
+                (:inline
+                    (>= ?dur (hours_in_mins 45))
+                    ()
+                )
+                (e_tk B_T10)
 
                 (:inline
                     ()
@@ -1039,18 +1069,18 @@
             :tasks (
                 (Process_A ?d)
 
-                (:inline
-                    (:print "PASA POR AQUI\n")
-                    ()
-                )
+                ; (:inline
+                ;     (:print "PASA POR AQUI\n")
+                ;     ()
+                ; )
                 (:inline
                     (< (current_rt) 15)
                     ()
                 )
-                (:inline
-                    (:print "Menor que 15\n")
-                    ()
-                )
+                ; (:inline
+                ;     (:print "Menor que 15\n")
+                ;     ()
+                ; )
 
                 (:inline
                     ()
@@ -1063,7 +1093,7 @@
         (:method caso_base0
             :precondition (and 
                 (current_action_is_a_break_greater_15) 
-                (:print "PAUSE_CONSIDERED_BREAK\n")
+                ; (:print "PAUSE_CONSIDERED_BREAK\n")
             ) 
             :tasks(
 
@@ -1088,12 +1118,12 @@
         ; AQUÍ HA HABIDO UN FALLO: SE DAN las condiciones de recursión, pero NO SE HA PODIDO PROCESAR si continua recursion y no ha entrado en ninguno de los metodos anteriores
         (:method fallar
             :precondition (
-                :print "FALLO_LATASK\n"
+                ; :print "FALLO_LATASK\n"
             )
             :tasks (
-                :inline
-                    (task_failed task_A)
-                    ()
+                ; :inline
+                ;     (task_failed task_A)
+                ;     ()
             )
         )
     )

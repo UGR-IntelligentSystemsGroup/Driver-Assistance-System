@@ -136,6 +136,8 @@ Integrating Machine Learning with Automated Planning
 
   - Los datos timestamp **NO** están conectados, hay saltos (ej: 08 a 10) -> **NO HAY SALTOS**, es el problema anterior. Hay que suponer que es la fecha siguiente. -> Hay que corregirlo en el script
 
+  - Poner una marca para saber cuándo se hace un rest grande (comentada)
+
 ## Commands
 
 ./planner/planner -d hpdl/domain.pddl -p hpdl/problem-recognition.pddl

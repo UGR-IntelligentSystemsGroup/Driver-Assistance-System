@@ -443,13 +443,14 @@
 	:meta (
 		(:tag prettyprint "?d	?start	?end	?duration	Driving	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
-		:condition (and
-			(:print "Recognized [DRIVING] task for driver ")
-			(:print ?d)
-			(:print " of ")
-			(:print ?dur)
-			(:print "minutes\n")
-		)
+		:condition()
+		; :condition (and
+		; 	(:print "Recognized [DRIVING] task for driver ")
+		; 	(:print ?d)
+		; 	(:print " of ")
+		; 	(:print ?dur)
+		; 	(:print "minutes\n")
+		; )
 		:effect (increase (tiempo_conduccion ?d) ?dur)
 )
 
@@ -468,13 +469,14 @@
 	:meta (
 		(:tag prettyprint "?d	?start	?end	?duration	Other	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
-		:condition (and
-			(:print "Recognized [OTHER] task for driver ")
-			(:print ?d)
-			(:print " of ")
-			(:print ?dur)
-			(:print "minutes\n")
-		)
+		:condition()
+		; :condition (and
+		; 	(:print "Recognized [OTHER] task for driver ")
+		; 	(:print ?d)
+		; 	(:print " of ")
+		; 	(:print ?dur)
+		; 	(:print "minutes\n")
+		; )
 		:effect (increase (tiempo_otros ?d) ?dur)
 )
 
@@ -493,13 +495,14 @@
 	:meta (
 		(:tag prettyprint "?d	?start	?end	?duration	Break	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
-		:condition (and
-			(:print "Recognized [BREAK] task for driver ")
-			(:print ?d)
-			(:print " of ")
-			(:print ?dur)
-			(:print "minutes\n")
-		)
+		:condition()
+		; :condition (and
+		; 	(:print "Recognized [BREAK] task for driver ")
+		; 	(:print ?d)
+		; 	(:print " of ")
+		; 	(:print ?dur)
+		; 	(:print "minutes\n")
+		; )
 		:effect (increase (tiempo_parada ?d) ?dur)
 )
 
@@ -518,13 +521,14 @@
 	:meta (
 		(:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
-		:condition (and
-			(:print "Recognized [IDLE] task for driver ")
-			(:print ?d)
-			(:print " of ")
-			(:print ?dur)
-			(:print "minutes\n")
-		)
+		:condition()
+		; :condition (and
+		; 	(:print "Recognized [IDLE] task for driver ")
+		; 	(:print ?d)
+		; 	(:print " of ")
+		; 	(:print ?dur)
+		; 	(:print "minutes\n")
+		; )
 		:effect (increase (tiempo_espera ?d) ?dur)
 )
 
