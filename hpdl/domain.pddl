@@ -375,9 +375,9 @@
 				; 	(increase (current_index_action) 1)
 				; )
                 (reset_counters)
-                (b_tk A)
+                ; (b_tk A)
                 (Process_A ?d)
-                (e_tk A)
+                ; (e_tk A)
 
                 ; (print_new_day)
                 (DD ?d)
@@ -426,9 +426,9 @@
                 )
                 (reset_counters)
                 (CDDs_S ?d)
-                (b_tk A)
+                ; (b_tk A)
                 (A ?d)
-                (e_tk A)
+                ; (e_tk A)
                 (:inline
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
@@ -581,7 +581,7 @@
         (:method SINGLE
             :precondition()
             :tasks (
-                (b_tk A)
+                ; (b_tk A)
                 (A ?d)
                 (:inline
                     (<= (dt_current_slice) (hours_in_mins 4.5))
@@ -591,15 +591,15 @@
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
                 )
-                (e_tk A)
+                ; (e_tk A)
 
-                (b_tk B_T1)
+                ; (b_tk B_T1)
                 (B_T1 ?d)
                 (:inline
                     ()
                     (assign (dt_current_CDD_T1_start) (dt_last_slice))
                 )
-                (e_tk B_T1)
+                ; (e_tk B_T1)
             )
         )
     )
@@ -611,7 +611,7 @@
         (:method SINGLE
             :precondition()
             :tasks (
-                (b_tk A)
+                ; (b_tk A)
                 (A ?d)
                 (:inline
                     (<= (dt_current_slice) (hours_in_mins 4.5))
@@ -621,7 +621,7 @@
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
                 )
-                (e_tk A)
+                ; (e_tk A)
 
                 (RD ?d)
                 (:inline
@@ -666,9 +666,9 @@
             :tasks (
                 (CDD_T2_SEQUENCE ?d)
                 ;(print_result ?x)
-                (b_tk A)
+                ; (b_tk A)
                 (A ?d)
-                (e_tk A)
+                ; (e_tk A)
                 (:inline
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
@@ -746,16 +746,16 @@
         (:method Alt_1
             :precondition()
             :tasks (
-                (b_tk A)
+                ; (b_tk A)
                 (A ?d)
-                (e_tk A)
+                ; (e_tk A)
                 (:inline
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
                 )
-                (b_tk B_T2)
+                ; (b_tk B_T2)
                 (B_T2 ?d)
-                (e_tk B_T2)
+                ; (e_tk B_T2)
                 (:inline
                     ()
                     (assign (dt_current_cdd_t2_slice) (dt_last_slice))
@@ -772,17 +772,17 @@
         (:method Alt_2
             :precondition()
             :tasks (
-                (b_tk A)
+                ; (b_tk A)
                 (A ?d)
-                (e_tk A)
+                ; (e_tk A)
                 (:inline
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
                 )
 
-                (b_tk B_T3)
+                ; (b_tk B_T3)
                 (B_T3 ?d)
-                (e_tk B_T3)
+                ; (e_tk B_T3)
                 (:inline
                     ()
                     (assign (dt_current_cdd_t2_slice) (dt_last_slice))
@@ -799,16 +799,16 @@
         (:method Alt_3
             :precondition()
             :tasks (
-                (b_tk A)
+                ; (b_tk A)
                 (A ?d)
-                (e_tk A)
+                ; (e_tk A)
                 (:inline
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
                 )
-                (b_tk B_T1)
+                ; (b_tk B_T1)
                 (B_T1 ?d)
-                (e_tk B_T1)
+                ; (e_tk B_T1)
                 (:inline
                     ()
                     (assign (dt_current_cdd_t2_slice) (dt_last_slice))
@@ -936,13 +936,13 @@
         (:method B_T1;B_T1: BREAK OF [45min, 3h)
             :precondition ()
             :tasks (
-                ;(b_tk B_T1)		
+                (b_tk B_T1)		
                 (B ?d ?dur)
                 (:inline
                     (and (>= ?dur 45) (< ?dur (hours_in_mins 3)))
                     ()
                 )
-                ;(e_tk B_T1)
+                (e_tk B_T1)
 
                 (:inline
                     ()
@@ -979,13 +979,13 @@
         (:method SINGLE
             :precondition ()
             :tasks (
-                ;(b_tk B_T2)
+                (b_tk B_T2)
                 (B ?d ?dur)
                 (:inline
                     (and (>= ?dur 15) (< ?dur 30))
                     ()
                 )
-                ;(e_tk B_T2)
+                (e_tk B_T2)
 
                 (:inline
                     ()
@@ -1022,13 +1022,13 @@
         (:method SINGLE ;B_T3: BREAK OF [30min, 45min); ahora lo he puesto  [30min, 3h)
             :precondition ()
             :tasks (
-                ;(b_tk B_T3)
+                (b_tk B_T3)
                 (B ?d ?dur)
                 (:inline
                     (and (>= ?dur 30) (< ?dur (hours_in_mins 3)))
                     ()
                 )
-                ;(e_tk B_T3)
+                (e_tk B_T3)
 
                 (:inline
                     ()
@@ -1135,7 +1135,9 @@
         (:method DXX
             :precondition ()
             :tasks (
+                (b_tk A)
                 (D ?d ?dur)
+                (e_tk A)
                 (:inline
                     ()
                     (increase (minutos_consumidos) ?dur))
@@ -1157,7 +1159,10 @@
         (:method OXX
             :precondition ()
             :tasks (
+                (b_tk A)
                 (O ?d ?dur)
+                (e_tk A)
+
                 (:inline
                     ()
                     (increase (minutos_consumidos) ?dur))
@@ -1179,11 +1184,9 @@
         (:method B_T0 ; BREAK of [0,15min)
             :precondition ()
             :tasks (
-                ;(break)
-                ;(b_tk B_T0)
+                (b_tk B_T0)
                 (B ?d ?dur)
-                ;(b_tk B_T0)
-                ;(break)
+                (e_tk B_T0)
 
                 (:inline
                     (and (< ?dur 15))
@@ -1211,9 +1214,9 @@
         (:method B_T2 ; BREAK of [15min, 30min)
             :precondition ()
             :tasks (
-                ;(b_tk B_T2)
+                (b_tk B_T2)
                 (B ?d ?dur)
-                ;(b_tk B_T2)
+                (e_tk B_T2)
 
                 (:inline
                     (and (>= ?dur 15) (< ?dur 30))
@@ -1244,9 +1247,9 @@
         (:method B_T3 ; BREAK OF [30min, 45min) - Está puesto hasta 3h
             :precondition ()
             :tasks (
-                ;(b_tk B_T3)
+                (b_tk B_T3)
                 (B ?d ?dur)
-                ;(b_tk B_T3)
+                (e_tk B_T3)
 
                 (:inline
                     (and (>= ?dur 30) (< ?dur (hours_in_mins 3)))
@@ -1277,9 +1280,9 @@
         (:method B_T4 ; BREAK OF [3h, 9h)
             :precondition ()
             :tasks (
-                ;(b_tk B_T4)
+                (b_tk B_T4)
                 (B ?d ?dur)
-                ;(b_tk B_T4)
+                (e_tk B_T4)
                 
                 (:inline
                     (and (>= ?dur (hours_in_mins 3)) (< ?dur (hours_in_mins 9)))
@@ -1310,9 +1313,9 @@
         (:method B_T1 ; BREAK OF [45min, 3h)
             :precondition ()
             :tasks (
-                ;(b_tk B_T1)
+                (b_tk B_T1)
                 (B ?d ?dur)
-                ;(b_tk B_T1)
+                (e_tk B_T1)
 
                 (:inline
                     (and (>= ?dur 45) (< ?dur (hours_in_mins 3)))
@@ -1344,9 +1347,9 @@
         (:method IXX
             :precondition (puede_espera_NORMAL ?d)
             :tasks (
-                ;(b_tk I)
+                (b_tk I)
                 (I ?d ?dur)
-                ;(b_tk I)
+                (e_tk I)
 
                 (:inline
                     ()
