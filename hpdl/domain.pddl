@@ -31,7 +31,7 @@
         typeD typeO typeB typeI - TipoAccion
 
         ; Token
-        A B_T1 B_T2 B_T3 R_g3 R_g9 R_g11 R_g24 R_g45 B_T10
+        A I B_T0 B_T1 B_T2 B_T3 B_T4 B_T5 B_T6 B_T7 B_T10
 
         cdd_t2_slice cdd_t2_sequence 
         cdd_t1_start cdd_t1_end 
@@ -186,8 +186,8 @@
         (calcula_duracion_E ?d) { return 2 }
 
         ; Time constants
-        (one_year) { return 365.0*24.0 }
-        (one_month) { return 30.0*24.0 }
+        ; (one_year) { return 365.0*24.0 }
+        ; (one_month) { return 30.0*24.0 }
         (hours_in_mins ?hs) { return ?hs*60 }
         (horas_en_minutos ?horas) { return ?horas*60 }
         (hora_en_minutos) { return 60 }
@@ -339,7 +339,7 @@
     (:task DD
         :parameters (?d - Driver)
         (:method ndd
-            :precondition ()
+            :precondition (secuencia_entrada_no_vacia)
             :tasks ( 
                 (NDD ?d)
                 (print_new_day)
@@ -348,7 +348,7 @@
         )
 
         (:method edd
-            :precondition ()
+            :precondition (secuencia_entrada_no_vacia)
             :tasks ( 
                 (EDD ?d)
                 (print_new_day)
@@ -356,9 +356,9 @@
             )
         )
 
-        ; Anomaly?
+        ; Anomaly? Hace que termine la secuencia no reconocida
         (:method rest_day
-            :precondition ()
+            :precondition (secuencia_entrada_no_vacia)
             :tasks (
                 (RD ?d)
                 (print_new_day)
@@ -366,11 +366,9 @@
             )
         )
 
-        ; NOT WORKING ???
+        ; NOT WORKING ??? OUT OF MEMORY si no empieza a detectar patrones, empieza a profundizar mucho
         (:method ignore_action ;anomaly
-            :precondition (and (secuencia_entrada_no_vacia)
-                (:print "????????????????????????????????-")
-            )
+            :precondition (secuencia_entrada_no_vacia)
             :tasks (
                 ; (:inline
 				; 	()
@@ -838,13 +836,13 @@
         (:method B_T5 ;B_T4: break of [9h, 11h)
             :precondition ()
             :tasks (
-                (b_tk R_g9)
+                (b_tk B_T5)
                 (B ?d ?dur)
                 (:inline
                     (and (>= ?dur (hours_in_mins 9)) (< ?dur (hours_in_mins 11)))
                     ()
                 )
-                (e_tk R_g9)
+                (e_tk B_T5)
 
                 (:inline
                     ()
@@ -869,13 +867,13 @@
         (:method B_T6 ; BREAK OF [11h, 24h)
             :precondition ()
             :tasks (
-                (b_tk R_g11)
+                (b_tk B_T6)
                 (B ?d ?dur)
                 (:inline
                     (and (>= ?dur (hours_in_mins 11)) (< ?dur (hours_in_mins 24)))
                     ()
                 )
-                (e_tk R_g11)
+                (e_tk B_T6)
 
                 (:inline
                     ()
@@ -1024,7 +1022,7 @@
         (:method SINGLE ;B_T3: BREAK OF [30min, 45min); ahora lo he puesto  [30min, 3h)
             :precondition ()
             :tasks (
-                ;(b_tk B_T3)	
+                ;(b_tk B_T3)
                 (B ?d ?dur)
                 (:inline
                     (and (>= ?dur 30) (< ?dur (hours_in_mins 3)))
@@ -1181,9 +1179,12 @@
         (:method B_T0 ; BREAK of [0,15min)
             :precondition ()
             :tasks (
-                ;(break)	
-                (B ?d ?dur)
                 ;(break)
+                ;(b_tk B_T0)
+                (B ?d ?dur)
+                ;(b_tk B_T0)
+                ;(break)
+
                 (:inline
                     (and (< ?dur 15))
                     ()
@@ -1210,7 +1211,10 @@
         (:method B_T2 ; BREAK of [15min, 30min)
             :precondition ()
             :tasks (
+                ;(b_tk B_T2)
                 (B ?d ?dur)
+                ;(b_tk B_T2)
+
                 (:inline
                     (and (>= ?dur 15) (< ?dur 30))
                     ()
@@ -1240,7 +1244,10 @@
         (:method B_T3 ; BREAK OF [30min, 45min) - Está puesto hasta 3h
             :precondition ()
             :tasks (
+                ;(b_tk B_T3)
                 (B ?d ?dur)
+                ;(b_tk B_T3)
+
                 (:inline
                     (and (>= ?dur 30) (< ?dur (hours_in_mins 3)))
                     ()
@@ -1270,7 +1277,10 @@
         (:method B_T4 ; BREAK OF [3h, 9h)
             :precondition ()
             :tasks (
+                ;(b_tk B_T4)
                 (B ?d ?dur)
+                ;(b_tk B_T4)
+                
                 (:inline
                     (and (>= ?dur (hours_in_mins 3)) (< ?dur (hours_in_mins 9)))
                     ()
@@ -1300,7 +1310,10 @@
         (:method B_T1 ; BREAK OF [45min, 3h)
             :precondition ()
             :tasks (
+                ;(b_tk B_T1)
                 (B ?d ?dur)
+                ;(b_tk B_T1)
+
                 (:inline
                     (and (>= ?dur 45) (< ?dur (hours_in_mins 3)))
                     ()
@@ -1331,7 +1344,10 @@
         (:method IXX
             :precondition (puede_espera_NORMAL ?d)
             :tasks (
+                ;(b_tk I)
                 (I ?d ?dur)
+                ;(b_tk I)
+
                 (:inline
                     ()
                     (increase (minutos_consumidos) ?dur))
@@ -1461,7 +1477,7 @@
 	    :parameters ()
 	    :meta (
             (:tag prettyprint "# ----------------------------------------------------------NEW DAY----------------------------------------------------------
-#Driver	DateTimeStart		DateTimeEnd		Duration (min)	Activity DType	DrivingPeriod	Sequence	Token"))
+#Driver	DateTimeStart		DateTimeEnd		Duration(min)	Activity DType	DPeriod	Sequence	Token"))
             ; (:tag prettyprint "# Driver DateTimeStart   DateTimeEnd Duration (min)  Activity    DrivingDatyType DrivingPeriod   Sequence    Token"))
             :duration ()
             :condition (:print "> Full Driving Day processed\n")

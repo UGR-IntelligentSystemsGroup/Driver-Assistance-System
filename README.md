@@ -132,7 +132,7 @@ Integrating Machine Learning with Automated Planning
 
   - Hay que corregir el script fromCSVtoPLAN.py y sacar de nuevo la secuencia de acciones. Hasta asegurarme de qué dataset es el correcto voy a corregir los predicados a mano.
 
-  - Es 00:00 del día anterior o del posterior para SIADEX? Si es del segundo hay que cambiar el dataset también.
+  - Es 00:00 del día anterior o del posterior para SIADEX? Si es del segundo hay que cambiar el dataset también. -> **DEL POSTERIOR**
 
   - Los datos timestamp **NO** están conectados, hay saltos (ej: 08 a 10) -> **NO HAY SALTOS**, es el problema anterior. Hay que suponer que es la fecha siguiente. -> Hay que corregirlo en el script
 
@@ -141,6 +141,10 @@ Integrating Machine Learning with Automated Planning
 - 183 minutos sigue siendo un B_T3 o un B_T4?
 
 - Acción 115: Dos conductores? Va desde 11 17pm a 12 3am, siguiendo sin pausa grande hasta 12 6am -> O eso o es una jornada de 13h, capaz
+
+- Para manejar ciertas anomalías en los descansos, que se solapen los intervalos? Ya que el orden en la tarea decida a qué secuencia pertenece
+
+- Qué será más eficiente, (horas_en_minutos) o (hora_en_minutos)?
 
 ## Commands
 
