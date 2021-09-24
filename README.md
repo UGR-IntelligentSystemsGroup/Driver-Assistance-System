@@ -146,6 +146,8 @@ Integrating Machine Learning with Automated Planning
 
 - Qué será más eficiente, (horas_en_minutos) o (hora_en_minutos)?
 
+- Si pillo las últimas actividades (desde 136 hasta el final) me mata el proceso. No sé si por falta de memoria.
+
 ## Commands
 
 ./planner/planner -d hpdl/domain.pddl -p hpdl/problem-recognition.pddl
@@ -169,6 +171,8 @@ pueda ser utilizada por otros módulos, o en un análisis posterior del plan res
   - En la lista de métodos de una tarea abstracta. Sirve para que una vez que se han probado como ciertas las precondiciones de un método se descarte probar con el resto de métodos. Nuevamente usado con cuidado este corte tampoco tiene por que afectar a la completitud del algoritmo. El escritor de dominios puede conocer que los métodos son mutuamente excluyentes y que una vez que se prueba con uno, el resto ya son inválidos.
 
 - NA context by default or after daily_reset -> Lo cambio a NONE
+
+- Generado dataset.csv desde Ejemplo Dataset 2
 
 ### Notation
 

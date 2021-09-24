@@ -8,11 +8,12 @@ doc/*
 !doc/graphs
 
 # Data
-data/
+data/old
 # *.xls
 # *.xlsx
 
 # Output
+out/old
 out/output.csv
 # out/**
 # *.csv
