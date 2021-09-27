@@ -152,13 +152,13 @@ def main(argv):
 
             # Generate a .plan for each driver
             # PRIMERA PRUEBA: vamos a extraer solo los registros del primer conductor
-            if driverCounter == 2:  
+            if driverCounter == 3:  
                 output_plan.close()
                 break
             if not open_output:
                 open_output = True
 
-                output_plan = open(output_folder + 'sequence_' + currentDriver + '.plan', 'w')
+                output_plan = open(output_folder + 'event_log.plan', 'w')
 
             # Write "(row_index taskSymbol taskType[estado] dateStart end duration driverSymbol)"
             string_output = ("(" + str(row_index) + " " + taskSymbol + " " 
@@ -171,7 +171,7 @@ def main(argv):
             row_index += 1
             previousDriver = currentDriver
 
-            output_Symbols = open(output_folder + 'sequence_' + currentDriver + '.TaskSymbol', 'w')
+            output_Symbols = open(output_folder + 'event_log.TaskSymbol', 'w')
             output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['D']))
             output_Symbols.write('\n')
             output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['O']))

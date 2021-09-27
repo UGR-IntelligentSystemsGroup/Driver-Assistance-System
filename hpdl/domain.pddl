@@ -346,7 +346,7 @@
                 (DD ?d)
             )
         )
-
+        
         (:method edd
             :precondition (secuencia_entrada_no_vacia)
             :tasks ( 
@@ -419,6 +419,7 @@
             :precondition()
             :tasks (
                 (reset_counters)
+                (b_daily_context EDD)
                 (CDDs_S ?d)
                 (:inline
                     ()
@@ -438,6 +439,7 @@
                     (<= ( + (+ (dt_current_cdds_S) (dt_last_CDDs_S)) (dt_last_slice)) (hours_in_mins 10.0))
                     ()
                 )
+                (e_daily_context EDD)
             )
         )
     )
