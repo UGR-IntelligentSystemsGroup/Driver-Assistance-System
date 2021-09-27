@@ -24,7 +24,7 @@
     (:constants
         DIA_CONSUMIDO SECUENCIA_TERMINADA BREAK_CONSIDERED_REST PAUSE_CONSIDERED_BREAK FALLO_LATASK- Mensaje
 
-        task_A conduce_un_dia conduce_un_dia_NORMAL conduce_un_dia_AMPLIADA Procesa_Accion - TaskSymbol
+        Procesa_Accion - TaskSymbol
         
         conduccion_diaria_normal conduccion_diaria_ampliada - TipoConduccion
 
@@ -300,37 +300,6 @@
     ; (:derived (diferente ?x ?y) {return ?x != ?y})
     ; (:derived (igual ?x ?x) ())
 
-    ;***********************************************
-
-    ; (:task conduce_un_dia
-    ; 	:parameters (?d - Driver)
-    ; 	(:method normal
-    ; 		:precondition ()
-    ; 		:tasks (
-    ; 				;INICIALIZAR ACUMULADORES DE CADA DIA
-    ; 				(:inline () (and (assign (minutos_consumidos) 0)
-    ; 								 (assign (dt_day ?d) 0)
-    ; 								 (assign (tiempo_otros_dia ?d) 0)
-    ; 								 (assign (tiempo_parada_dia ?d) 0)
-    ; 								 (assign (tiempo_espera_dia ?d) 0)))
-    ; 				;(NDD ?d)
-    ; 				(NDD ?d))
-    ; 		)
-
-    ; 	(:method ampliada
-    ; 		:precondition ()
-    ; 		:tasks (
-    ; 				;INICIALIZAR ACUMULADORES DE CADA DIA
-    ; 				(:inline () (and (assign (minutos_consumidos) 0)
-    ; 								 (assign (dt_day ?d) 0)
-    ; 								 (assign (tiempo_otros_dia ?d) 0)
-    ; 								 (assign (tiempo_parada_dia ?d) 0)
-    ; 								 (assign (tiempo_espera_dia ?d) 0)))
-    ; 				(conduce_un_dia_AMPLIADA ?d))
-    ; 		)
-
-    ; )
-
     ; =========================================================================
     ; TASKS
     ; =========================================================================
@@ -349,7 +318,7 @@
         
         (:method edd
             :precondition (secuencia_entrada_no_vacia)
-            :tasks ( 
+            :tasks (
                 (EDD ?d)
                 (print_new_day)
                 (DD ?d)
@@ -1111,8 +1080,9 @@
         ; aquí se acabó la secuencia de acciones, cuando sale por aquí se le ha acabado la secuencia y CORRECTO Y DEBE TERMINAR
         (:method caso_base2
             :precondition (fin_secuencia_entrada)
-            :tasks
-            (EndOfSequece);(MSG_INFO SECUENCIA_TERMINADA) )
+            :tasks (
+                EndOfSequece
+            );(MSG_INFO SECUENCIA_TERMINADA) )
         ) 
         
         ; AQUÍ HA HABIDO UN FALLO: SE DAN las condiciones de recursión, pero NO SE HA PODIDO PROCESAR si continua recursion y no ha entrado en ninguno de los metodos anteriores
@@ -1481,7 +1451,7 @@
     (:durative-action print_new_day
 	    :parameters ()
 	    :meta (
-            (:tag prettyprint "# ----------------------------------------------------------NEW DAY----------------------------------------------------------
+            (:tag prettyprint "# ----------------------------------------------------NEW DAY----------------------------------------------------
 #Driver	DateTimeStart		DateTimeEnd		Duration(min)	Activity DType	DPeriod	Sequence	Token"))
             ; (:tag prettyprint "# Driver DateTimeStart   DateTimeEnd Duration (min)  Activity    DrivingDatyType DrivingPeriod   Sequence    Token"))
             :duration ()

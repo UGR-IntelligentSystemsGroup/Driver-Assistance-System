@@ -149,6 +149,9 @@ Integrating Machine Learning with Automated Planning
 - Qué será más eficiente, (horas_en_minutos) o (hora_en_minutos)?
 
 - Si pillo las últimas actividades (desde 136 hasta el final) me mata el proceso. No sé si por falta de memoria.
+  - Creo que es por la recursión en la task CDD_T2_SEQUENCE. Si el caso base no funciona debe por narices probarlo de nuevo pero con la recursión? Si le pongo el (!) consigo que me lo lea bien -> Pero no coges los token cdd_t2_start y cdd_t2_slice, por lo que lo quito
+
+- **IMPORTANTE** Las horas de Other no se deberían contar? Sino estamos contando jornadas de >9h como NDD si conduce poco (probablemente sea un repartidor que pasa más tiempo entregando cosas)
 
 ## Commands
 
