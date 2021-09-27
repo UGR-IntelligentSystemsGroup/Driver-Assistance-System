@@ -32,6 +32,8 @@ Integrating Machine Learning with Automated Planning
 
   - Tambien veo que hay Breaks que marca con contexto de Activity. Parece que son los de <15m. Se deberían marcar como Idle? La cosa es que en el dataset vienen que son pausas, lo pongo entonces como B_T0. Técnicamente si está cerca de 15 y viene después de una conducción debería considerarse como Break, pero si es de pocos minutos es más lógico considerarlo como Idle.
 
+  - The HoS regulation establishes that a basic sequence is a sequence of any number of activities such that the duration of any Pause is strictly less than 15 mins. Tengo entonces que poner B_T0 como A?
+
 - task RD, method B_T5: Por qué está comentado B_T4? idem con B_T6. Es que falta añadir esos métodos?
 
 - Ejemplo_Dataset_Anonimizado: Datos erróneos.

@@ -28,3 +28,6 @@ grammar/.antlr
 
 # Old HPDL files
 hpdl/old/
+
+# Vscode
+.vscode

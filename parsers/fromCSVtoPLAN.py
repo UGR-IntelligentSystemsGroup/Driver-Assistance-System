@@ -171,16 +171,15 @@ def main(argv):
             row_index += 1
             previousDriver = currentDriver
 
-
-        output_Symbols = open(output_folder + 'sequence_' + currentDriver + '.TaskSymbol', 'w')
-        output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['D']))
-        output_Symbols.write('\n')
-        output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['O']))
-        output_Symbols.write('\n')
-        output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['B']))
-        output_Symbols.write('\n')
-        output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['I']))
-        output_Symbols.close()
+            output_Symbols = open(output_folder + 'sequence_' + currentDriver + '.TaskSymbol', 'w')
+            output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['D']))
+            output_Symbols.write('\n')
+            output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['O']))
+            output_Symbols.write('\n')
+            output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['B']))
+            output_Symbols.write('\n')
+            output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['I']))
+            output_Symbols.close()
 
 ###############################################################################
 # -----------------------------------------------------------------------------
