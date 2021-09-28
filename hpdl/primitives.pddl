@@ -531,11 +531,3 @@
 		; )
 		:effect (increase (tiempo_espera ?d) ?dur)
 )
-
-; -------------------------------------------------------------------------
-				
-(:action break
-	:parameters ()
-	:precondition ()
-	:effect ()
-)

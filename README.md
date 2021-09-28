@@ -18,14 +18,18 @@ Integrating Machine Learning with Automated Planning
 
 ## Doubts
 
-- En el paper del ICAPS hay un par
+- **IMPORTANTE** Cuál tiene que ser la salida? (Formato)
+  - Driver - DatetimeStart - DatetimeEnd - Duration - Activity (DOBI) -- DrivingDayType (ndd/edd) - DrivingPeriod (split/continuos) - Sequence (cdds/cdde) - Token (elt=A, b_t1, b_t2, b_t3, rd_normal=Rg11, rd_reduced=Rg3, wr_normal=Rg45, wr_reduced=Rg24) ???
 
-- (! ...) en el archivo de primitivas, en las tareas. Qué hace? (corte alla PROLOG)?
+  - Because of that, every event in the event log is annotated with four labels3 according to the contexts day (with possible values ndd or edd), driving period (continuous or splitted), sequence (cdds or cdde) and token (elt, b t1, b t2, b t3, rd normal, rd reduced, wr normal, wr reduced).
 
-- Por qué las durative-actions no tienen un último paréntesis que cierre?
+  - La cosa es que la salida no es lo mismo que pone aquí, verdad?
 
-- Qué pasa con las tareas comentadas?
-  - Para conduce_un_dia falta conduce_un_dia_AMPLIADA
+  - Un token más diciendo que se ajusta a la regulación? O los none indican eso?
+
+  - Hablar también de la conducción semanal y descanso de compensación
+
+- **IMPORTANTE** La regulación HOS cambió en junio de 2020: https://www.fmcsa.dot.gov/regulations/hours-of-service
 
 - Por dónde empiezo? Qué fallos tiene?
   - Entiendo que uno de los fallos son los NA, no reconoce si es NDD o EDD
@@ -34,7 +38,53 @@ Integrating Machine Learning with Automated Planning
 
   - The HoS regulation establishes that a basic sequence is a sequence of any number of activities such that the duration of any Pause is strictly less than 15 mins. Tengo entonces que poner B_T0 como A?
 
-- task RD, method B_T5: Por qué está comentado B_T4? idem con B_T6. Es que falta añadir esos métodos?
+- Si hay una memoria o cualquier tipo de documento adicional con información sobre esto lo agradecería.
+
+- Para asegurarme: El backtracking deshace los efectos de un inline, verdad? Refiriéndome a casos como:
+  - (b_daily_context NDD) <- Inline, si sale se deshace, no?
+  - (CDD ?d)
+  - (e_daily_context NDD)
+
+- B_T3 pasa como máximo de 45m a 3h, pero si pasa de 45 debería ser una anomalía. No sería mejor modelarlo con otra tarea? Por qué si se quita no funciona?
+
+- Por qué esa nomenclatura en los Breaks (1,2,3), no sería más legible que estén ordenados?
+
+- **IMPORTANTE** Las horas de Other no se deberían contar? Sino estamos contando jornadas de >9h como NDD si conduce poco (probablemente sea un repartidor que pasa más tiempo entregando cosas)
+
+- No entiendo por qué la task EDD es así. Cada CDDs_S tiene un RD dentro por lo que en total habría 3 para una supuesta jornada. La cosa es que el día 06/01 lo coge bien.
+
+- Cuál es el dataset "más limpio"? (Del que partir)
+
+- DXX, OXX... las XX significan algo?
+
+- Los breaks pequeños no cambiaban el contexto, por algún motivo? No se quieren esos tokens en el log?
+
+- Qué será más eficiente, (horas_en_minutos) o (hora_en_minutos)?
+
+- En general no entiendo bien los contextos. En el paper sí, pero no lo implementado. Es para añadir tokens a la salida, no?
+
+- 183 minutos sigue siendo un B_T3 o un B_T4?
+
+- Muy pocos "En espera". Es normal?
+
+- Por qué las durative-actions no tienen un último paréntesis que cierre?
+
+- task P_A: el orden de los métodos está considerado?
+
+- Por lo que parece no puedo usar las trazas del doc, son para otra versión del dominio.
+
+- (modo_generar) bucle infinito? Qué hace? se añade directamente la primitiva al plan (y si no se pueden cumplir las restricciones/condiciones pues fallará?
+  - Para generar acciones deberíamos saber localización y recursos, no?
+
+  - Lo que sí se podría hacer (con lo que hay) es indicar que tiene que hacer actividades y sus descansos.
+
+- No está modelado el weakly rest (WD), verdad?
+
+- La gramática de atributos es puramente informativa?
+
+- Habrá que modelar también el Team Daily Driving?
+
+- Acción 115: Dos conductores? Va desde 11 17pm a 12 3am, siguiendo sin pausa grande hasta 12 6am -> O eso o es una jornada de 13h, capaz
 
 - Ejemplo_Dataset_Anonimizado: Datos erróneos.
   - El encabezado está mal. Hay que cambiar 2ª latitud de inicio por latitud_final.
@@ -45,113 +95,8 @@ Integrating Machine Learning with Automated Planning
 
   - En sí los valores no tienen sentido, deberían ser +-90 o +-180. Probablemente estén usando decimales sin haberlos marcados, pero de cuánta precisión?
 
-- Muy pocos "En espera". Es normal?
-
-- Cuál es el dataset "más limpio"? (Del que partir)
-
-- task P_A: el orden de los métodos está considerado?
-
-- **IMPORTANTE** Dibujar la estructura jerárquica de tareas.
-
-- Cierta inconsistencia en la nomenclatura al nombrar tareas y métodos. B_T1 - B_T1 vs B_T2 - SINGLE
-
-- task break es para un salto de línea?
-
-- Completar notación.
-
-- La secuencia b_tk - A - e_tk - RD se repite varias veces. Agruparla?
-
-- Función (mensaje fulfill) no parece que debería estar aquí. También hay cosas en el problema que parecen que vienen de lo de Multimorbidity (las estoy quitando). El tipo "jornada" no, pero creo que no debería estar.
-
-- En general muchas funciones y predicados que no se usan.
-
-- b_tk y e_tk qué hacen? La primera quita el contexto actual y pasa uno nuevo, mientras que la segunda cambia el actual por el contexto na?
-
-- Por lo que parece no puedo usar las trazas del doc, son para otra versión del dominio.
-
-- Pausa vs Espera. Idle vs Pause.
-
-- Si hay una memoria o cualquier tipo de documento adicional con información sobre esto lo agradecería.
-
-- (modo_generar) bucle infinito? Qué hace? se añade directamente la primitiva al plan (y si no se pueden cumplir las restricciones/condiciones pues fallará?
-
-- **IMPORTANTE** Hay que cambiar los nombres y seguir un formato (inglés o español, pero siempre el mismo)
-
-- Cómo generar los problemas? Objetos, goal y predicados. No me refiero a la traducción del log.
-
-- En el output (event log anotado) me salen na (supongo que será normal). Pero que aparezcan variables es un bug, no? Por lo que veo es solo en OTRO TRABAJO (durative-action O_p), y es por no pasarle la variable como parámetro (por lo que no está instanciada).
-
-- No está modelado el weakly rest (WD), verdad?
-
-- Los breaks no cambian el contexto, por qué?
-
-- cdd_t2  means  continued daily driving of type 3???? Lo he pasado a 2 en la gramática
-
-- La gramática de atributos es puramente informativa?
-
-- Habrá que modelar también el Team Daily Driving?
-
-- R_g9 = Rest 9h? idem con R_g11?
-
-- **IMPORTANTE** Si cada vez que se llama a las tareas semi-básicas (A, B_T1...) se cambia de contexto, no podría hacerse dentro de ellas?. En los Breaks está comentado, por qué?
-  - Si fuera para usar en unas b_tk, en otras b_slice y b_legal_slice lo entendería, pero no es el caso.
-
-  - Concretely, every task in the right hand side of a production {a : b1 .. bn }, is extended as {a : sb1 b1 eb1 ... sbn bn ebn} where the new tasks sbi,ebi are used to (1) delimit the start (sbi) and end (ebi) of the decomposition of a task (sbi), (2) add to the state information about the label corresponding to that task (which can be interpreted as the current decomposition context). For example the production {cdd : cdds cdde} is extended as {cdd : scdds cdds ecdds scdde cdde ecdde}, scdds asserts the context ’cdds’ to the state, and ecdds retracts that context. Finallly, the primitive durative actions associated with each event are extended with new parameters (one for each type of label) and tasks devoted to recognize events (as the one shown in Figure 4) are extended to capture the information added to the state by the newly added delimiting tasks, and adding primitive tasks which embody information about the context.
-
-- **IMPORTANTE** Cuál tiene que ser la salida? (Formato)
-  - Driver - DatetimeStart - DatetimeEnd - Duration - Activity (DOBI) -- DrivingDayType (ndd/edd) - DrivingPeriod (split/continuos) - Sequence (cdds/cdde) - Token (elt=A, b_t1, b_t2, b_t3, rd_normal=Rg11, rd_reduced=Rg3, wr_normal=Rg45, wr_reduced=Rg24) ???
-
-  - Because of that, every event in the event log is annotated with four labels3 according to the contexts day (with possible values ndd or edd), driving period (continuous or splitted), sequence (cdds or cdde) and token (elt, b t1, b t2, b t3, rd normal, rd reduced, wr normal, wr reduced).
-
-  - La cosa es que la salida no es lo mismo que pone aquí, verdad?
-
-- En los prettyprint de las acciones DOBI he pasado de CSV con ; a TSV. La salida es más legible de por sí, y a la hora de pasarlo a un dataset no habría problema.
-
-- Por qué no hay O_p2 ni E_p2? Los he cambiado para que haya alternativa con contexto
-
-- **IMPORTANTE** La regulación HOS cambió en junio de 2020: https://www.fmcsa.dot.gov/regulations/hours-of-service
-
-- DXX, OXX... las XX significan algo?
-
-- En general no entiendo bien los contextos. En el paper sí, pero no lo implementado.
-
-- B_T3 pasa como máximo de 45m a 3h, pero si pasa de 45 debería ser una anomalía. No sería mejor modelarlo con otra tarea? Por qué si se quita no funciona?
-
-- B_T1/2/3 solo cambian en la condición, no sería mejor usar when?
-
-- Por qué esa nomenclatura en los Breaks (1,2,3), no sería más legible que estén ordenados?
-
-- **IMPORTANTE** Los logs tienen muchas pausas o patrones (Breaks y Drivings muy cortos, muchos Other) que se alejan de la normativa (o continuo o particionado). Esto es difícil de modelar con planificación.
-
-- Task break vacía sirve para algo? En general mirar todas las que no se utilicen para ver si quitarlas.
-
-- El primer método de A es recursivo para poder incluir todas las acciones posibles antes del break?
-
-- **IMPORTANTE** En la secuencia de acciones (la que se supone que viene del tacógrafo) esta MAL (ej: 11pm 06 -> 3am 06 -> 4am 07)
-  - En tacografo3.xmlx no está este fallo. El dataset es posiblemente diferente al completo.
-
-  - En EjemploDatasetAnonimizado **SI** -> Error: La fecha es única, aunque las horas salten de un día a otro
-
-  - Hay que corregir el script fromCSVtoPLAN.py y sacar de nuevo la secuencia de acciones. Hasta asegurarme de qué dataset es el correcto voy a corregir los predicados a mano.
-
-  - Es 00:00 del día anterior o del posterior para SIADEX? Si es del segundo hay que cambiar el dataset también. -> **DEL POSTERIOR**
-
-  - Los datos timestamp **NO** están conectados, hay saltos (ej: 08 a 10) -> **NO HAY SALTOS**, es el problema anterior. Hay que suponer que es la fecha siguiente. -> Hay que corregirlo en el script
-
-  - Poner una marca para saber cuándo se hace un rest grande (comentada)
-
-- 183 minutos sigue siendo un B_T3 o un B_T4?
-
-- Acción 115: Dos conductores? Va desde 11 17pm a 12 3am, siguiendo sin pausa grande hasta 12 6am -> O eso o es una jornada de 13h, capaz
-
-- Para manejar ciertas anomalías en los descansos, que se solapen los intervalos? Ya que el orden en la tarea decida a qué secuencia pertenece
-
-- Qué será más eficiente, (horas_en_minutos) o (hora_en_minutos)?
-
-- Si pillo las últimas actividades (desde 136 hasta el final) me mata el proceso. No sé si por falta de memoria.
+- Si pillo las últimas actividades (desde 136 hasta el final) me mata el proceso por falta de memoria.
   - Creo que es por la recursión en la task CDD_T2_SEQUENCE. Si el caso base no funciona debe por narices probarlo de nuevo pero con la recursión? Si le pongo el (!) consigo que me lo lea bien -> Pero no coges los token cdd_t2_start y cdd_t2_slice, por lo que lo quito
-
-- **IMPORTANTE** Las horas de Other no se deberían contar? Sino estamos contando jornadas de >9h como NDD si conduce poco (probablemente sea un repartidor que pasa más tiempo entregando cosas)
 
 ## Commands
 
@@ -161,13 +106,9 @@ Integrating Machine Learning with Automated Planning
 
 ## Notes
 
-- El tacógrafo abarca más de un día
-
 - C_p2 ;_p es sufijo de primitiva; 2 is because action as contexts in parameters
 
-- Los metatags son una extensión del lenguaje que actualmente está en fase experimental, por lo que puede cambiar en futuras versiones. El concepto subyacente a los metatags es poder incluir
-información extra en el dominio, que aunque no sea directamente utilizable por el planificador,
-pueda ser utilizada por otros módulos, o en un análisis posterior del plan resultante.
+- Los metatags son una extensión del lenguaje que actualmente está en fase experimental, por lo que puede cambiar en futuras versiones. El concepto subyacente a los metatags es poder incluir información extra en el dominio, que aunque no sea directamente utilizable por el planificador, pueda ser utilizada por otros módulos, o en un análisis posterior del plan resultante.
 
 - El corte (!) es otro de los conceptos introducidos para mejorar la eficiencia del proceso de planificación. Este concepto está tomado del lenguaje PROLOG [PROLOG] donde se utiliza para “olvidar” las unificaciones previas si se vuelve por backtracking. Obviamente el uso del corte afecta a la completitud del proceso de refutación, por lo que debe de ser utilizado con cuidado. En HTN-PDDL es posible usar el corte para parar el backtracking en dos lugares distintos:
 
@@ -175,9 +116,34 @@ pueda ser utilizada por otros módulos, o en un análisis posterior del plan res
 
   - En la lista de métodos de una tarea abstracta. Sirve para que una vez que se han probado como ciertas las precondiciones de un método se descarte probar con el resto de métodos. Nuevamente usado con cuidado este corte tampoco tiene por que afectar a la completitud del algoritmo. El escritor de dominios puede conocer que los métodos son mutuamente excluyentes y que una vez que se prueba con uno, el resto ya son inválidos.
 
+### Changes
+
 - NA context by default or after daily_reset -> Lo cambio a NONE
 
 - Generado dataset.csv desde Ejemplo Dataset 2
+
+- Usando nomenclatura inglesa
+
+- Quitando métodos, predicados y funciones que no se usan
+
+- Limpiado los archivos pddl
+
+- parsers del dataset rehechos.
+
+- Árbol de actividades hecho (versión antigua)
+
+- Añadido (casi, creo) todos los tipos de breaks
+
+- En los prettyprint de las acciones DOBI he pasado de CSV con ; a TSV. La salida es más legible de por sí, y a la hora de pasarlo a un dataset no habría problema.
+
+- **IMPORTANTE** Si cada vez que se llama a las tareas semi-básicas (A, B_T1...) se cambia de contexto, no podría hacerse dentro de ellas?. En los Breaks está comentado, por qué?
+  - Si fuera para usar en unas b_tk, en otras b_slice y b_legal_slice lo entendería, pero no es el caso.
+
+  - Concretely, every task in the right hand side of a production {a : b1 .. bn }, is extended as {a : sb1 b1 eb1 ... sbn bn ebn} where the new tasks sbi,ebi are used to (1) delimit the start (sbi) and end (ebi) of the decomposition of a task (sbi), (2) add to the state information about the label corresponding to that task (which can be interpreted as the current decomposition context). For example the production {cdd : cdds cdde} is extended as {cdd : scdds cdds ecdds scdde cdde ecdde}, scdds asserts the context ’cdds’ to the state, and ecdds retracts that context. Finallly, the primitive durative actions associated with each event are extended with new parameters (one for each type of label) and tasks devoted to recognize events (as the one shown in Figure 4) are extended to capture the information added to the state by the newly added delimiting tasks, and adding primitive tasks which embody information about the context.
+
+  - Puestos dentro
+
+- Por qué no hay O_p2 ni E_p2? Los he cambiado para que haya alternativa con contexto
 
 ### Notation
 
@@ -231,7 +197,7 @@ B_T4: break of [3h, 9h)
 B_T5: break of [9h, 11h)
 B_T6: BREAK OF [11h, 24h)
 B_T7: BREAK OF [24h, 45h)
-B_T8:: BREAK OF (9, 45-24+9) - COMPENSATION BREAK - PROBLEMATICO 
+B_T8: BREAK OF (9, 45-24+9) - COMPENSATION BREAK - PROBLEMATICO 
 B_T9: BREAK OF TEAM.
 B_T10: BREAK OF [45h,infty)
 ```
@@ -248,12 +214,5 @@ B_T10: BREAK OF [45h,infty)
 | (duration_action O5 1) | Duración en segundos
 | (parameters_typeO O5 driver1) | Conductor asociado
 
-
-
 CDD_T1 (Driving continous): A(4.5th) - B_T1(45m) - A - RD(>9h)
 CDD_T2 (Driving split): A(4.5h) - B_T1/2/3 - A - B_T1/2/3   (Si el primero fue 3, luego 1, e viceversa? O siempre la primera de 15)
-
-Posible task 0: 
-  DailyDriving
-    base:
-    m0: NDD

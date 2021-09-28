@@ -30,7 +30,7 @@
 
         typeD typeO typeB typeI - TipoAccion
 
-        ; Token
+        ; Tokens
         A I B_T0 B_T1 B_T2 B_T3 B_T4 B_T5 B_T6 B_T7 B_T10
 
         cdd_t2_slice cdd_t2_sequence 
@@ -86,7 +86,6 @@
         (puede_espera_AMPLIADA ?d - Driver)
 
         (continuar_recursion)
-        (continuar_recursion_A) ; ¡¡¡ NO SE USA !!!
 
         (secuencia_entrada_vacia)
         (secuencia_entrada_no_vacia)
@@ -104,10 +103,10 @@
         (duration_action ?sa - TaskInstanceSymbol ?d - number)
 
         ;PREDICADOS PARA REPRESENTAR DE QUÉ TIPO ES CADA ACCION
-        (is_typeD ?sa - TaskInstanceSymbol) ; es una accion de tipo conducir ... 
-        (is_typeO ?sa - TaskInstanceSymbol) ; es una accion de tipo OTROS    ... 
-        (is_typeB ?sa - TaskInstanceSymbol) ; es una accion de tipo PAUSA   ... 	
-        (is_typeI ?sa - TaskInstanceSymbol) ; es una accion de tipo ESPERA; 
+        (is_typeD ?sa - TaskInstanceSymbol) ; es una accion de tipo conducir
+        (is_typeO ?sa - TaskInstanceSymbol) ; es una accion de tipo OTROS
+        (is_typeB ?sa - TaskInstanceSymbol) ; es una accion de tipo PAUSA
+        (is_typeI ?sa - TaskInstanceSymbol) ; es una accion de tipo ESPERA
 
         ;asi es como se representa un "hecho de tipo accion"
         (parameters_typeD ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
@@ -121,8 +120,6 @@
         (currentindex_is_typeI ?k - number ?sa - TaskInstanceSymbol)
 
         ; Depuración
-        (write_hola ?p - number)
-        (write_debug ?p - number)
         (modo_depuracion)
         (DEBUG ?msg - Mensaje)
     )
@@ -198,18 +195,6 @@
     ; =========================================================================
 
     ; Depuración
-    (:derived (write_hola ?p) { 
-            print "falla con prioridad", ?p 
-            return true 
-        }
-    )
-
-    (:derived (write_debug ?p) { 
-            print "va con prioridad", ?p 
-            return 1 
-        }
-    )
-
     (:derived (task_failed ?p) { 
             print "HA FALLADO", ?p 
             return 1 
@@ -335,20 +320,12 @@
             )
         )
 
-        ; NOT WORKING ??? OUT OF MEMORY si no empieza a detectar patrones, empieza a profundizar mucho
+        ; PUEDE QUE NO FUNCIONE
         (:method ignore_action ;anomaly
             :precondition (secuencia_entrada_no_vacia)
             :tasks (
-                ; (:inline
-				; 	()
-				; 	(increase (current_index_action) 1)
-				; )
                 (reset_counters)
-                ; (b_tk A)
                 (Process_A ?d)
-                ; (e_tk A)
-
-                ; (print_new_day)
                 (DD ?d)
             )
         )
@@ -356,60 +333,6 @@
         (:method end
             :precondition ()
             :tasks ()
-        )
-    )
-
-    ; -------------------------------------------------------------------------
-
-    ; Normal Daily Driving
-    (:task NDD
-        :parameters (?d - Driver) 
-        (:method SINGLE
-            :precondition()
-            :tasks (
-                (reset_counters)
-                (b_daily_context NDD)
-                (CDD ?d)
-                (:inline
-                    (<= (dt_current_cdd) (hours_in_mins 9.0))
-                    ()
-                )
-                (e_daily_context NDD)
-            )
-        )
-    )
-
-    ; -------------------------------------------------------------------------
-
-    ; Extended Daily Driving - <10h total
-    (:task EDD
-        :parameters (?d - Driver) 
-        (:method SINGLE
-            :precondition()
-            :tasks (
-                (reset_counters)
-                (b_daily_context EDD)
-                (CDDs_S ?d)
-                (:inline
-                    ()
-                    (assign (dt_last_CDDs_S) (dt_current_CDDs_S))
-                )
-                (reset_counters)
-                (CDDs_S ?d)
-                ; (b_tk A)
-                (A ?d)
-                ; (e_tk A)
-                (:inline
-                    ()
-                    (assign (dt_last_slice) (dt_current_slice))
-                )
-                (RD ?d)
-                (:inline
-                    (<= ( + (+ (dt_current_cdds_S) (dt_last_CDDs_S)) (dt_last_slice)) (hours_in_mins 10.0))
-                    ()
-                )
-                (e_daily_context EDD)
-            )
         )
     )
 
@@ -438,6 +361,62 @@
                         (assign (bt_current_cdd_t2_sequence) 0)
                     )
                 )
+            )
+        )
+    )
+
+    ; -------------------------------------------------------------------------
+
+    ; Normal Daily Driving - <9h driving total
+    (:task NDD
+        :parameters (?d - Driver) 
+        (:method SINGLE
+            :precondition()
+            :tasks (
+                (reset_counters)
+
+                (b_daily_context NDD)
+                (CDD ?d)
+                (e_daily_context NDD)
+
+                (:inline
+                    (<= (dt_current_cdd) (hours_in_mins 9.0))
+                    ()
+                )
+            )
+        )
+    )
+    
+    ; -------------------------------------------------------------------------
+
+    ; Extended Daily Driving - <10h driving total
+    (:task EDD
+        :parameters (?d - Driver) 
+        (:method SINGLE
+            :precondition()
+            :tasks (
+                (reset_counters)
+                (b_daily_context EDD)
+                (CDDs_S ?d)
+                (:inline
+                    ()
+                    (assign (dt_last_CDDs_S) (dt_current_CDDs_S))
+                )
+                (reset_counters)
+                (CDDs_S ?d)
+
+                (A ?d)
+
+                (:inline
+                    ()
+                    (assign (dt_last_slice) (dt_current_slice))
+                )
+                (RD ?d)
+                (:inline
+                    (<= ( + (+ (dt_current_cdds_S) (dt_last_CDDs_S)) (dt_last_slice)) (hours_in_mins 10.0))
+                    ()
+                )
+                (e_daily_context EDD)
             )
         )
     )
@@ -552,8 +531,8 @@
         (:method SINGLE
             :precondition()
             :tasks (
-                ; (b_tk A)
                 (A ?d)
+
                 (:inline
                     (<= (dt_current_slice) (hours_in_mins 4.5))
                     ()
@@ -562,15 +541,13 @@
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
                 )
-                ; (e_tk A)
 
-                ; (b_tk B_T1)
                 (B_T1 ?d)
+
                 (:inline
                     ()
                     (assign (dt_current_CDD_T1_start) (dt_last_slice))
                 )
-                ; (e_tk B_T1)
             )
         )
     )
@@ -582,8 +559,8 @@
         (:method SINGLE
             :precondition()
             :tasks (
-                ; (b_tk A)
                 (A ?d)
+
                 (:inline
                     (<= (dt_current_slice) (hours_in_mins 4.5))
                     ()
@@ -592,9 +569,9 @@
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
                 )
-                ; (e_tk A)
 
                 (RD ?d)
+
                 (:inline
                     ()
                     (assign (dt_current_CDD_T1_END) (dt_last_slice))
@@ -622,7 +599,7 @@
                     (assign
                         (dt_current_CDD_T2_START)
                         (dt_current_cdd_t2_sequence)
-                        )
+                    )
                 )
             )
         )
@@ -636,15 +613,16 @@
             :precondition()
             :tasks (
                 (CDD_T2_SEQUENCE ?d)
-                ;(print_result ?x)
-                ; (b_tk A)
+
                 (A ?d)
-                ; (e_tk A)
+
                 (:inline
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
                 )
+
                 (RD ?d)
+
                 (:inline
                     (AND
                         (<= (+ (dt_current_cdd_t2_sequence) (dt_last_slice)) 270); (hours_in_mins 4.5))
@@ -673,13 +651,13 @@
                 (e_slice CDD_T2_Slice)
                 (:inline
                     ()
-                    (assign
+                    (increase
                         (dt_current_cdd_t2_sequence)
                         (dt_current_cdd_t2_slice))
                 )
                 (:inline
                     ()
-                    (assign
+                    (increase
                         (bt_current_cdd_t2_sequence)
                         (bt_current_cdd_t2_slice))
                 )
@@ -714,19 +692,18 @@
 
     (:task CDD_T2_Slice
         :parameters (?d - Driver) 
-        (:method Alt_1
+        (:method B_T2
             :precondition()
             :tasks (
-                ; (b_tk A)
                 (A ?d)
-                ; (e_tk A)
+
                 (:inline
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
                 )
-                ; (b_tk B_T2)
+
                 (B_T2 ?d)
-                ; (e_tk B_T2)
+
                 (:inline
                     ()
                     (assign (dt_current_cdd_t2_slice) (dt_last_slice))
@@ -740,20 +717,18 @@
             )
         ) 
 
-        (:method Alt_2
+        (:method B_T3
             :precondition()
             :tasks (
-                ; (b_tk A)
                 (A ?d)
-                ; (e_tk A)
+
                 (:inline
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
                 )
 
-                ; (b_tk B_T3)
                 (B_T3 ?d)
-                ; (e_tk B_T3)
+
                 (:inline
                     ()
                     (assign (dt_current_cdd_t2_slice) (dt_last_slice))
@@ -767,19 +742,18 @@
             )
         ) 
         
-        (:method Alt_3
+        (:method B_T1
             :precondition()
             :tasks (
-                ; (b_tk A)
                 (A ?d)
-                ; (e_tk A)
+
                 (:inline
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
                 )
-                ; (b_tk B_T1)
+
                 (B_T1 ?d)
-                ; (e_tk B_T1)
+
                 (:inline
                     ()
                     (assign (dt_current_cdd_t2_slice) (dt_last_slice))
@@ -793,8 +767,6 @@
             )
         )
     )
-
-    ; -------------------------------------------------------------------------
     
     ; ****************************
     ; Rests
@@ -804,7 +776,7 @@
     (:task RD
         :parameters (?d - Driver) 
         ; Reduced daily rest
-        (:method B_T5 ;B_T4: break of [9h, 11h)
+        (:method B_T5 ; Break of [9h, 11h)
             :precondition ()
             :tasks (
                 (b_tk B_T5)
@@ -865,7 +837,7 @@
             )
         )
 
-        (:method B_T10 ; BREAK OF [45h,infty)
+        (:method B_T10 ; BREAK OF [45h,infty) Weekly rest
             :precondition ()
             :tasks (
                 (b_tk B_T10)
@@ -901,10 +873,10 @@
     ; Breaks
     ; ****************************
 
-    ; Break tipo 1
+    ; BREAK OF [45min, 3h)
     (:task B_T1
         :parameters (?d - Driver)
-        (:method B_T1;B_T1: BREAK OF [45min, 3h)
+        (:method B_T1
             :precondition ()
             :tasks (
                 (b_tk B_T1)		
@@ -944,10 +916,10 @@
 
     ; -------------------------------------------------------------------------
 
-    ; Break tipo 2
+    ; BREAK OF [15min, 30)
     (:task B_T2
         :parameters (?d - Driver) 
-        (:method SINGLE
+        (:method B_T2
             :precondition ()
             :tasks (
                 (b_tk B_T2)
@@ -987,10 +959,10 @@
 
     ; -------------------------------------------------------------------------
 
-    ; Break tipo 3
+    ; BREAK OF [30min, 45min). Ahora lo he puesto [30min, 3h)
     (:task B_T3
         :parameters (?d - Driver) 
-        (:method SINGLE ;B_T3: BREAK OF [30min, 45min); ahora lo he puesto  [30min, 3h)
+        (:method B_t3 
             :precondition ()
             :tasks (
                 (b_tk B_T3)
@@ -1038,23 +1010,16 @@
             :tasks (
                 (Process_A ?d)
 
-                ; (:inline
-                ;     (:print "PASA POR AQUI\n")
-                ;     ()
-                ; )
                 (:inline
                     (< (current_rt) 15)
                     ()
                 )
-                ; (:inline
-                ;     (:print "Menor que 15\n")
-                ;     ()
-                ; )
 
                 (:inline
                     ()
                     (increase (dt_current_slice) (current_dt))
                 );calculates driving time of current subsequence
+
                 (A ?d))
         ) 
         
@@ -1070,7 +1035,7 @@
         ) 
         
         ; aquí se acabó el día. Cuando sale por aquí ha reconocido una secuencia de 24 horas. CORRECTO  Y DEBE CONTINUAR
-        (:method caso_base1
+        (:method dia_consumido
             :precondition (dia_consumido)
             :tasks (
                 EndOfDay
@@ -1078,7 +1043,7 @@
         ) 
         
         ; aquí se acabó la secuencia de acciones, cuando sale por aquí se le ha acabado la secuencia y CORRECTO Y DEBE TERMINAR
-        (:method caso_base2
+        (:method fin_secuencia_entrada
             :precondition (fin_secuencia_entrada)
             :tasks (
                 EndOfSequece
@@ -1377,60 +1342,6 @@
         )
     )
 
-    ; -------------------------------------------------------------------------
-
-    ;SUBSECUENCIA TERMINADA EN B_T3
-
-    (:task A_B_T3
-        :parameters (?d - Driver) 
-        (:method unico
-            :precondition ()
-            :tasks (
-                (cdd_t2_slice ?d); (A ?d)  (B_T3 ?d) 
-                (cdd ?d) ;(A ?d) (B_T1 ?d) (A ?d) (RD ?d)
-                ;(ndd ?d);  
-                (A ?d)
-                (RD ?d) ;2º descanso diario, row 21 excel, index 19 pddl
-                ;(ndd ?d)	
-                (CDD_T2_START ?d)
-                ; (CDD_T2_slice ?d);(A ?d) (B_T2 ?d) ; excel 23, indez 21
-                ; (print_result ?x)
-                ; (CDD_T2_slice ?d);(A ?d) (B_T1 ?d) ; excel 26, index 24
-                ; (print_result ?y)
-                ; (cdd_t2_slice ?d);(A ?d) (B_T2 ?d) ;excel 28, index 26
-                ; (print_result ?z)
-                ; (cdd_t2_slice ?d);(A ?d) (B_T1 ?d) ; EXCEL 30, index 28
-                ; (print_result ?w)
-                (CDD_T1_END ?d);(A ?d) (RD ?d); EXCEL 33, index 31 DESCANSO DIARIO DE 9 HORAS Y SOLO SE PODRÍAN HACER 3 POR SEMANA
-                ;(reset_counters)   
-                (ndd ?d)
-                ;(cdds_s ?d)	
-                ;(CDD_T2_START ?d)
-                ;(:inline () (assign (dt_current_cdd_t2_sequence) 0))
-                ;(:inline () (assign (bt_current_cdd_t2_sequence) 0));
-                ; (CDD_T2_SLICE ?D); (A ?d) (B_T2 ?d) 
-                ; (print_result ?x)
-                ; (print_breaking_time ?x1)
-
-                ; (CDD_T2_SLICE ?d);(A ?d) (B_T3 ?d); 
-                ;(reset_counters)												
-                ; (print_result ?y)
-                ; (print_breaking_time ?x2)
-                ;(cdds_s ?d)			
-                ;(CDD_T2_END ?d)
-                ;(A ?d) (B_T3 ?d) (A ?d) (B_T3 ?d) 
-                ;(A ?d) (RD ?d); excel 49, index 47
-            )
-        )
-
-        ; (:method unico2
-        ; 	:precondition ()
-        ; 	:tasks  ((A ?d) (B_T3 ?d) (A ?d) (B_T1 ?d) (A ?d) (RD ?d)
-        ; 		     (A ?d) 
-        ; 			  )
-        ; 	)	
-    )
-
     ; =========================================================================
     ; Debug
     ; =========================================================================
@@ -1452,7 +1363,7 @@
 	    :parameters ()
 	    :meta (
             (:tag prettyprint "# ----------------------------------------------------NEW DAY----------------------------------------------------
-#Driver	DateTimeStart		DateTimeEnd		Duration(min)	Activity DType	DPeriod	Sequence	Token"))
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DType	DPeriod	Sequence	Token"))
             ; (:tag prettyprint "# Driver DateTimeStart   DateTimeEnd Duration (min)  Activity    DrivingDatyType DrivingPeriod   Sequence    Token"))
             :duration ()
             :condition (:print "> Full Driving Day processed\n")
