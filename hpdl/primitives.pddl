@@ -299,7 +299,7 @@
 	)
 )
 
-; (:durative-action b_tk 
+; (:durative-action b_token 
 ; 	:parameters (?ctxt - context)
 ; 	:meta( 
 ; 		(:tag prettyprint "");BEGIN TOKEN ?ctxt")
@@ -308,7 +308,7 @@
 ; 	:condition (token-context ?current)
 ; 	:effect (and (token-context ?ctxt) (not (token-context ?current))))
 
-; (:durative-action e_tk 
+; (:durative-action e_token 
 ; 	:parameters (?ctxt - context)
 ; 	:meta( 
 ; 		(:tag prettyprint "");END TOKEN ?ctxt")
@@ -321,7 +321,7 @@
 ; Contexts
 ; -------------------------------------------------------------------------
 
-(:task b_tk
+(:task b_token
 	:parameters (?ctxt - context) 
 	(:method unico
 		:precondition ()
@@ -334,7 +334,7 @@
 	)
 )
 
-(:task e_tk
+(:task e_token
 	:parameters (?ctxt - context) 
 	(:method unico
 		:precondition ()
@@ -347,7 +347,7 @@
 
 ; -------------------------------------------------------------------------
 
-(:task b_slice
+(:task b_drivingType
 	:parameters (?ctxt - context) 
 	(:method unico
 		:precondition ()
@@ -359,7 +359,7 @@
 	)
 )
 
-(:task e_slice
+(:task e_drivingType
 	:parameters (?ctxt - context) 
 	(:method unico
 		:precondition ()
@@ -374,7 +374,7 @@
 
 ; -------------------------------------------------------------------------
 
-(:task b_legal_slice
+(:task b_sequence
 	:parameters (?ctxt - context) 
 	(:method unico
 		:precondition ()
@@ -386,7 +386,7 @@
 	)
 )
 
-(:task e_legal_slice
+(:task e_sequence
 	:parameters (?ctxt - context) 
 	(:method unico
 		:precondition ()
@@ -401,7 +401,7 @@
 
 ; -------------------------------------------------------------------------
 
-(:task b_daily_context
+(:task b_dayType
 	:parameters (?ctxt - context) 
 	(:method unico
 		:precondition ()
@@ -413,7 +413,7 @@
 	)
 )
 
-(:task e_daily_context
+(:task e_dayType
 	:parameters (?ctxt - context) 
 	(:method unico
 		:precondition ()

@@ -375,9 +375,9 @@
             :tasks (
                 (reset_counters)
 
-                (b_daily_context NDD)
+                (b_dayType NDD)
                 (CDD ?d)
-                (e_daily_context NDD)
+                (e_dayType NDD)
 
                 (:inline
                     (<= (dt_current_cdd) (* (hours_in_mins) 9.0))
@@ -397,7 +397,7 @@
             :tasks (
                 (reset_counters)
                 
-                (b_daily_context EDD)
+                (b_dayType EDD)
                 (CDDs_S ?d)
                 
                 (:inline
@@ -421,7 +421,7 @@
                     (<= ( + (+ (dt_current_cdds_S) (dt_last_CDDs_S)) (dt_last_slice)) (* (hours_in_mins) 10.0))
                     ()
                 )
-                (e_daily_context EDD)
+                (e_dayType EDD)
             )
         )
     )
@@ -462,9 +462,9 @@
         (:method t1
             :precondition()
             :tasks (
-                (b_legal_slice CDD_T1_START)
+                (b_sequence CDD_T1_START)
                 (CDD_T1_START ?d)
-                (e_legal_slice CDD_T1_START)
+                (e_sequence CDD_T1_START)
                 (:inline
                     ()
                     (assign
@@ -478,9 +478,9 @@
         (:method t2
             :precondition()
             :tasks (
-                (b_legal_slice CDD_T2_START)
+                (b_sequence CDD_T2_START)
                 (CDD_T2_START ?d)
-                (e_legal_slice CDD_T2_START)
+                (e_sequence CDD_T2_START)
                 (:inline
                     ()
                     (assign
@@ -500,9 +500,9 @@
         (:method t1
             :precondition()
             :tasks (
-                (b_legal_slice CDD_T1_END)
+                (b_sequence CDD_T1_END)
                 (CDD_T1_END ?d)
-                (e_legal_slice CDD_T1_END)
+                (e_sequence CDD_T1_END)
                 (:inline
                     ()
                     (assign
@@ -516,9 +516,9 @@
         (:method t2
             :precondition()
             :tasks (
-                (b_legal_slice CDD_T2_END)
+                (b_sequence CDD_T2_END)
                 (CDD_T2_END ?d)
-                (e_legal_slice CDD_T2_END)
+                (e_sequence CDD_T2_END)
                 (:inline
                     ()
                     (assign
@@ -651,9 +651,9 @@
         (:method caso_base0
             :precondition()
             :tasks (
-                (b_slice CDD_T2_slice)
+                (b_drivingType CDD_T2_slice)
                 (CDD_T2_slice ?d)
-                (e_slice CDD_T2_Slice)
+                (e_drivingType CDD_T2_Slice)
                 (:inline
                     ()
                     (increase
@@ -672,9 +672,9 @@
         (:method recurre
             :precondition ()
             :tasks (
-                (b_slice CDD_T2_slice)
+                (b_drivingType CDD_T2_slice)
                 (CDD_T2_slice ?d)
-                (e_slice CDD_T2_Slice)
+                (e_drivingType CDD_T2_Slice)
                 (:inline
                     ()
                     (increase
@@ -784,13 +784,13 @@
         (:method B_T5 ; Break of [9h, 11h)
             :precondition ()
             :tasks (
-                (b_tk B_T5)
+                (b_token B_T5)
                 (B ?d ?dur)
                 (:inline
                     (and (>= ?dur (* (hours_in_mins) 9)) (< ?dur (* (hours_in_mins) 11)))
                     ()
                 )
-                (e_tk B_T5)
+                (e_token B_T5)
 
                 (:inline
                     ()
@@ -815,13 +815,13 @@
         (:method B_T6 ; BREAK OF [11h, 24h)
             :precondition ()
             :tasks (
-                (b_tk B_T6)
+                (b_token B_T6)
                 (B ?d ?dur)
                 (:inline
                     (and (>= ?dur (* (hours_in_mins) 11)) (< ?dur (* (hours_in_mins) 24)))
                     ()
                 )
-                (e_tk B_T6)
+                (e_token B_T6)
 
                 (:inline
                     ()
@@ -845,13 +845,13 @@
         (:method B_T10 ; BREAK OF [45h,infty) Weekly rest
             :precondition ()
             :tasks (
-                (b_tk B_T10)
+                (b_token B_T10)
                 (B ?d ?dur)
                 (:inline
                     (>= ?dur (* (hours_in_mins) 45))
                     ()
                 )
-                (e_tk B_T10)
+                (e_token B_T10)
 
                 (:inline
                     ()
@@ -884,13 +884,13 @@
         (:method B_T1
             :precondition ()
             :tasks (
-                (b_tk B_T1)		
+                (b_token B_T1)		
                 (B ?d ?dur)
                 (:inline
                     (and (>= ?dur 45) (< ?dur (* (hours_in_mins) 3)))
                     ()
                 )
-                (e_tk B_T1)
+                (e_token B_T1)
 
                 (:inline
                     ()
@@ -927,13 +927,13 @@
         (:method B_T2
             :precondition ()
             :tasks (
-                (b_tk B_T2)
+                (b_token B_T2)
                 (B ?d ?dur)
                 (:inline
                     (and (>= ?dur 15) (< ?dur 30))
                     ()
                 )
-                (e_tk B_T2)
+                (e_token B_T2)
 
                 (:inline
                     ()
@@ -970,13 +970,13 @@
         (:method B_t3 
             :precondition ()
             :tasks (
-                (b_tk B_T3)
+                (b_token B_T3)
                 (B ?d ?dur)
                 (:inline
                     (and (>= ?dur 30) (< ?dur (* (hours_in_mins) 3)))
                     ()
                 )
-                (e_tk B_T3)
+                (e_token B_T3)
 
                 (:inline
                     ()
@@ -1077,9 +1077,9 @@
         (:method DXX
             :precondition ()
             :tasks (
-                (b_tk A)
+                (b_token A)
                 (D ?d ?dur)
-                (e_tk A)
+                (e_token A)
                 (:inline
                     ()
                     (increase (minutos_consumidos) ?dur))
@@ -1101,9 +1101,9 @@
         (:method OXX
             :precondition ()
             :tasks (
-                (b_tk A)
+                (b_token A)
                 (O ?d ?dur)
-                (e_tk A)
+                (e_token A)
 
                 (:inline
                     ()
@@ -1126,9 +1126,9 @@
         (:method B_T0 ; BREAK of [0,15min)
             :precondition ()
             :tasks (
-                (b_tk B_T0)
+                (b_token B_T0)
                 (B ?d ?dur)
-                (e_tk B_T0)
+                (e_token B_T0)
 
                 (:inline
                     (and (< ?dur 15))
@@ -1156,9 +1156,9 @@
         (:method B_T2 ; BREAK of [15min, 30min)
             :precondition ()
             :tasks (
-                (b_tk B_T2)
+                (b_token B_T2)
                 (B ?d ?dur)
-                (e_tk B_T2)
+                (e_token B_T2)
 
                 (:inline
                     (and (>= ?dur 15) (< ?dur 30))
@@ -1189,9 +1189,9 @@
         (:method B_T3 ; BREAK OF [30min, 45min) - Está puesto hasta 3h
             :precondition ()
             :tasks (
-                (b_tk B_T3)
+                (b_token B_T3)
                 (B ?d ?dur)
-                (e_tk B_T3)
+                (e_token B_T3)
 
                 (:inline
                     (and (>= ?dur 30) (< ?dur (* (hours_in_mins) 3)))
@@ -1222,9 +1222,9 @@
         (:method B_T4 ; BREAK OF [3h, 9h)
             :precondition ()
             :tasks (
-                (b_tk B_T4)
+                (b_token B_T4)
                 (B ?d ?dur)
-                (e_tk B_T4)
+                (e_token B_T4)
                 
                 (:inline
                     (and (>= ?dur (* (hours_in_mins) 3)) (< ?dur (* (hours_in_mins) 9)))
@@ -1255,9 +1255,9 @@
         (:method B_T1 ; BREAK OF [45min, 3h)
             :precondition ()
             :tasks (
-                (b_tk B_T1)
+                (b_token B_T1)
                 (B ?d ?dur)
-                (e_tk B_T1)
+                (e_token B_T1)
 
                 (:inline
                     (and (>= ?dur 45) (< ?dur (* (hours_in_mins) 3)))
@@ -1289,9 +1289,9 @@
         (:method IXX
             :precondition (puede_espera_NORMAL ?d)
             :tasks (
-                (b_tk I)
+                (b_token I)
                 (I ?d ?dur)
-                (e_tk I)
+                (e_token I)
 
                 (:inline
                     ()
