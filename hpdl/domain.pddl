@@ -28,7 +28,7 @@
 
         ; Contexts
         A I B_T0 B_T1 B_T2 B_T3 B_T4 B_T5 B_T6 B_T7 B_T10   ; Token
-        split uninterrupted                                 ; BreakType
+        split split_1 split_2 uninterrupted                                 ; BreakType
         first second third unique                           ; Sequence
         ndd edd                                             ; DayType
         wd bwd month none - context
@@ -360,19 +360,6 @@
                 (:inline
                     ()
                     (and
-                        ; (assign (dt_current_cdd_t2_slice) 0)
-                        ; (assign (dt_current_cdd_t2_sequence) 0)
-                        ; (assign (dt_cdd_unint) 0)
-                        ; (assign (dt_current_CDD_T1_end) 0)
-                        ; (assign (dt_cdd_split1) 0)
-                        ; (assign (dt_cdd_split2) 0)
-                        ; (assign (dt_cdd) 0)
-                        ; (assign (dt_current_cdds_e) 0)
-                        ; (assign (dt_dd) 0)
-                        ; (assign (bt_current_slice) 0)
-                        ; (assign (bt_current_cdd_t2_slice) 0)
-                        ; (assign (bt_current_cdd_t2_sequence) 0)
-
                         (assign (dt_dd) 0)
                         (assign (dt_cdd) 0)
                         (assign (dt_cdd_unint) 0)
@@ -440,7 +427,7 @@
 
                 ; To ensure RD after second CDD
                 (:inline
-                    (>= (bt_cdd) (* 3.0 (hours_in_mins)))
+                    (>= (bt_cdd) (* 9.0 (hours_in_mins)))
                     ()
                 )
             )
@@ -462,9 +449,10 @@
                     )
                 )
 
+                ; Similar to break periods, rest periods can also be taken in two parts, whereas the first part must have a duration of at least three hours and the second part must have a duration of at least nine hours.
                 ; To ensure RD after CDD
                 (:inline
-                    (>= (bt_dd) (* 3.0 (hours_in_mins)))
+                    (>= (bt_dd) (* 9.0 (hours_in_mins)))
                     ()
                 )
             )
@@ -562,105 +550,59 @@
         (:method split
             :precondition()
             :tasks (
-                (b_breakType split)
+                ; (b_breakType split)
+                (b_breakType split_1)
                 (CDD_SPLIT_1 ?d)
+                (e_breakType split_1)
+                (b_breakType split_2)
                 (CDD_SPLIT_2 ?d)
-                (e_breakType split)
+                (e_breakType split_2)
+                ; (e_breakType split)
 
                 (:inline
                     ()
                     (and
-                        (increase (dt_cdd) (+ (dt_cdd_split1) (dt_cdd_split2)))
-                        (increase (bt_cdd) (+ (bt_cdd_split1) (bt_cdd_split2)))
+                        (assign (dt_cdd) (+ (dt_cdd_split1) (dt_cdd_split2)))
+                        (assign (bt_cdd) (+ (bt_cdd_split1) (bt_cdd_split2)))
                     )
                 )
             )
         )
+
+        ; Technically the splits are not permutable
+        ; (:method split2
+        ;     :precondition()
+        ;     :tasks (
+        ;         ; Reset CDD counters
+        ;         (:inline
+        ;             ()
+        ;             (and
+        ;                 (assign (dt_cdd) 0)
+        ;                 (assign (bt_cdd) 0)
+        ;             )
+        ;         )
+            
+        ;         (b_breakType split)
+        ;         (CDD_SPLIT_2 ?d)
+        ;         (CDD_SPLIT_1 ?d)
+        ;         (e_breakType split)
+
+        ;         (:inline
+        ;             ()
+        ;             (and
+        ;                 (increase (dt_cdd) (+ (dt_cdd_split1) (dt_cdd_split2)))
+        ;                 (increase (bt_cdd) (+ (bt_cdd_split1) (bt_cdd_split2)))
+        ;             )
+        ;         )
+        ;     )
+        ; )
     )
 
     ; -------------------------------------------------------------------------
 
-    ; Continuous Daily Driving - Start - <4.5h
-    ; (:task CDDs_S
-    ;     :parameters (?d - Driver)
-    ;     ; Type 1 (normal, no splits)
-    ;     (:method t1
-    ;         :precondition()
-    ;         :tasks (
-    ;             (b_breakType uninterrupted)
-    ;             (CDD_T1_START ?d)
-    ;             (CDD_T1_END ?d)
-    ;             (e_breakType uninterrupted)
-    ;             (:inline
-    ;                 ()
-    ;                 (assign
-    ;                     (dt_current_CDDs_S)
-    ;                     (+ (dt_current_CDD_T1_start) (dt_current_CDD_T1_END)))
-    ;             )
-    ;         )
-    ;     )
-
-    ;     ; Type 2 (with a split)
-    ;     (:method t2
-    ;         :precondition()
-    ;         :tasks (
-    ;             (b_breakType split)
-    ;             (CDD_T2_START ?d)
-    ;             (CDD_T2_END ?d)
-    ;             (e_breakType split)
-    ;             (:inline
-    ;                 ()
-    ;                 (assign
-    ;                     (dt_current_CDDs_S)
-    ;                     (+ (dt_current_CDD_T2_start) (dt_current_CDD_T2_END)))
-    ;             )
-    ;         )
-    ;     )
-    ; )
-
-    ; -------------------------------------------------------------------------
-
-    ; Continuous Daily Driving - End
-    ; (:task CDDs_E
-    ;     :parameters (?d - Driver)
-    ;     ; Type 1 (normal, no splits)
-    ;     (:method t1
-    ;         :precondition()
-    ;         :tasks (
-    ;             (b_breakType uninterrupted)
-    ;             (CDD_T1_END ?d)
-    ;             (e_breakType uninterrupted)
-    ;             (:inline
-    ;                 ()
-    ;                 (assign
-    ;                     (dt_current_CDDs_E)
-    ;                     (dt_current_CDD_T1_END))
-    ;             )
-    ;         )
-    ;     ) 
-
-    ;     ; Type 2 (with a split)
-    ;     (:method t2
-    ;         :precondition()
-    ;         :tasks (
-    ;             (b_breakType split)
-    ;             (CDD_T2_END ?d)
-    ;             (e_breakType split)
-    ;             (:inline
-    ;                 ()
-    ;                 (assign
-    ;                     (dt_current_CDDs_E)
-    ;                     (dt_current_CDD_T2_END))
-    ;             )
-    ;         )
-    ;     )
-    ; )
-    
-    ; -------------------------------------------------------------------------
-
     (:task CDD_Unint
         :parameters (?d - Driver) 
-        (:method SINGLE
+        (:method B_T1
             :precondition()
             :tasks (
                 (A ?d)
@@ -684,7 +626,7 @@
             )
         )
 
-        (:method SINGLE
+        (:method RD
             :precondition()
             :tasks (
                 (A ?d)
@@ -708,34 +650,6 @@
             )
         )
     )
-
-    ; -------------------------------------------------------------------------
-
-    ; (:task CDD_T1_END
-    ;     :parameters (?d - Driver) 
-    ;     (:method SINGLE
-    ;         :precondition()
-    ;         :tasks (
-    ;             (A ?d)
-
-    ;             (:inline
-    ;                 (<= (dt_current_slice) (* (hours_in_mins) 4.5))
-    ;                 ()
-    ;             )
-    ;             (:inline
-    ;                 ()
-    ;                 (assign (dt_last_slice) (dt_current_slice))
-    ;             )
-
-    ;             (RD ?d)
-
-    ;             (:inline
-    ;                 ()
-    ;                 (assign (dt_current_CDD_T1_END) (dt_last_slice))
-    ;             )
-    ;         )
-    ;     )
-    ; )
 
     ; -------------------------------------------------------------------------
 
@@ -784,7 +698,7 @@
             )
         ) 
 
-        (:method SINGLE
+        (:method RD
             :precondition()
             :tasks (
                 (A ?d)
@@ -816,156 +730,6 @@
             )
         )
     )
-
-    ; -------------------------------------------------------------------------
-
-    ; (:task CDD_T2_SEQUENCE
-    ;     :parameters (?d - Driver) 
-    ;     (:method caso_base0
-    ;         :precondition()
-    ;         :tasks (
-    ;             (CDD_T2_slice ?d)
-    ;             (:inline
-    ;                 ()
-    ;                 (increase
-    ;                     (dt_current_cdd_t2_sequence)
-    ;                     (dt_current_cdd_t2_slice))
-    ;             )
-    ;             (:inline
-    ;                 ()
-    ;                 (increase
-    ;                     (bt_current_cdd_t2_sequence)
-    ;                     (bt_current_cdd_t2_slice))
-    ;             )
-    ;         )
-    ;     ) 
-        
-    ;     (:method recurre
-    ;         :precondition ()
-    ;         :tasks (
-    ;             (CDD_T2_slice ?d)
-    ;             (:inline
-    ;                 ()
-    ;                 (increase
-    ;                     (dt_current_cdd_t2_sequence)
-    ;                     (dt_current_cdd_t2_slice))
-    ;             )
-    ;             (:inline
-    ;                 ()
-    ;                 (increase
-    ;                     (bt_current_cdd_t2_sequence)
-    ;                     (bt_current_cdd_t2_slice))
-    ;             )
-
-    ;             (CDD_T2_SEQUENCE ?d))
-    ;     )
-    ; )
-
-    ;***************************************************************************************
-    ;** AQUI es donde se añaden tareas para marcar el inicio y fin de cada contexto
-
-    ; (:task CDD_T2_Slice
-    ;     :parameters (?d - Driver) 
-    ;     (:method B_T2
-    ;         :precondition()
-    ;         :tasks (
-    ;             (A ?d)
-
-    ;             (:inline
-    ;                 ()
-    ;                 (assign (dt_last_slice) (dt_activity))
-    ;             )
-
-    ;             (B_T2 ?d)
-
-    ;             (:inline
-    ;                 ()
-    ;                 (assign (dt_current_cdd_t2_slice) (dt_last_slice))
-    ;             )
-    ;             (:inline
-    ;                 ()
-    ;                 (assign
-    ;                     (bt_current_cdd_t2_slice)
-    ;                     (bt_current_slice))
-    ;             )
-    ;         )
-    ;     ) 
-
-    ;     (:method B_T3
-    ;         :precondition()
-    ;         :tasks (
-    ;             (A ?d)
-
-    ;             (:inline
-    ;                 ()
-    ;                 (assign (dt_last_slice) (dt_activity))
-    ;             )
-
-    ;             (B_T3 ?d)
-
-    ;             (:inline
-    ;                 ()
-    ;                 (assign (dt_current_cdd_t2_slice) (dt_last_slice))
-    ;             )
-    ;             (:inline
-    ;                 ()
-    ;                 (assign
-    ;                     (bt_current_cdd_t2_slice)
-    ;                     (bt_current_slice))
-    ;             )
-    ;         )
-    ;     ) 
-        
-    ;     (:method B_T1
-    ;         :precondition()
-    ;         :tasks (
-    ;             (A ?d)
-
-    ;             (:inline
-    ;                 ()
-    ;                 (assign (dt_last_slice) (dt_activity))
-    ;             )
-
-    ;             (B_T1 ?d)
-
-    ;             (:inline
-    ;                 ()
-    ;                 (assign (dt_current_cdd_t2_slice) (dt_last_slice))
-    ;             )
-    ;             (:inline
-    ;                 ()
-    ;                 (assign
-    ;                     (bt_current_cdd_t2_slice)
-    ;                     (bt_current_slice))
-    ;             )
-    ;         )
-    ;     )
-
-    ;     (:method RD
-    ;         :precondition()
-    ;         :tasks (
-    ;             (A ?d)
-
-    ;             (:inline
-    ;                 ()
-    ;                 (assign (dt_last_slice) (dt_activity))
-    ;             )
-
-    ;             (RD ?d)
-
-    ;             (:inline
-    ;                 ()
-    ;                 (assign (dt_current_cdd_t2_slice) (dt_last_slice))
-    ;             )
-    ;             (:inline
-    ;                 ()
-    ;                 (assign
-    ;                     (bt_current_cdd_t2_slice)
-    ;                     (bt_current_slice))
-    ;             )
-    ;         )
-    ;     )
-    ; )
     
     ; ****************************
     ; Rests
@@ -981,26 +745,19 @@
                 (b_token B_T5)
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur (* (hours_in_mins) 9)) (< ?dur (* (hours_in_mins) 11)))
+                    (and (>= ?dur (* 9 (hours_in_mins))) (< ?dur (* 11 (hours_in_mins))))
                     ()
                 )
                 (e_token B_T5)
 
                 (:inline
                     ()
-                    (assign (minutos_consumidos) 0))
-
-                (:inline
-                    ()
-                    (increase (tiempo_parada_dia ?d) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_bt) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (dt_activity) 0)
+                    (and
+                        (assign (minutos_consumidos) 0)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (dt_activity) 0)
+                    )
                 )
             )
         ) 
@@ -1012,26 +769,19 @@
                 (b_token B_T6)
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur (* (hours_in_mins) 11)) (< ?dur (* (hours_in_mins) 24)))
+                    (and (>= ?dur (* 11 (hours_in_mins))) (< ?dur (* 24 (hours_in_mins))))
                     ()
                 )
                 (e_token B_T6)
 
                 (:inline
                     ()
-                    (assign (minutos_consumidos) 0))
-
-                (:inline
-                    ()
-                    (increase (tiempo_parada_dia ?d) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_bt) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (dt_activity) 0)
+                    (and
+                        (assign (minutos_consumidos) 0)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (dt_activity) 0)
+                    )
                 )
             )
         )
@@ -1042,26 +792,19 @@
                 (b_token B_T10)
                 (B ?d ?dur)
                 (:inline
-                    (>= ?dur (* (hours_in_mins) 45))
+                    (>= ?dur (* 45 (hours_in_mins)))
                     ()
                 )
                 (e_token B_T10)
 
                 (:inline
                     ()
-                    (assign (minutos_consumidos) 0))
-
-                (:inline
-                    ()
-                    (increase (tiempo_parada_dia ?d) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_bt) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (dt_activity) 0)
+                    (and
+                        (assign (minutos_consumidos) 0)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (dt_activity) 0)
+                    )
                 )
             )
         )
@@ -1081,33 +824,21 @@
                 (b_token B_T1)		
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur 45) (< ?dur (* (hours_in_mins) 3)))
+                    (and (>= ?dur 45) (< ?dur (* (hours_in_mins) 3.5)))
                     ()
                 )
                 (e_token B_T1)
 
                 (:inline
                     ()
-                    (increase (minutos_consumidos) ?dur))
-                (:inline
-                    ()
-                    (increase (tiempo_parada_dia ?d) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_bt) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (bt_current_slice) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_dt) 0)
-                )
-                (:inline
-                    ()
-                    (assign (dt_activity) 0)
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (bt_current_slice) ?dur)
+                        (assign (current_dt) 0)
+                        (assign (dt_activity) 0)
+                    )
                 )
             )
         )
@@ -1131,26 +862,14 @@
 
                 (:inline
                     ()
-                    (increase (minutos_consumidos) ?dur))
-                (:inline
-                    ()
-                    (increase (tiempo_parada_dia ?d) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_bt) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (bt_current_slice) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_dt) 0)
-                )
-                (:inline
-                    ()
-                    (assign (dt_activity) 0)
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (bt_current_slice) ?dur)
+                        (assign (current_dt) 0)
+                        (assign (dt_activity) 0)
+                    )
                 )
             )
         )
@@ -1167,33 +886,22 @@
                 (b_token B_T3)
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur 30) (< ?dur (* (hours_in_mins) 3)))
+                    ; (and (>= ?dur 30) (< ?dur (* (hours_in_mins) 3)))
+                    (and (>= ?dur 30) (< ?dur 60))
                     ()
                 )
                 (e_token B_T3)
 
                 (:inline
                     ()
-                    (increase (minutos_consumidos) ?dur))
-                (:inline
-                    ()
-                    (increase (tiempo_parada_dia ?d) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_bt) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (bt_current_slice) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_dt) 0)
-                )
-                (:inline
-                    ()
-                    (assign (dt_activity) 0)
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (bt_current_slice) ?dur)
+                        (assign (current_dt) 0)
+                        (assign (dt_activity) 0)
+                    )
                 )
             )
         )
@@ -1274,19 +982,15 @@
                 (b_token A)
                 (D ?d ?dur)
                 (e_token A)
+
                 (:inline
                     ()
-                    (increase (minutos_consumidos) ?dur))
-                (:inline
-                    ()
-                    (increase (dt_day ?d) ?dur))
-                (:inline
-                    ()
-                    (assign (current_bt) 0)
-                )
-                (:inline
-                    ()
-                    (assign (current_dt) ?dur)
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (dt_day ?d) ?dur)
+                        (assign (current_bt) 0)
+                        (assign (current_dt) ?dur)
+                    )
                 )
             )
         ) 
@@ -1301,49 +1005,38 @@
 
                 (:inline
                     ()
-                    (increase (minutos_consumidos) ?dur))
-                (:inline
-                    ()
-                    (increase (tiempo_otros_dia ?d) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_bt) 0)
-                )
-                (:inline
-                    ()
-                    (assign (current_dt) 0)
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_otros_dia ?d) ?dur)
+                        (assign (current_bt) 0)
+                        (assign (current_dt) 0)
+                    )
                 )
             )
         ) 
         
+        ; Breaks
         (:method B_T0 ; BREAK of [0,15min)
             :precondition ()
             :tasks (
                 (b_token B_T0)
                 (B ?d ?dur)
-                (e_token B_T0)
-
                 (:inline
                     (and (< ?dur 15))
                     ()
                 )
+                (e_token B_T0)
+
                 (:inline
                     ()
-                    (increase (minutos_consumidos) ?dur))
-                (:inline
-                    ()
-                    (increase (tiempo_parada_dia ?d) ?dur)
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (current_dt) 0)
+                        ; (assign (dt_activity) 0)
+                    )
                 )
-                (:inline
-                    ()
-                    (assign (current_bt) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_dt) 0)
-                )
-                ;(:inline () (assign (dt_activity) 0))
             )
         ) 
         
@@ -1352,30 +1045,21 @@
             :tasks (
                 (b_token B_T2)
                 (B ?d ?dur)
-                (e_token B_T2)
-
                 (:inline
                     (and (>= ?dur 15) (< ?dur 30))
                     ()
                 )
+                (e_token B_T2)
+
                 (:inline
                     ()
-                    (increase (minutos_consumidos) ?dur))
-                (:inline
-                    ()
-                    (increase (tiempo_parada_dia ?d) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_bt) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_dt) 0)
-                )
-                (:inline
-                    ()
-                    (assign (dt_activity) 0)
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (current_dt) 0)
+                        (assign (dt_activity) 0)
+                    )
                 )
             )
         ) 
@@ -1385,30 +1069,46 @@
             :tasks (
                 (b_token B_T3)
                 (B ?d ?dur)
+                (:inline
+                    ; (and (>= ?dur 30) (< ?dur (* (hours_in_mins) 3)))
+                    (and (>= ?dur 30) (< ?dur 60))
+                    ()
+                )
                 (e_token B_T3)
 
                 (:inline
-                    (and (>= ?dur 30) (< ?dur (* (hours_in_mins) 3)))
+                    ()
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (current_dt) 0)
+                        (assign (dt_activity) 0)
+                    )
+                )
+            )
+        )
+                
+        (:method B_T1 ; BREAK OF [45min, 3h)
+            :precondition ()
+            :tasks (
+                (b_token B_T1)
+                (B ?d ?dur)
+                (:inline
+                    (and (>= ?dur 45) (< ?dur (* (hours_in_mins) 3.5)))
                     ()
                 )
+                (e_token B_T1)
+
                 (:inline
                     ()
-                    (increase (minutos_consumidos) ?dur))
-                (:inline
-                    ()
-                    (increase (tiempo_parada_dia ?d) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_bt) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_dt) 0)
-                )
-                (:inline
-                    ()
-                    (assign (dt_activity) 0)
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (current_dt) 0)
+                        (assign (dt_activity) 0)
+                    )
                 )
             )
         )
@@ -1418,66 +1118,24 @@
             :tasks (
                 (b_token B_T4)
                 (B ?d ?dur)
-                (e_token B_T4)
-                
                 (:inline
                     (and (>= ?dur (* (hours_in_mins) 3)) (< ?dur (* (hours_in_mins) 9)))
                     ()
                 )
+                (e_token B_T4)
+
                 (:inline
                     ()
-                    (increase (minutos_consumidos) ?dur))
-                (:inline
-                    ()
-                    (increase (tiempo_parada_dia ?d) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_bt) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_dt) 0)
-                )
-                (:inline
-                    ()
-                    (assign (dt_activity) 0)
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (current_dt) 0)
+                        (assign (dt_activity) 0)
+                    )
                 )
             )
         )
-        
-        (:method B_T1 ; BREAK OF [45min, 3h)
-            :precondition ()
-            :tasks (
-                (b_token B_T1)
-                (B ?d ?dur)
-                (e_token B_T1)
-
-                (:inline
-                    (and (>= ?dur 45) (< ?dur (* (hours_in_mins) 3)))
-                    ()
-                )
-                (:inline
-                    ()
-                    (increase (minutos_consumidos) ?dur))
-                (:inline
-                    ()
-                    (increase (tiempo_parada_dia ?d) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_bt) ?dur)
-                )
-                (:inline
-                    ()
-                    (assign (current_dt) 0)
-                )
-                (:inline
-                    ()
-                    (assign (dt_activity) 0)
-                )
-            )
-        ) 
         
         ; Idle
         (:method IXX
@@ -1489,20 +1147,13 @@
 
                 (:inline
                     ()
-                    (increase (minutos_consumidos) ?dur))
-                (:inline
-                    ()
-                    (increase (tiempo_espera_dia ?d) ?dur)
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_espera_dia ?d) ?dur)
+                        (assign (current_bt) 0)
+                        (assign (current_dt) 0)
+                    )
                 )
-                (:inline
-                    ()
-                    (assign (current_bt) 0)
-                )
-                (:inline
-                    ()
-                    (assign (current_dt) 0)
-                )
-
             )
         )
     )
@@ -1545,57 +1196,14 @@
     ; Debug
     ; =========================================================================
 
-    (:task print_result
-        :parameters (?dt - number) 
-        (:method SINGLE
-            :precondition (
-                bind ?dt
-                (dt_cdd_split2)
-            )
-            :tasks (
-                result ?dt
-            )
-        )
-    )
-
     (:durative-action print_new_day
 	    :parameters ()
 	    :meta (
             (:tag prettyprint "# ----------------------------------------------------NEW DAY----------------------------------------------------
 #Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DayType	Sequence	BreakType	Token"))
-            ; (:tag prettyprint "# Driver DateTimeStart   DateTimeEnd Duration (min)  Activity    DrivingDatyType DrivingPeriod   Sequence    Token"))
             :duration ()
             :condition (:print "> One Driving Day processed\n")
             :effect ()
-    )
-
-    ; -------------------------------------------------------------------------
-
-    (:durative-action result
-        :parameters (?x - number)
-        :meta
-        (
-            (:tag prettyprint "Current driving time cdd_t2_end: ?x"
-            )
-        )
-        :duration (= ?duration 0)
-        :condition ()
-        :effect ()
-    )
-
-    ; -------------------------------------------------------------------------
-
-    (:durative-action print_breaking_time
-        :parameters (?x - number)
-        :meta
-        (
-            (:tag prettyprint "Current breaking time: ?x"
-            )
-        )
-        :duration (= ?duration 0)
-        :condition (bind ?x
-            (bt_current_cdd_t2_slice))
-        :effect ()
     )
 
     ; =========================================================================
@@ -1620,5 +1228,537 @@
 
     ; -------------------------------------------------------------------------
 
-    (:import "primitives.pddl")
+    ;CADA tarea primitva PUEDE AÑADIRSE AL PLAN EN DOS MODOS DISTINTOS: modo reconocer "token" o modo generar
+    ;Por tanto cada tarea primitiva tiene asociada una tarea compuesta con dos metodos, uno para el modo reconocer plan y otro para el modo generar plan
+    ; el modo GENERAR plan es el de siempre: se añade directamente la primitiva al plan (y si no se pueden cumplir las restricciones/condiciones pues fallará ). 
+    ; el modo RECONOCER parte de que en el estado inicial hay una secuencia de acciones que hay que reconocer
+    ; IMPORTANTE: estos dos metodos no son alternativas de hacer una tarea, son  dos formas excluyentes de hacer una tarea, e.d., si entra por un metodo y falla, 
+    ; entonces no entra por el otro y la tarea compuesta directamente falla. Por eso tiene el simbolo ! (corte alla PROLOG)
+
+    (:task D
+        :parameters (?d - Driver ?dur - number) 
+        (!
+            (:method modo_generar
+                :precondition (modo_generar)
+                :tasks
+                (
+                    (:inline
+                        (bind ?dur
+                            (calcula_duracion_C ?d))
+                        ()
+                    )
+                    (D_p ?d ?dur))
+            )
+            (:method modo_reconocer
+                :precondition (modo_reconocer)
+                :tasks
+                (
+                    (add_the_current_action_to_plan typeD ?dur)
+                    ;incrementar el current index para reconocer la siguiente accion de la secuencia)
+                    (:inline
+                        ()
+                        (increase (current_index_action) 1)
+                    )
+                )
+
+            )
+        )
+    ) ; observar, ESTO SIGNIFICA lo siguiente
+
+    ;add_the corrent action to plan consiste en:
+    ; k = current_index
+    ; Comprobar la condicion de  reconocimiento de token
+    ; accion(k) es de tipo Conducir (en el caso de :task C...
+    ; Si se cumple la condicion de reconocimiento de token
+    ; capturar parametros (parameters_typeD (symbol(accion(k))) ?p1 ?p2 ... ?pn) , hay que saber cuantos parameters tiene cada accion
+    ; capturar inicio, fin, duracion
+    ; ( (AND (=?start inicio)(= ?end fin) (= ?duration duracion))
+    ;	 (D_p ?p1 ?p2 ... ?pn)
+    ; Si se inserta con exito, entonces es cuando hay que INCREMENTAR_CURRENT_INDEX para capturar la siguiente acción del plan
+
+    ; ES IMPORTANTE, CRUCIAL, PASARLE EL TIPO "TypoConduccion" porque la interpretación aquí es:
+    ; "El planificador espera que, para que la accion se reconozca como parte de una secuencia <del_tipo_qu_sea>, 
+    ;	(1) la accion tiene que ser NECESARIAMENTE de tipo <typeD> y
+    ;  (2) las restricciones temporales de la accion tienen que ser satisfacibles con el estado actual del plan reconocido"
+
+    ;*********************************************************************************************************
+    ; POR CADA TIPO DE ACCION PRIMITIVA ASOCIAR UNA TAREA COMPUESTA QUE TENGA MODO RECONOCER Y MODO GENERAR
+    ;*********************************************************************************************************
+
+    (:task O
+        :parameters (?d - Driver ?dur - number) 
+        (!
+            (:method modo_generar
+                :precondition (modo_generar)
+                :tasks (
+                    (:inline
+                        (bind ?dur
+                            (calcula_duracion_O ?d))
+                        ()
+                    )
+                    (O_p ?d ?dur)
+                )
+            )
+
+            (:method modo_reconocer
+                :precondition (modo_reconocer)
+                :tasks (
+                    (add_the_current_action_to_plan typeO ?dur)
+                    ;incrementar el current index para reconocer la siguiente accion de la secuencia)
+                    (:inline
+                        ()
+                        (increase (current_index_action) 1)
+                    )
+                )
+            )
+        )
+    )
+
+    (:task B
+        :parameters (?d - Driver ?dur - number) 
+        (!
+            (:method modo_generar
+                :precondition (modo_generar)
+                :tasks (
+                    (:inline
+                        (bind ?dur
+                            (calcula_duracion_P ?d))
+                        ()
+                    )
+                    (B_p ?d ?dur)
+                )
+            )
+            (:method modo_reconocer
+                :precondition (modo_reconocer)
+                :tasks (
+                    (add_the_current_action_to_plan typeB ?dur)
+                    ;incrementar el current index para reconocer la siguiente accion de la secuencia)
+                    (:inline
+                        ()
+                        (increase (current_index_action) 1)
+                    )				
+                )
+            )
+        )
+    )
+
+    (:task I
+        :parameters (?d - Driver ?dur - number) 
+        (!
+            (:method modo_generar
+                :precondition (modo_generar)
+                :tasks (
+                    (:inline
+                        (bind ?dur
+                            (calcula_duracion_E ?d))
+                        ()
+                    )
+                    (I_p ?d ?dur)
+                )
+            )
+            (:method modo_reconocer
+                :precondition (modo_reconocer)
+                :tasks (
+                    (add_the_current_action_to_plan typeI ?dur)
+                    ;incrementar el current index para reconocer la siguiente accion de la secuencia)
+                    (:inline
+                        ()
+                        (increase (current_index_action) 1)
+                    )
+                )
+            )
+        )
+    )
+
+    ; =========================================================================
+    ; PREDICADOS DERIVADOS QUE REPRESENTAN LA "CONDICION DE RECONOCIMIENTO DE TOKEN"
+    ; 
+    ; SE REPLICA LA MISMA CONDICION PARA CADA TIPO DE ACCION PRIMITIVA (DOBI)
+    ; Solo cambia el (is_type)
+    ; =========================================================================
+
+    (:derived
+        (currentindex_is_typeD ?k ?sa)	; ?K y ?sa se pasan "POR REFERENCIA" (en HPDL se puede, en OTROS PDDL lenguajes no), ES DECIR, se calculan dentro
+        (and (bind ?k
+                (current_index_action))	; CAPTURO EL INDICE ACTUAL DE SECUENCIA DE ACCIONES
+            (index_action ?sa ?k)		; CAPTURO EL SIMBOLO DE LA ACCIONES(K)
+            (is_typeD ?sa)				; PREGUNTO SI EL SIMBOLO ES typeD
+        )
+    )
+
+    (:derived
+        (currentindex_is_typeO ?k ?sa)
+        (and (bind ?k
+                (current_index_action))
+            (index_action ?sa ?k)
+            (is_typeO ?sa)
+        )
+    )
+
+    (:derived
+        (currentindex_is_typeB ?k ?sa)
+        (and (bind ?k
+                (current_index_action))
+            (index_action ?sa ?k)
+            (is_typeB ?sa)
+        )
+    )
+
+    (:derived
+        (currentindex_is_typeI ?k ?sa)
+        (and (bind ?k
+                (current_index_action))
+            (index_action ?sa ?k)
+            (is_typeI ?sa)
+        )
+    )
+
+    ; -------------------------------------------------------------------------
+
+    (:task add_the_current_action_to_plan
+        :parameters (?tact - TipoAccion ?dur - number) (!
+        (:method type_Driving
+            ; captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
+            ; si en la secuencia de entrada hay una accion typeD y "me espero" una acción typeD
+            :precondition (and (currentindex_is_typeD ?k ?sa) (= ?tact typeD))
+            :tasks (
+                (:inline
+                    (and (parameters_typeD ?sa ?driver)
+                        (start_action ?sa ?inicio)
+                        (end_action ?sa ?final)
+                        (duration_action ?sa ?dur))
+                    ()
+                )
+                ;captura el contexto
+                (:inline
+                    (and (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (weekly-context ?weectxt)
+                        (monthly-context ?monctxt))
+                    ()
+                )
+                (
+                    (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
+                    (D_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
+                )
+            )
+        )
+
+        (:method type_Other
+            :precondition (and (currentindex_is_typeO ?k ?sa) (= ?tact typeO)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
+            :tasks (
+                (:inline
+                    (and (parameters_typeO ?sa ?driver)
+                        (start_action ?sa ?inicio)
+                        (end_action ?sa ?final)
+                        (duration_action ?sa ?dur))
+                    ()
+                )
+                ;captura el contexto
+                (:inline
+                    (and (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (weekly-context ?weectxt)
+                        (monthly-context ?monctxt))
+                    ()
+                )
+                (
+                    (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
+                    (O_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
+                )
+            )
+        )
+
+        (:method type_Break
+            :precondition (and (currentindex_is_typeB ?k ?sa) (= ?tact typeB)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
+            :tasks (
+                (:inline
+                    (and (parameters_typeB ?sa ?driver)
+                        (start_action ?sa ?inicio)
+                        (end_action ?sa ?final)
+                        (duration_action ?sa ?dur))
+                    ()
+                )
+                ;captura el contexto
+                (:inline
+                    (and (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (weekly-context ?weectxt)
+                        (monthly-context ?monctxt))
+                    ()
+                )
+                (
+                    (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
+                    (B_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
+                )
+            )
+        )
+
+        (:method type_Idle
+            :precondition (and (currentindex_is_typeI ?k ?sa) (= ?tact typeI)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
+            :tasks (
+                (:inline
+                    (and (parameters_typeI ?sa ?driver)
+                        (start_action ?sa ?inicio)
+                        (end_action ?sa ?final)
+                        (duration_action ?sa ?dur))
+                    ()
+                )
+                ;captura el contexto
+                (:inline
+                    (and (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (weekly-context ?weectxt)
+                        (monthly-context ?monctxt))
+                    ()
+                )
+                (
+                    (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
+                    (I_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
+                )
+            )
+        )
+        )
+    )
+
+    ; (:durative-action b_token 
+    ; 	:parameters (?ctxt - context)
+    ; 	:meta( 
+    ; 		(:tag prettyprint "");BEGIN TOKEN ?ctxt")
+    ; 		)
+    ; 	:duration (= ?duration 0)
+    ; 	:condition (token-context ?current)
+    ; 	:effect (and (token-context ?ctxt) (not (token-context ?current))))
+
+    ; (:durative-action e_token 
+    ; 	:parameters (?ctxt - context)
+    ; 	:meta( 
+    ; 		(:tag prettyprint "");END TOKEN ?ctxt")
+    ; 		)
+    ; 	:duration (= ?duration 0)
+    ; 	:condition()
+    ; 	:effect (and (not (token-context ?ctxt)) (token-context none)))
+
+    ; -------------------------------------------------------------------------
+    ; Contexts
+    ; -------------------------------------------------------------------------
+
+    (:task b_token
+        :parameters (?ctxt - context) 
+        (:method unico
+            :precondition ()
+            :tasks (
+                :inline (token-context ?current)
+                (and (token-context ?ctxt) 
+                    (not (token-context ?current))
+                )
+            )
+        )
+    )
+
+    (:task e_token
+        :parameters (?ctxt - context) 
+        (:method unico
+            :precondition ()
+            :tasks (
+                :inline ()
+                (and (not (token-context ?ctxt)) (token-context none))
+            )
+        )
+    )
+
+    ; -------------------------------------------------------------------------
+
+    (:task b_breakType
+        :parameters (?ctxt - context) 
+        (:method unico
+            :precondition ()
+            :tasks (
+                :inline
+                (breakType-context ?current)
+                (and (breakType-context ?ctxt) (not (breakType-context ?current)))
+            )
+        )
+    )
+
+    (:task e_breakType
+        :parameters (?ctxt - context) 
+        (:method unico
+            :precondition ()
+            :tasks (
+                :inline
+                ()
+                (and (not (breakType-context ?ctxt)) (breakType-context none))
+            )
+
+        )
+    )
+
+    ; -------------------------------------------------------------------------
+
+    (:task b_sequence
+        :parameters (?ctxt - context) 
+        (:method unico
+            :precondition ()
+            :tasks (
+                :inline
+                (sequence-context ?current)
+                (and (sequence-context ?ctxt) (not (sequence-context ?current)))
+            )
+        )
+    )
+
+    (:task e_sequence
+        :parameters (?ctxt - context) 
+        (:method unico
+            :precondition ()
+            :tasks (
+                :inline
+                ()
+                (and (not (sequence-context ?ctxt)) (sequence-context none))
+            )
+
+        )
+    )
+
+    ; -------------------------------------------------------------------------
+
+    (:task b_dayType
+        :parameters (?ctxt - context) 
+        (:method unico
+            :precondition ()
+            :tasks (
+                :inline
+                (dayType-context ?current)
+                (and (dayType-context ?ctxt) (not (dayType-context ?current)))
+            )
+        )
+    )
+
+    (:task e_dayType
+        :parameters (?ctxt - context) 
+        (:method unico
+            :precondition ()
+            :tasks (
+                :inline
+                ()
+                (and (not (dayType-context ?ctxt)) (dayType-context none))
+            )
+
+        )
+    )
+
+    ; -------------------------------------------------------------------------
+    ; Primitives
+    ; -------------------------------------------------------------------------
+    ; DRIVING
+
+    (:durative-action D_p ;_p es sufijo de primitiva
+        :parameters (?d - Driver ?dur - number)
+        :duration (= ?duration ?dur)
+        :condition ()
+        :effect (increase (tiempo_conduccion ?d) ?dur)
+    )
+
+    (:durative-action D_p2 ;_p es sufijo de primitiva; 2 is because action as contexts in parameters
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
+        :meta (
+            (:tag prettyprint "?d	?start	?end	?duration	Driving	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
+            :duration (= ?duration ?dur)
+            :condition()
+            ; :condition (and
+            ; 	(:print "Recognized [DRIVING] task for driver ")
+            ; 	(:print ?d)
+            ; 	(:print " of ")
+            ; 	(:print ?dur)
+            ; 	(:print "minutes\n")
+            ; )
+            :effect (increase (tiempo_conduccion ?d) ?dur)
+    )
+
+    ; -------------------------------------------------------------------------
+    ; OTHER WORK
+
+    (:durative-action O_p
+        :parameters (?d - Driver ?dur - number)
+        :duration (= ?duration ?dur)
+        :condition ()
+        :effect (increase (tiempo_otros ?d) ?dur)
+    )
+
+    (:durative-action O_p2
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
+        :meta (
+            (:tag prettyprint "?d	?start	?end	?duration	Other	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
+            :duration (= ?duration ?dur)
+            :condition()
+            ; :condition (and
+            ; 	(:print "Recognized [OTHER] task for driver ")
+            ; 	(:print ?d)
+            ; 	(:print " of ")
+            ; 	(:print ?dur)
+            ; 	(:print "minutes\n")
+            ; )
+            :effect (increase (tiempo_otros ?d) ?dur)
+    )
+
+    ; -------------------------------------------------------------------------
+    ; BREAK
+
+    (:durative-action B_p
+        :parameters (?d - Driver ?dur - number)
+        :duration (= ?duration ?dur)
+        :condition ()
+        :effect (increase (tiempo_parada ?d) ?dur)
+    )
+
+    (:durative-action B_p2
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
+        :meta (
+            (:tag prettyprint "?d	?start	?end	?duration	Break	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
+            :duration (= ?duration ?dur)
+            :condition()
+            ; :condition (and
+            ; 	(:print "Recognized [BREAK] task for driver ")
+            ; 	(:print ?d)
+            ; 	(:print " of ")
+            ; 	(:print ?dur)
+            ; 	(:print "minutes\n")
+            ; )
+            :effect (increase (tiempo_parada ?d) ?dur)
+    )
+
+    ; -------------------------------------------------------------------------
+    ; IDLE
+
+    (:durative-action I_p
+        :parameters (?d - Driver ?dur - number)
+        :duration (= ?duration ?dur)
+        :condition ()
+        :effect (increase (tiempo_espera ?d) ?dur)
+    )
+
+    (:durative-action I_p2
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
+        :meta (
+            (:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
+            :duration (= ?duration ?dur)
+            :condition()
+            ; :condition (and
+            ; 	(:print "Recognized [IDLE] task for driver ")
+            ; 	(:print ?d)
+            ; 	(:print " of ")
+            ; 	(:print ?dur)
+            ; 	(:print "minutes\n")
+            ; )
+            :effect (increase (tiempo_espera ?d) ?dur)
+    )
 )
