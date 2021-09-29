@@ -26,17 +26,12 @@
 
         typeD typeO typeB typeI - TipoAccion
 
-        ; Tokens
-        A I B_T0 B_T1 B_T2 B_T3 B_T4 B_T5 B_T6 B_T7 B_T10
-
-        cdd_t2_slice cdd_t2_sequence 
-        cdd_t1_start cdd_t1_end 
-        cdd_t2_start cdd_t2_end
-
-        start end unique
-        splitted continuos
-        
-        ndd edd wd bwd month none - context
+        ; Contexts
+        A I B_T0 B_T1 B_T2 B_T3 B_T4 B_T5 B_T6 B_T7 B_T10   ; Token
+        split uninterrupted                                 ; BreakType
+        first second unique                                 ; Sequence
+        ndd edd                                             ; DayType
+        wd bwd month none - context
     )
 
     ; =========================================================================
@@ -57,7 +52,7 @@
         ; Contexts
         (token-context ?tkctxt - context)
         (sequence-context ?seqctxt - context)
-        (drivingType-context ?drivctxt - context)
+        (breakType-context ?drivctxt - context)
         (dayType-context ?dayctxt - context)
         (weekly-context ?weectxt - context)
         (monthly-context ?monctxt - context)
@@ -165,8 +160,6 @@
         (current_rt) ;tiempo de descanso actual, se entiende que el recién reconocido
         (current_dt) ;current driving time of the recently recognized activity
 
-        (duracion_conduccion ?d - Driver)
-
         (minutos_consumidos)
 
         (contador_veces_AMPLIADA_en_semana)
@@ -257,9 +250,7 @@
     (:derived (continuar_recursion)
         (AND
             ( <= (minutos_consumidos) (* 24 (hours_in_mins)))
-            ; (:print "TODAVÍA no ha consumido 24 horas\n")
             (secuencia_entrada_no_vacia)
-            ; (:print "TODAVÍA NO HA LLEGADO AL FIN DE LA SECUENCIA\n")
         )
     )
 
@@ -276,9 +267,6 @@
             (>= ?dur 15)
         )
     )
-
-    ; (:derived (diferente ?x ?y) {return ?x != ?y})
-    ; (:derived (igual ?x ?x) ())
 
     ; =========================================================================
     ; TASKS
@@ -428,14 +416,19 @@
 
     ; -------------------------------------------------------------------------
 
-    ; Continuos Daily Driving
+    ; Continuous Daily Driving -> <9h
     (:task CDD
         :parameters (?d - Driver) 
         (:method CDD
             :precondition()
             :tasks (
+                (b_sequence first)
                 (CDDs_S ?d)
+                (e_sequence first)
+
+                (b_sequence second)
                 (CDDs_E ?d)
+                (e_sequence second)
                 (:inline
                     ()
                     (assign
@@ -446,25 +439,33 @@
             )
         )
 
-        ; (:method alt_2
-        ; 	:precondition()
-        ; 	:tasks ( (CDDs_E ?d) 
-        ; 			(:inline ()(assign (dt_current_cdd) (dt_current_CDDs_E))) )
-        ; 	)
+        ; No breaks, ending in RD
+        (:method unique
+        	:precondition()
+        	:tasks ( 
+                (b_sequence unique)
+                (CDDs_E ?d)
+                (e_sequence unique)
+        		(:inline 
+                    ()
+                    (assign (dt_current_cdd) (dt_current_CDDs_E))
+                )
+            )
+        )
     )
 
     ; -------------------------------------------------------------------------
 
-    ; Continuos Daily Driving - Start
+    ; Continuous Daily Driving - Start - <4.5h
     (:task CDDs_S
         :parameters (?d - Driver)
         ; Type 1 (normal, no splits)
         (:method t1
             :precondition()
             :tasks (
-                (b_sequence CDD_T1_START)
+                (b_breakType uninterrupted)
                 (CDD_T1_START ?d)
-                (e_sequence CDD_T1_START)
+                (e_breakType uninterrupted)
                 (:inline
                     ()
                     (assign
@@ -478,9 +479,9 @@
         (:method t2
             :precondition()
             :tasks (
-                (b_sequence CDD_T2_START)
+                (b_breakType split)
                 (CDD_T2_START ?d)
-                (e_sequence CDD_T2_START)
+                (e_breakType split)
                 (:inline
                     ()
                     (assign
@@ -493,16 +494,18 @@
 
     ; -------------------------------------------------------------------------
 
-    ; Continuos Daily Driving - End
+    ; Continuous Daily Driving - End
     (:task CDDs_E
         :parameters (?d - Driver)
         ; Type 1 (normal, no splits)
         (:method t1
             :precondition()
             :tasks (
-                (b_sequence CDD_T1_END)
+                (b_breakType uninterrupted)
+                ; (b_sequence unique)
                 (CDD_T1_END ?d)
-                (e_sequence CDD_T1_END)
+                ; (e_sequence unique)
+                (e_breakType uninterrupted)
                 (:inline
                     ()
                     (assign
@@ -516,9 +519,9 @@
         (:method t2
             :precondition()
             :tasks (
-                (b_sequence CDD_T2_END)
+                (b_breakType split)
                 (CDD_T2_END ?d)
-                (e_sequence CDD_T2_END)
+                (e_breakType split)
                 (:inline
                     ()
                     (assign
@@ -651,9 +654,7 @@
         (:method caso_base0
             :precondition()
             :tasks (
-                (b_drivingType CDD_T2_slice)
                 (CDD_T2_slice ?d)
-                (e_drivingType CDD_T2_Slice)
                 (:inline
                     ()
                     (increase
@@ -672,9 +673,7 @@
         (:method recurre
             :precondition ()
             :tasks (
-                (b_drivingType CDD_T2_slice)
                 (CDD_T2_slice ?d)
-                (e_drivingType CDD_T2_Slice)
                 (:inline
                     ()
                     (increase
@@ -1368,7 +1367,7 @@
 	    :parameters ()
 	    :meta (
             (:tag prettyprint "# ----------------------------------------------------NEW DAY----------------------------------------------------
-#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DayType	DrivingType	Sequence	Token"))
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DayType	Sequence	BreakType	Token"))
             ; (:tag prettyprint "# Driver DateTimeStart   DateTimeEnd Duration (min)  Activity    DrivingDatyType DrivingPeriod   Sequence    Token"))
             :duration ()
             :condition (:print "> One Driving Day processed\n")

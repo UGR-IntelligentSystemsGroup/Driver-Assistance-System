@@ -19,7 +19,7 @@ Integrating Machine Learning with Automated Planning
 ## Doubts
 
 - **IMPORTANTE** Cuál tiene que ser la salida? (Formato)
-  - Driver - DatetimeStart - DatetimeEnd - Duration - Activity (DOBI) -- DrivingDayType (ndd/edd) - DrivingPeriod (split/continuos) - Sequence (cdds/cdde) - Token (elt=A, b_t1, b_t2, b_t3, rd_normal=Rg11, rd_reduced=Rg3, wr_normal=Rg45, wr_reduced=Rg24) ???
+  - Driver - DatetimeStart - DatetimeEnd - Duration - Activity (DOBI) -- DrivingDayType (ndd/edd) - DrivingPeriod (split/continuous) - Sequence (cdds/cdde) - Token (elt=A, b_t1, b_t2, b_t3, rd_normal=Rg11, rd_reduced=Rg3, wr_normal=Rg45, wr_reduced=Rg24) ???
 
   - Because of that, every event in the event log is annotated with four labels3 according to the contexts day (with possible values ndd or edd), driving period (continuous or splitted), sequence (cdds or cdde) and token (elt, b t1, b t2, b t3, rd normal, rd reduced, wr normal, wr reduced).
 
@@ -116,6 +116,8 @@ Integrating Machine Learning with Automated Planning
 
   - En la lista de métodos de una tarea abstracta. Sirve para que una vez que se han probado como ciertas las precondiciones de un método se descarte probar con el resto de métodos. Nuevamente usado con cuidado este corte tampoco tiene por que afectar a la completitud del algoritmo. El escritor de dominios puede conocer que los métodos son mutuamente excluyentes y que una vez que se prueba con uno, el resto ya son inválidos.
 
+- According to Regulation (EC) No 561/2006, a driver must not drive for more than 412h without taking a break of at least 45 min duration, during which the driver may not carry out any work. The break can also be taken in two parts, whereas the first part must have a duration of at least 15 min and the second part must have a duration of at least 30 min. After a total of 9 h of driving, a driver must take a rest period of 11 h duration, during which the driver may freely dispose of her or his time. Similar to break periods, rest periods can also be taken in two parts, whereas the first part must have a duration of at least three hours and the second part must have a duration of at least nine hours. Thus, if a rest period is taken in two parts, a total rest of 12 h is required before the driver may continue to drive again. Three times a week, the regular duration of a rest period may be reduced to at least 9 h, and twice a week, the total driving time between rests may be extended to 10 h. In any case, the required amount of rest must have been taken within 24 h after the end of the previous rest period. The accumulated amount of driving and the accumulated amount of working within a week are restricted to at most 56 and 60 h and a weekly rest period of at least 45 h must be taken after at most 144 h after the end of the previous weekly rest period. Alternatively, a reduced weekly rest period of 24 h may be taken if the reduction is compensated by an equivalent period of rest taken in a subsequent week. The regulation constrains the total accumulated driving time during any two consecutive calendar weeks to at most 90 h and in any period of four months, the average working time during a calendar week must not exceed 48 h.
+
 ### Changes
 
 - NA context by default or after daily_reset -> Lo cambio a NONE
@@ -145,6 +147,17 @@ Integrating Machine Learning with Automated Planning
 
 - Por qué no hay O_p2 ni E_p2? Los he cambiado para que haya alternativa con contexto
 
+- Output:
+  - DayType (ndd/edd), BreakType (split/uninterrupted/none), Sequence (start/end/unique), Token (A, B_T0...)
+  - unique: No splits, Activities ending with a RD
+  - breakType none: No breaks that are not RD
+
+  - DayType: Normal (9h) or Extended(10h)
+  - Sequence: First sequence (<4.5h) or second
+  - BreakType: Split, uninterrupted or unique (if ending in RD)
+  - Split: First or second
+  - Token: Specific activity
+
 ### Notation
 
 | Símbolo | Actividad        | Tipo Acción | Índice Registro |
@@ -161,11 +174,11 @@ Integrating Machine Learning with Automated Planning
 | B | Break |
 | A | Actividad (si break -> B < 15m)|
 | P_A | Process Activity, trozo de A
-| CDD | Continuos Daily Driving
+| CDD | continuous Daily Driving
 | CDD_T1 | Continued Daily Driving of type 1 (normal, sin partición)
 | CDD_T2 | Continued Daily Driving of type 2 (particionada)
-| CDDs_S | Continuos Daily Driving - Start
-| CDDs_E | Continuos Daily Driving - End
+| CDDs_S | continuous Daily Driving - Start
+| CDDs_E | continuous Daily Driving - End
 | NDD | Normal Daily Driving
 | EDD | Extended Daily Driving - En total <10h
 | RD | Daily Rest
