@@ -153,7 +153,7 @@ Integrating Machine Learning with Automated Planning
   - breakType none: No breaks that are not RD
 
   - DayType: Normal (9h) or Extended(10h)
-  - Sequence: First sequence (<4.5h) or second
+  - Sequence: First sequence (<4.5h), second or third (only if EDD)
   - BreakType: Split, uninterrupted or unique (if ending in RD)
   - Split: First or second
   - Token: Specific activity
