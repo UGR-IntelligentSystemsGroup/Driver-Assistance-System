@@ -107,6 +107,7 @@ def getProblemInit(eventsFile):
 \t\t(= (dt_current_slice) 0)
 \t\t(= (current_index_action) 0)
 
+\t\t(= (hours_in_mins) 60)
 """
 
     # Translate PLAN events into PDDL predicates

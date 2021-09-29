@@ -216,3 +216,18 @@ B_T10: BREAK OF [45h,infty)
 
 CDD_T1 (Driving continous): A(4.5th) - B_T1(45m) - A - RD(>9h)
 CDD_T2 (Driving split): A(4.5h) - B_T1/2/3 - A - B_T1/2/3   (Si el primero fue 3, luego 1, e viceversa? O siempre la primera de 15)
+
+
+; (:inline
+; 	(bind ?n
+; 		(dt_current_cdd))
+; 	()
+; )
+; (:inline
+;     (:print ?n)
+;     ()
+; )
+; (:inline
+;     (:print "HOLA")
+;     ()
+; )

@@ -121,12 +121,12 @@ rd
     ;
 
 rd_normal
-    : B {dur(B)>= 11m, dur(B) < 24h}
+    : B {dur(B)>= 11h, dur(B) < 24h}
     ;
 
 //3 times a week
 rd_reduced
-    : B {dur(B)>=9, dur(B)< 11h }
+    : B {dur(B)>=9h, dur(B)< 11h }
     ;
 
 // ============================================================================

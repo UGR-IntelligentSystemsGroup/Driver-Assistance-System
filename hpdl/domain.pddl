@@ -185,9 +185,7 @@
         ; Time constants
         ; (one_year) { return 365.0*24.0 }
         ; (one_month) { return 30.0*24.0 }
-        (hours_in_mins ?hs) { return ?hs*60 }
-        (horas_en_minutos ?horas) { return ?horas*60 }
-        (hora_en_minutos) { return 60 }
+        (hours_in_mins)
     )
 
     ; =========================================================================
@@ -206,31 +204,31 @@
 
     (:derived (conditions_NDD ?d)
         (AND
-            (<= (dt_day ?d) (* 9 (hora_en_minutos)))
+            (<= (dt_day ?d) (* 9 (hours_in_mins)))
         )
     )
 
     (:derived (puede_otros_NORMAL ?d)
         (AND
-            (<= (tiempo_otros_dia ?d) (* 5 (hora_en_minutos)))
+            (<= (tiempo_otros_dia ?d) (* 5 (hours_in_mins)))
         )
     )
 
     (:derived (puede_parada_NORMAL ?d)
         (AND
-            (<= (tiempo_parada_dia ?d) (* 5 (hora_en_minutos)))
+            (<= (tiempo_parada_dia ?d) (* 5 (hours_in_mins)))
         )
     )
 
     (:derived (puede_espera_NORMAL ?d)
         (AND
-            (<= (tiempo_espera_dia ?d) (* 5 (hora_en_minutos)))
+            (<= (tiempo_espera_dia ?d) (* 5 (hours_in_mins)))
         )
     )
 
     (:derived (puede_conducir_AMPLIADA ?d)
         (AND
-            (<= (dt_day ?d) (* 10 (hora_en_minutos)))
+            (<= (dt_day ?d) (* 10 (hours_in_mins)))
             (<= (contador_veces_AMPLIADA_en_semana) 2)
         )
     )
@@ -255,13 +253,13 @@
 
     (:derived (dia_consumido)
         (AND
-            ( > (minutos_consumidos) (* 24 (hora_en_minutos)))
+            ( > (minutos_consumidos) (* 24 (hours_in_mins)))
         )
     )
 
     (:derived (continuar_recursion)
         (AND
-            ( <= (minutos_consumidos) (* 24 (hora_en_minutos)))
+            ( <= (minutos_consumidos) (* 24 (hours_in_mins)))
             ; (:print "TODAVÍA no ha consumido 24 horas\n")
             (secuencia_entrada_no_vacia)
             ; (:print "TODAVÍA NO HA LLEGADO AL FIN DE LA SECUENCIA\n")
@@ -270,7 +268,7 @@
 
     (:derived (less_than_15min ?d)
         (AND
-            (<= (dt_day ?d) (* 9 (hora_en_minutos)))
+            (<= (dt_day ?d) (* 9 (hours_in_mins)))
         )
     )
 
@@ -332,7 +330,12 @@
 
         (:method end
             :precondition ()
-            :tasks ()
+            :tasks (
+                (:inline
+                    (:print "# Salgo\n")
+                    ()
+                )
+            )
         )
     )
 
@@ -380,7 +383,7 @@
                 (e_daily_context NDD)
 
                 (:inline
-                    (<= (dt_current_cdd) (hours_in_mins 9.0))
+                    (<= (dt_current_cdd) (* (hours_in_mins) 9.0))
                     ()
                 )
             )
@@ -392,16 +395,19 @@
     ; Extended Daily Driving - <10h driving total
     (:task EDD
         :parameters (?d - Driver) 
-        (:method SINGLE
+        (:method edd
             :precondition()
             :tasks (
                 (reset_counters)
+                
                 (b_daily_context EDD)
                 (CDDs_S ?d)
+                
                 (:inline
                     ()
                     (assign (dt_last_CDDs_S) (dt_current_CDDs_S))
                 )
+
                 (reset_counters)
                 (CDDs_S ?d)
 
@@ -411,9 +417,11 @@
                     ()
                     (assign (dt_last_slice) (dt_current_slice))
                 )
+
                 (RD ?d)
+
                 (:inline
-                    (<= ( + (+ (dt_current_cdds_S) (dt_last_CDDs_S)) (dt_last_slice)) (hours_in_mins 10.0))
+                    (<= ( + (+ (dt_current_cdds_S) (dt_last_CDDs_S)) (dt_last_slice)) (* (hours_in_mins) 10.0))
                     ()
                 )
                 (e_daily_context EDD)
@@ -426,7 +434,7 @@
     ; Continuos Daily Driving
     (:task CDD
         :parameters (?d - Driver) 
-        (:method SINGLE
+        (:method CDD
             :precondition()
             :tasks (
                 (CDDs_S ?d)
@@ -534,7 +542,7 @@
                 (A ?d)
 
                 (:inline
-                    (<= (dt_current_slice) (hours_in_mins 4.5))
+                    (<= (dt_current_slice) (* (hours_in_mins) 4.5))
                     ()
                 )
                 (:inline
@@ -562,7 +570,7 @@
                 (A ?d)
 
                 (:inline
-                    (<= (dt_current_slice) (hours_in_mins 4.5))
+                    (<= (dt_current_slice) (* (hours_in_mins) 4.5))
                     ()
                 )
                 (:inline
@@ -590,7 +598,7 @@
                 (CDD_T2_SEQUENCE ?d)
                 (:inline
                     (AND
-                        (<= (dt_current_cdd_t2_sequence) (hours_in_mins 4.5))
+                        (<= (dt_current_cdd_t2_sequence) (* (hours_in_mins) 4.5))
                         (>= (bt_current_cdd_t2_sequence) 45))
                     ()
                 )
@@ -625,7 +633,7 @@
 
                 (:inline
                     (AND
-                        (<= (+ (dt_current_cdd_t2_sequence) (dt_last_slice)) 270); (hours_in_mins 4.5))
+                        (<= (+ (dt_current_cdd_t2_sequence) (dt_last_slice)) 270); (* (hours_in_mins) 4.5))
                         (>= (bt_current_cdd_t2_sequence) 15))
                     ()
                 )
@@ -782,7 +790,7 @@
                 (b_tk B_T5)
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur (hours_in_mins 9)) (< ?dur (hours_in_mins 11)))
+                    (and (>= ?dur (* (hours_in_mins) 9)) (< ?dur (* (hours_in_mins) 11)))
                     ()
                 )
                 (e_tk B_T5)
@@ -813,7 +821,7 @@
                 (b_tk B_T6)
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur (hours_in_mins 11)) (< ?dur (hours_in_mins 24)))
+                    (and (>= ?dur (* (hours_in_mins) 11)) (< ?dur (* (hours_in_mins) 24)))
                     ()
                 )
                 (e_tk B_T6)
@@ -843,7 +851,7 @@
                 (b_tk B_T10)
                 (B ?d ?dur)
                 (:inline
-                    (>= ?dur (hours_in_mins 45))
+                    (>= ?dur (* (hours_in_mins) 45))
                     ()
                 )
                 (e_tk B_T10)
@@ -882,7 +890,7 @@
                 (b_tk B_T1)		
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur 45) (< ?dur (hours_in_mins 3)))
+                    (and (>= ?dur 45) (< ?dur (* (hours_in_mins) 3)))
                     ()
                 )
                 (e_tk B_T1)
@@ -968,7 +976,7 @@
                 (b_tk B_T3)
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur 30) (< ?dur (hours_in_mins 3)))
+                    (and (>= ?dur 30) (< ?dur (* (hours_in_mins) 3)))
                     ()
                 )
                 (e_tk B_T3)
@@ -1189,7 +1197,7 @@
                 (e_tk B_T3)
 
                 (:inline
-                    (and (>= ?dur 30) (< ?dur (hours_in_mins 3)))
+                    (and (>= ?dur 30) (< ?dur (* (hours_in_mins) 3)))
                     ()
                 )
                 (:inline
@@ -1222,7 +1230,7 @@
                 (e_tk B_T4)
                 
                 (:inline
-                    (and (>= ?dur (hours_in_mins 3)) (< ?dur (hours_in_mins 9)))
+                    (and (>= ?dur (* (hours_in_mins) 3)) (< ?dur (* (hours_in_mins) 9)))
                     ()
                 )
                 (:inline
@@ -1255,7 +1263,7 @@
                 (e_tk B_T1)
 
                 (:inline
-                    (and (>= ?dur 45) (< ?dur (hours_in_mins 3)))
+                    (and (>= ?dur 45) (< ?dur (* (hours_in_mins) 3)))
                     ()
                 )
                 (:inline
@@ -1366,7 +1374,7 @@
 #Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DType	DPeriod	Sequence	Token"))
             ; (:tag prettyprint "# Driver DateTimeStart   DateTimeEnd Duration (min)  Activity    DrivingDatyType DrivingPeriod   Sequence    Token"))
             :duration ()
-            :condition (:print "> Full Driving Day processed\n")
+            :condition (:print "> One Driving Day processed\n")
             :effect ()
     )
 
