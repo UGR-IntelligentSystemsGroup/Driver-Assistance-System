@@ -202,16 +202,16 @@
 			;captura el contexto
 			(:inline
 				(and (token-context ?tkctxt)
-					(slice-context ?slctxt)
-					(legal-slice-context ?lsctxt)
-					(daily-context ?dayctxt)
+					(drivingType-context ?drivctxt)
+					(sequence-context ?seqctxt)
+					(dayType-context ?dayctxt)
 					(weekly-context ?weectxt)
 					(monthly-context ?monctxt))
 				()
 			)
 			(
 				(and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-			 	(D_p2 ?driver ?dur ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt)
+			 	(D_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
 			)
 		)
 	)
@@ -229,16 +229,16 @@
 			;captura el contexto
 			(:inline
 				(and (token-context ?tkctxt)
-					(slice-context ?slctxt)
-					(legal-slice-context ?lsctxt)
-					(daily-context ?dayctxt)
+					(drivingType-context ?drivctxt)
+					(sequence-context ?seqctxt)
+					(dayType-context ?dayctxt)
 					(weekly-context ?weectxt)
 					(monthly-context ?monctxt))
 				()
 			)
 			(
 				(and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-				(O_p2 ?driver ?dur ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt)
+				(O_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
 			)
 		)
 	)
@@ -256,16 +256,16 @@
 			;captura el contexto
 			(:inline
 				(and (token-context ?tkctxt)
-					(slice-context ?slctxt)
-					(legal-slice-context ?lsctxt)
-					(daily-context ?dayctxt)
+					(drivingType-context ?drivctxt)
+					(sequence-context ?seqctxt)
+					(dayType-context ?dayctxt)
 					(weekly-context ?weectxt)
 					(monthly-context ?monctxt))
 				()
 			)
 			(
 				(and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-				(B_p2 ?driver ?dur ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt)
+				(B_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
 			)
 		)
 	)
@@ -283,16 +283,16 @@
 			;captura el contexto
 			(:inline
 				(and (token-context ?tkctxt)
-					(slice-context ?slctxt)
-					(legal-slice-context ?lsctxt)
-					(daily-context ?dayctxt)
+					(drivingType-context ?drivctxt)
+					(sequence-context ?seqctxt)
+					(dayType-context ?dayctxt)
 					(weekly-context ?weectxt)
 					(monthly-context ?monctxt))
 				()
 			)
 			(
 				(and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-				(I_p2 ?driver ?dur ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt)
+				(I_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
 			)
 		)
 	)
@@ -353,8 +353,8 @@
 		:precondition ()
 		:tasks (
 			:inline
-			(slice-context ?current)
-			(and (slice-context ?ctxt) (not (slice-context ?current)))
+			(drivingType-context ?current)
+			(and (drivingType-context ?ctxt) (not (drivingType-context ?current)))
 		)
 	)
 )
@@ -366,7 +366,7 @@
 		:tasks (
 			:inline
 			()
-			(and (not (slice-context ?ctxt)) (slice-context none))
+			(and (not (drivingType-context ?ctxt)) (drivingType-context none))
 		)
 
 	)
@@ -380,8 +380,8 @@
 		:precondition ()
 		:tasks (
 			:inline
-			(legal-slice-context ?current)
-			(and (legal-slice-context ?ctxt) (not (legal-slice-context ?current)))
+			(sequence-context ?current)
+			(and (sequence-context ?ctxt) (not (sequence-context ?current)))
 		)
 	)
 )
@@ -393,7 +393,7 @@
 		:tasks (
 			:inline
 			()
-			(and (not (legal-slice-context ?ctxt)) (legal-slice-context none))
+			(and (not (sequence-context ?ctxt)) (sequence-context none))
 		)
 
 	)
@@ -407,8 +407,8 @@
 		:precondition ()
 		:tasks (
 			:inline
-			(daily-context ?current)
-			(and (daily-context ?ctxt) (not (daily-context ?current)))
+			(dayType-context ?current)
+			(and (dayType-context ?ctxt) (not (dayType-context ?current)))
 		)
 	)
 )
@@ -420,7 +420,7 @@
 		:tasks (
 			:inline
 			()
-			(and (not (daily-context ?ctxt)) (daily-context none))
+			(and (not (dayType-context ?ctxt)) (dayType-context none))
 		)
 
 	)
@@ -439,9 +439,9 @@
 )
 
 (:durative-action D_p2 ;_p es sufijo de primitiva; 2 is because action as contexts in parameters
-	:parameters (?d - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
+	:parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
-		(:tag prettyprint "?d	?start	?end	?duration	Driving	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
+		(:tag prettyprint "?d	?start	?end	?duration	Driving	?dayctxt	?drivctxt	?seqctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition()
 		; :condition (and
@@ -465,9 +465,9 @@
 )
 
 (:durative-action O_p2
-	:parameters (?d - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
+	:parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
-		(:tag prettyprint "?d	?start	?end	?duration	Other	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
+		(:tag prettyprint "?d	?start	?end	?duration	Other	?dayctxt	?drivctxt	?seqctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition()
 		; :condition (and
@@ -491,9 +491,9 @@
 )
 
 (:durative-action B_p2
-	:parameters (?d - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
+	:parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
-		(:tag prettyprint "?d	?start	?end	?duration	Break	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
+		(:tag prettyprint "?d	?start	?end	?duration	Break	?dayctxt	?drivctxt	?seqctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition()
 		; :condition (and
@@ -517,9 +517,9 @@
 )
 
 (:durative-action I_p2
-	:parameters (?d - Driver ?dur - number ?tkctxt ?slctxt ?lsctxt ?dayctxt ?weectxt ?monctxt - context)
+	:parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
 	:meta (
-		(:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?lsctxt	?slctxt	?tkctxt"))
+		(:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?drivctxt	?seqctxt	?tkctxt"))
 		:duration (= ?duration ?dur)
 		:condition()
 		; :condition (and

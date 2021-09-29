@@ -93,9 +93,9 @@ def getProblemInit(eventsFile):
 
 \t\t; Initialize contexts
 \t\t(token-context none)
-\t\t(slice-context none)
-\t\t(legal-slice-context none)
-\t\t(daily-context none)
+\t\t(sequence-context none)
+\t\t(drivingType-context none)
+\t\t(dayType-context none)
 \t\t(weekly-context none)
 \t\t(monthly-context none)
 

@@ -5,11 +5,9 @@
     ; TYPES
     ; =========================================================================
     (:types
-        Jornada ; cada simbolo de tipo Jornada representa una jornada diaria de trabajo
         TaskSymbol
         TaskInstanceSymbol
         TipoAccion
-        TipoConduccion
         Driver
         Semana
         Mensaje
@@ -25,8 +23,6 @@
         DIA_CONSUMIDO SECUENCIA_TERMINADA BREAK_CONSIDERED_REST PAUSE_CONSIDERED_BREAK FALLO_LATASK- Mensaje
 
         Procesa_Accion - TaskSymbol
-        
-        conduccion_diaria_normal conduccion_diaria_ampliada - TipoConduccion
 
         typeD typeO typeB typeI - TipoAccion
 
@@ -36,6 +32,9 @@
         cdd_t2_slice cdd_t2_sequence 
         cdd_t1_start cdd_t1_end 
         cdd_t2_start cdd_t2_end
+
+        start end unique
+        splitted continuos
         
         ndd edd wd bwd month none - context
     )
@@ -50,18 +49,16 @@
 
         (dia_consumido)
 
-        (es_jornada ?j - Jornada); predicado usado en los timed initial literals
         (task_failed ?t - TaskSymbol) ;para saber si una task ha fallado, se añade como efecto en los métodos de fallo de tarea
-        (modo_conduccion ?d - Driver ?modo - TipoConduccion)
 
         (inicio_semana ?s - Semana ?i - number)
         (fin_semana ?s - Semana ?f - number)
 
-        ; Contextos
+        ; Contexts
         (token-context ?tkctxt - context)
-        (slice-context ?slctxt - context)
-        (legal-slice-context ?lsctxt - context)
-        (daily-context ?dayctxt - context)
+        (sequence-context ?seqctxt - context)
+        (drivingType-context ?drivctxt - context)
+        (dayType-context ?dayctxt - context)
         (weekly-context ?weectxt - context)
         (monthly-context ?monctxt - context)
 
@@ -1371,7 +1368,7 @@
 	    :parameters ()
 	    :meta (
             (:tag prettyprint "# ----------------------------------------------------NEW DAY----------------------------------------------------
-#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DType	DPeriod	Sequence	Token"))
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DayType	DrivingType	Sequence	Token"))
             ; (:tag prettyprint "# Driver DateTimeStart   DateTimeEnd Duration (min)  Activity    DrivingDatyType DrivingPeriod   Sequence    Token"))
             :duration ()
             :condition (:print "> One Driving Day processed\n")
