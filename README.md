@@ -22,21 +22,9 @@ Integrating Machine Learning with Automated Planning
 
 - Token de salida split, ¿con o sin número?
 
+- Intervalos de los Breaks ampliados para no ser estrictos. Si lo que queremos es reconocer patrones nos interesa, si lo que queremos es que los conductores se ajusten a la regulación no deberían ampliarse.
 
-
-
-- **IMPORTANTE** Cuál tiene que ser la salida? (Formato)
-  - Driver - DatetimeStart - DatetimeEnd - Duration - Activity (DOBI) -- DrivingDayType (ndd/edd) - DrivingPeriod (split/continuous) - Sequence (cdds/cdde) - Token (elt=A, b_t1, b_t2, b_t3, rd_normal=Rg11, rd_reduced=Rg3, wr_normal=Rg45, wr_reduced=Rg24) ???
-
-  - Because of that, every event in the event log is annotated with four labels3 according to the contexts day (with possible values ndd or edd), driving period (continuous or splitted), sequence (cdds or cdde) and token (elt, b t1, b t2, b t3, rd normal, rd reduced, wr normal, wr reduced).
-
-  - La cosa es que la salida no es lo mismo que pone aquí, verdad?
-
-  - Un token más diciendo que se ajusta a la regulación? O los none indican eso?
-
-  - Hablar también de la conducción semanal y descanso de compensación
-
-- **IMPORTANTE** La regulación HOS cambió en junio de 2020: https://www.fmcsa.dot.gov/regulations/hours-of-service
+- Puedo subir el dataset, las trazas o los resultados a GitHub? Por si acaso son privados
 
 - Por dónde empiezo? Qué fallos tiene?
   - Entiendo que uno de los fallos son los NA, no reconoce si es NDD o EDD
@@ -60,34 +48,14 @@ Integrating Machine Learning with Automated Planning
 
 - No entiendo por qué la task EDD es así. Cada CDDs_S tiene un RD dentro por lo que en total habría 3 para una supuesta jornada. La cosa es que el día 06/01 lo coge bien.
 
-- Cuál es el dataset "más limpio"? (Del que partir)
-
-- DXX, OXX... las XX significan algo?
-
-- Los breaks pequeños no cambiaban el contexto, por algún motivo? No se quieren esos tokens en el log?
-
-- Qué será más eficiente, (horas_en_minutos) o (hora_en_minutos)?
-
-- En general no entiendo bien los contextos. En el paper sí, pero no lo implementado. Es para añadir tokens a la salida, no?
-
-- 183 minutos sigue siendo un B_T3 o un B_T4?
-
 - Muy pocos "En espera". Es normal?
 
 - Por qué las durative-actions no tienen un último paréntesis que cierre?
-
-- task P_A: el orden de los métodos está considerado?
-
-- Por lo que parece no puedo usar las trazas del doc, son para otra versión del dominio.
 
 - (modo_generar) bucle infinito? Qué hace? se añade directamente la primitiva al plan (y si no se pueden cumplir las restricciones/condiciones pues fallará?
   - Para generar acciones deberíamos saber localización y recursos, no?
 
   - Lo que sí se podría hacer (con lo que hay) es indicar que tiene que hacer actividades y sus descansos.
-
-- No está modelado el weakly rest (WD), verdad?
-
-- La gramática de atributos es puramente informativa?
 
 - Habrá que modelar también el Team Daily Driving?
 
@@ -102,9 +70,6 @@ Integrating Machine Learning with Automated Planning
 
   - En sí los valores no tienen sentido, deberían ser +-90 o +-180. Probablemente estén usando decimales sin haberlos marcados, pero de cuánta precisión?
 
-- Si pillo las últimas actividades (desde 136 hasta el final) me mata el proceso por falta de memoria.
-  - Creo que es por la recursión en la task CDD_T2_SEQUENCE. Si el caso base no funciona debe por narices probarlo de nuevo pero con la recursión? Si le pongo el (!) consigo que me lo lea bien -> Pero no coges los token cdd_t2_start y cdd_t2_slice, por lo que lo quito
-
 ## Commands
 
 ./planner/planner -d hpdl/domain.pddl -p hpdl/problem-recognition.pddl
@@ -113,7 +78,9 @@ Integrating Machine Learning with Automated Planning
 
 ## Notes
 
-- C_p2 ;_p es sufijo de primitiva; 2 is because action as contexts in parameters
+- **IMPORTANTE** La regulación HOS cambió en junio de 2020: https://www.fmcsa.dot.gov/regulations/hours-of-service
+
+- C_p2 ;_p es sufijo de primitiva; 2 is because action has contexts in parameters
 
 - Los metatags son una extensión del lenguaje que actualmente está en fase experimental, por lo que puede cambiar en futuras versiones. El concepto subyacente a los metatags es poder incluir información extra en el dominio, que aunque no sea directamente utilizable por el planificador, pueda ser utilizada por otros módulos, o en un análisis posterior del plan resultante.
 
@@ -167,7 +134,7 @@ Integrating Machine Learning with Automated Planning
 
 - Simplificado el dominio
 
-- Intervalos de los Breaks ampliados para no ser estrictos
+- Intervalos de los Breaks ampliados para no ser estrictos. Si lo que queremos es reconocer patrones nos interesa, si lo que queremos es que los conductores se ajusten a la regulación no deberían ampliarse.
 
 ### Notation
 

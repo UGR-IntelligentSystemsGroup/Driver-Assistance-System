@@ -15,6 +15,8 @@ def getPDDLActions(path):
     input = open(path, 'r')
     lines = input.readlines()   # lines es una row de strings
 
+    index_stored = False
+
     # cada linea es de esta guisa => (0 C1 typeD "01/07/2018 00:00:00" "01/07/2018 01:59:00" 120 driver1)
     for line in lines:
         #quitar el paréntesis y otras cosas
@@ -24,7 +26,14 @@ def getPDDLActions(path):
         row  = line.split()
 
         # Add driver to set
+        # NOTE: Current version has one driver in each file, but keeping this
+        # functionality in case we want to group in one PDDL problem
         drivers.add(row[8])
+
+        # Keep the smallest index
+        if not index_stored:
+            current_index = row[0]
+            index_stored = True
 
         #convertir el string en row
         actionPddl = "\t\t(index_action " + row[1] + " " + row[0] + ")\n"
@@ -39,7 +48,7 @@ def getPDDLActions(path):
 
     input.close()
 
-    return actions, drivers
+    return actions, sorted(drivers), current_index
 
 ###############################################################################
 # PDDL constant output
@@ -50,7 +59,7 @@ def getProblemHeader():
 \t(:customization
 \t\t(= :time-format "%d/%m/%Y %H:%M")
 \t\t(= :time-horizon-relative 86400) ;; que son los minutos que tienen 2 meses
-\t\t(= :time-start "01/01/2017 00:00:00")
+\t\t(= :time-start "02/01/2017 00:00")
 \t\t(= :time-unit :minutes)
 \t)
 """
@@ -89,7 +98,6 @@ def getProblemInit(eventsFile):
 \t\t; Problem task: Recognize or Genererate
 \t\t; (modo_generar)
 \t\t(modo_reconocer)
-\t\t(modo_depuracion)
 
 \t\t; Initialize contexts
 \t\t(token-context none)
@@ -103,15 +111,13 @@ def getProblemInit(eventsFile):
 \t\t(= (minutos_consumidos) 0)
 \t\t(= (contador_veces_AMPLIADA_en_semana) 0)
 
-\t\t(= (current_rt) 0)
-\t\t(= (dt_current_slice) 0)
-\t\t(= (current_index_action) 0)
-
 \t\t(= (hours_in_mins) 60)
 """
 
     # Translate PLAN events into PDDL predicates
-    eventsAsPddl, drivers = getPDDLActions(eventsFile)
+    eventsAsPddl, drivers, index = getPDDLActions(eventsFile)
+
+    problemInit += "\t\t(= (current_index_action) {})\n\n".format(index)
 
     for d in drivers:
         problemInit += "\t\t; ------------{}-------------\n".format(d)
@@ -153,11 +159,13 @@ def getProblemTask(drivers):
 # Main
 ###############################################################################
 
+from os import walk
+
+
 def main(argv):
     # Assuming both .plan and .TaskSymbol have the same name
     eventsFile = argv[1]
     symbolFile = eventsFile.replace(".plan", ".TaskSymbol")
-    outputFile = eventsFile.replace(".plan", ".pddl")
 
     # -------------------------------------------------------------------------
     # Get sections of a PDDL problem
@@ -168,6 +176,7 @@ def main(argv):
 
     # -------------------------------------------------------------------------
     # Write output
+    outputFile = "hpdl/problems/problem-{}.pddl".format(drivers[0])
     output = open(outputFile, 'w')
 
     output.write(pddlHeader)

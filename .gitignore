@@ -9,6 +9,8 @@ doc/*
 
 # Data
 data/old
+out/logs
+hpdl/problems
 # *.xls
 # *.xlsx
 

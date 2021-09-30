@@ -47,6 +47,26 @@ def dateWithDayZeroPadded(date):
     return day + "/" + date[1] + "/" + date[2]
 
 
+def writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol):
+    # Write plan (we could use previousDriver for the name too)
+    output_plan = open(output_folder + 'event_log_{}.plan'.format(previousDriverSymbol), 'w')
+
+    for p in plan:
+        output_plan.write(p)
+
+    output_plan.close()
+
+    # Write symbols
+    output_Symbols = open(output_folder + 'event_log_{}.TaskSymbol'.format(previousDriverSymbol), 'w')
+
+    symbols = (' '.join(diccionario_TaskInstanceSymbol['D']) + '\n' +
+                ' '.join(diccionario_TaskInstanceSymbol['O']) + '\n' +
+                ' '.join(diccionario_TaskInstanceSymbol['B']) + '\n' +
+                ' '.join(diccionario_TaskInstanceSymbol['I'])
+            )
+    output_Symbols.write(symbols)
+    output_Symbols.close()
+
 ###############################################################################
 # -----------------------------------------------------------------------------
 ###############################################################################
@@ -58,7 +78,7 @@ def dateWithDayZeroPadded(date):
 time_format_input = "%d/%m/%y %H:%M"
 time_format_output = "%d/%m/%Y %H:%M"
 
-output_folder = "./out/"
+output_folder = "./out/logs/"
 
 def main(argv):
     path = argv[1]
@@ -87,13 +107,8 @@ def main(argv):
         driverCounter = 0  #contador de drivers diferentes encontrados
         previousDriver = ""  #el driver anterior encontrado es vacío, porque estamos al inicio
         
-        open_output = False
+        plan = []   # Output plan for one driver
         for row in tracereader:
-            #PRIMERA PRUEBA: USAMOS LOS CAMPOS: ['Driver', 'DateStart', 'Hora_inicio', 'Hora_fin', 'Duracion[h]', 'Estado' ]
-            #Cada row representa un registro de la traza y cada registro reprsenta una tarea ejecutada
-
-            #Calcular el simbolo de tarea
-
             # -----------------------------------------------------------------
             # Status
             # -----------------------------------------------------------------
@@ -109,7 +124,7 @@ def main(argv):
             # -----------------------------------------------------------------
             # DateTime
             # -----------------------------------------------------------------
-            date      = row['DateStart']
+            date = row['DateStart']
             
             # Remove day name from date (it's in Spanish and it's not needed)
             date = date[4:]
@@ -150,36 +165,41 @@ def main(argv):
             currentDriver = row['Driver']
             driverSymbol, driverCounter = getDriverSymbol(currentDriver, previousDriver, driverCounter)
 
-            # Generate a .plan for each driver
-            # PRIMERA PRUEBA: vamos a extraer solo los registros del primer conductor
-            if driverCounter == 3:  
-                output_plan.close()
-                break
-            if not open_output:
-                open_output = True
+            # -----------------------------------------------------------------
+            # Write output
+            # -----------------------------------------------------------------
 
-                output_plan = open(output_folder + 'event_log.plan', 'w')
+            # If new driver found, write previous plan
+            if previousDriver != currentDriver and previousDriver != "":
+                writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol)
+
+                # Reset plan
+                plan = []
+                diccionario_TaskInstanceSymbol = {k: [] for k in ['D', 'O', 'B', 'I']}
+                
+                # NOTE: We could also reset the counters, but then we can't generate a unique problem
+                # symbolCounter = dict([('D', 1), ('B', 1), ('I', 1), ('O', 1)])
+
+            # -----------------------------------------------------------------
+            # Get plan row
+            # -----------------------------------------------------------------
 
             # Write "(row_index taskSymbol taskType[estado] dateStart end duration driverSymbol)"
             string_output = ("(" + str(row_index) + " " + taskSymbol + " " 
                             + taskType[estado] + " \"" + dateStart.strftime(time_format_output) 
                             + "\" \"" + dateEnd.strftime(time_format_output) + "\" " 
                             + duration + " " + driverSymbol + ")\n")
-            output_plan.write(string_output)
+
+            plan.append(string_output)
 
             # Increase row_index and update previousDriver
             row_index += 1
             previousDriver = currentDriver
+            previousDriverSymbol = driverSymbol
 
-            output_Symbols = open(output_folder + 'event_log.TaskSymbol', 'w')
-            output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['D']))
-            output_Symbols.write('\n')
-            output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['O']))
-            output_Symbols.write('\n')
-            output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['B']))
-            output_Symbols.write('\n')
-            output_Symbols.write(' '.join(diccionario_TaskInstanceSymbol['I']))
-            output_Symbols.close()
+        # If plan not empty -> Write last driver
+        if plan:
+            writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol)
 
 ###############################################################################
 # -----------------------------------------------------------------------------

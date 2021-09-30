@@ -27,7 +27,7 @@
 
         ; Contexts
         A I B_T0 B_T1 B_T2 B_T3 B_T4 B_T5 B_T6 B_T7 B_T10   ; Token
-        split split_1 split_2 uninterrupted                                 ; BreakType
+        split split_1 split_2 uninterrupted                 ; BreakType
         first second third unique                           ; Sequence
         ndd edd                                             ; DayType
         wd bwd month none - context
@@ -267,6 +267,11 @@
     ; =========================================================================
     ; TASKS
     ; =========================================================================
+
+    ; Weekly Driving
+    ; (:task WD
+    
+    ; )
 
     ; Daily Driving
     (:task DD
@@ -926,14 +931,9 @@
         ) 
         
         ;aquí viene porque se encontró un B con una duración mayor de 15 mins
-        (:method caso_base0
-            :precondition (and 
-                (current_action_is_a_break_greater_15) 
-                ; (:print "PAUSE_CONSIDERED_BREAK\n")
-            ) 
-            :tasks(
-
-            );(MSG_INFO PAUSE_CONSIDERED_BREAK) 
+        (:method PAUSE_CONSIDERED_BREAK
+            :precondition (current_action_is_a_break_greater_15) 
+            :tasks ()
         ) 
         
         ; aquí se acabó el día. Cuando sale por aquí ha reconocido una secuencia de 24 horas. CORRECTO  Y DEBE CONTINUAR
@@ -941,7 +941,7 @@
             :precondition (dia_consumido)
             :tasks (
                 EndOfDay
-            );(MSG_INFO DIA_CONSUMIDO))
+            )
         ) 
         
         ; aquí se acabó la secuencia de acciones, cuando sale por aquí se le ha acabado la secuencia y CORRECTO Y DEBE TERMINAR
@@ -949,19 +949,13 @@
             :precondition (fin_secuencia_entrada)
             :tasks (
                 EndOfSequece
-            );(MSG_INFO SECUENCIA_TERMINADA) )
+            )
         ) 
         
         ; AQUÍ HA HABIDO UN FALLO: SE DAN las condiciones de recursión, pero NO SE HA PODIDO PROCESAR si continua recursion y no ha entrado en ninguno de los metodos anteriores
         (:method fallar
-            :precondition (
-                ; :print "FALLO_LATASK\n"
-            )
-            :tasks (
-                ; :inline
-                ;     (task_failed task_A)
-                ;     ()
-            )
+            :precondition ()
+            :tasks ()
         )
     )
 
@@ -1159,30 +1153,6 @@
         :parameters () 
         (:method unico
             :precondition ()
-            :tasks ()
-        )
-    )
-
-    ; -------------------------------------------------------------------------
-    ; PROCESS ACTIVITY
-
-    (:derived
-        (DEBUG ?mensaje)
-        (OR
-            (AND
-                (modo_depuracion)
-                (:print ?mensaje)
-            )
-            ()
-        )
-    )
-
-    ; -------------------------------------------------------------------------
-
-    (:task MSG_INFO
-        :parameters (?msg - object) 
-        (:method unico
-            :precondition (DEBUG ?msg)
             :tasks ()
         )
     )
