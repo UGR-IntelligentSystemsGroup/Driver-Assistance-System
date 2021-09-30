@@ -9,7 +9,6 @@
         TaskInstanceSymbol
         TipoAccion
         Driver
-        Semana
         Mensaje
         context 
             - object
@@ -45,9 +44,6 @@
         (dia_consumido)
 
         (task_failed ?t - TaskSymbol) ;para saber si una task ha fallado, se añade como efecto en los métodos de fallo de tarea
-
-        (inicio_semana ?s - Semana ?i - number)
-        (fin_semana ?s - Semana ?f - number)
 
         ; Contexts
         (token-context ?tkctxt - context)
@@ -154,21 +150,6 @@
         (current_dt) ;current driving time of the recently recognized activity
 
         (dt_day ?d - Driver)
-        (dt_current_slice) ;driving time current detected subsequence 
-        (bt_current_slice)
-        (dt_last_slice) ;driving time last detected subsequence
-        (dt_current_cdd_t2_slice)
-        (bt_current_cdd_t2_slice)
-        (dt_current_cdd_t2_sequence) ;accumulated driving time of the current cdd_t2 sequence detected
-        (bt_current_cdd_t2_sequence) ;accumulated break time of the current cdd_t2 sequence detected
-        (dt_current_CDD_T1_start)
-        (dt_current_CDD_T1_END)
-        (dt_current_CDD_T2_END)
-        (dt_current_CDD_T2_START)
-        (dt_current_CDDs_E)
-        (dt_current_CDDs_S)
-        (dt_last_CDDs_S)
-        (dt_current_cdd)
 
         (tiempo_otros_dia ?d - Driver)
         (tiempo_parada_dia ?d - Driver)
@@ -318,6 +299,21 @@
             )
         )
 
+        ; --------------------------------------------------------------
+        ; Below: DayType not recognized
+        ; --------------------------------------------------------------
+
+        ; Don't tag a type of day, but try at least find the sequence
+        (:method cdd
+            :precondition (secuencia_entrada_no_vacia)
+            :tasks (
+                (reset_counters)
+
+                (CDD ?d)
+                (DD ?d)
+            )
+        )
+
         ; Anomaly? Hace que termine la secuencia no reconocida
         (:method rest_day
             :precondition (secuencia_entrada_no_vacia)
@@ -337,6 +333,8 @@
                 (DD ?d)
             )
         )
+
+        ; --------------------------------------------------------------
 
         (:method end
             :precondition ()
@@ -835,7 +833,6 @@
                         (increase (minutos_consumidos) ?dur)
                         (increase (tiempo_parada_dia ?d) ?dur)
                         (assign (current_bt) ?dur)
-                        (assign (bt_current_slice) ?dur)
                         (assign (current_dt) 0)
                         (assign (dt_activity) 0)
                     )
@@ -855,7 +852,7 @@
                 (b_token B_T2)
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur 15) (< ?dur 45))
+                    (and (>= ?dur 15) (<= ?dur 50))
                     ()
                 )
                 (e_token B_T2)
@@ -866,7 +863,6 @@
                         (increase (minutos_consumidos) ?dur)
                         (increase (tiempo_parada_dia ?d) ?dur)
                         (assign (current_bt) ?dur)
-                        (assign (bt_current_slice) ?dur)
                         (assign (current_dt) 0)
                         (assign (dt_activity) 0)
                     )
@@ -887,7 +883,7 @@
                 (B ?d ?dur)
                 (:inline
                     ; (and (>= ?dur 30) (< ?dur (* (hours_in_mins) 3)))
-                    (and (>= ?dur 30) (< ?dur 60))
+                    (and (>= ?dur 30) (< ?dur 90))
                     ()
                 )
                 (e_token B_T3)
@@ -898,7 +894,6 @@
                         (increase (minutos_consumidos) ?dur)
                         (increase (tiempo_parada_dia ?d) ?dur)
                         (assign (current_bt) ?dur)
-                        (assign (bt_current_slice) ?dur)
                         (assign (current_dt) 0)
                         (assign (dt_activity) 0)
                     )
@@ -918,7 +913,7 @@
                 (Process_A ?d)
 
                 (:inline
-                    (< (current_bt) 15)
+                    (< (current_bt) 18) ; MUST BE THE SAME AS B_T0
                     ()
                 )
 
@@ -1022,7 +1017,7 @@
                 (b_token B_T0)
                 (B ?d ?dur)
                 (:inline
-                    (and (< ?dur 15))
+                    (and (< ?dur 18))
                     ()
                 )
                 (e_token B_T0)
@@ -1034,7 +1029,7 @@
                         (increase (tiempo_parada_dia ?d) ?dur)
                         (assign (current_bt) ?dur)
                         (assign (current_dt) 0)
-                        ; (assign (dt_activity) 0)
+                        (assign (dt_activity) 0)
                     )
                 )
             )
@@ -1046,7 +1041,7 @@
                 (b_token B_T2)
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur 15) (< ?dur 30))
+                    (and (>= ?dur 15) (<= ?dur 50))
                     ()
                 )
                 (e_token B_T2)
@@ -1071,7 +1066,7 @@
                 (B ?d ?dur)
                 (:inline
                     ; (and (>= ?dur 30) (< ?dur (* (hours_in_mins) 3)))
-                    (and (>= ?dur 30) (< ?dur 60))
+                    (and (>= ?dur 30) (< ?dur 90))
                     ()
                 )
                 (e_token B_T3)
