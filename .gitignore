@@ -1,8 +1,5 @@
 # Documentation
 doc/*
-# *.zip
-# *.pdf
-# *.docx
 
 # Except graphs
 !doc/graphs
@@ -11,15 +8,11 @@ doc/*
 data/old
 out/logs
 hpdl/problems
-# *.xls
-# *.xlsx
+out/log-recognized
 
 # Output
 out/old
 out/output.csv
-# out/**
-# *.csv
-# *.plan
 
 # Planner
 planner/

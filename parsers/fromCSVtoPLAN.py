@@ -110,6 +110,27 @@ def main(argv):
         plan = []   # Output plan for one driver
         for row in tracereader:
             # -----------------------------------------------------------------
+            # Driver
+            # -----------------------------------------------------------------
+            currentDriver = row['Driver']
+            driverSymbol, driverCounter = getDriverSymbol(currentDriver, previousDriver, driverCounter)
+
+            # -----------------------------------------------------------------
+            # Write output
+            # -----------------------------------------------------------------
+
+            # If new driver found, write previous plan
+            if previousDriver != currentDriver and previousDriver != "":
+                writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol)
+
+                # Reset plan
+                plan = []
+                diccionario_TaskInstanceSymbol = {k: [] for k in ['D', 'O', 'B', 'I']}
+                
+                # NOTE: We could also reset the counters, but then we can't generate a unique problem
+                # symbolCounter = dict([('D', 1), ('B', 1), ('I', 1), ('O', 1)])
+
+            # -----------------------------------------------------------------
             # Status
             # -----------------------------------------------------------------
             estado = row['Status']
@@ -158,27 +179,6 @@ def main(argv):
 
             # Duration to minutes (and string)
             duration = str(int(duration.total_seconds() // 60))
-
-            # -----------------------------------------------------------------
-            # Driver
-            # -----------------------------------------------------------------
-            currentDriver = row['Driver']
-            driverSymbol, driverCounter = getDriverSymbol(currentDriver, previousDriver, driverCounter)
-
-            # -----------------------------------------------------------------
-            # Write output
-            # -----------------------------------------------------------------
-
-            # If new driver found, write previous plan
-            if previousDriver != currentDriver and previousDriver != "":
-                writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol)
-
-                # Reset plan
-                plan = []
-                diccionario_TaskInstanceSymbol = {k: [] for k in ['D', 'O', 'B', 'I']}
-                
-                # NOTE: We could also reset the counters, but then we can't generate a unique problem
-                # symbolCounter = dict([('D', 1), ('B', 1), ('I', 1), ('O', 1)])
 
             # -----------------------------------------------------------------
             # Get plan row

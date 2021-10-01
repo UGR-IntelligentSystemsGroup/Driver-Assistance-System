@@ -125,8 +125,6 @@ def getProblemInit(eventsFile):
         problemInit += "\t\t(= (tiempo_otros {}) 0)\n".format(d)
         problemInit += "\t\t(= (tiempo_parada {}) 0)\n".format(d)
         problemInit += "\t\t(= (tiempo_espera {}) 0)\n".format(d)
-
-        problemInit += "\t\t(= (dt_day {}) 0)\n".format(d)
         problemInit += "\t\t(= (tiempo_otros_dia {}) 0)\n".format(d)
         problemInit += "\t\t(= (tiempo_parada_dia {}) 0)\n".format(d)
         problemInit += "\t\t(= (tiempo_espera_dia {}) 0)\n\n".format(d)
