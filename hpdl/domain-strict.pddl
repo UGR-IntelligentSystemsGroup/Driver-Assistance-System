@@ -26,6 +26,8 @@
         typeD typeO typeB typeI - TipoAccion
 
         ; Contexts
+        yes no                                              ; Legal
+        
         A I B_T0 
         B_T1 B_T2 B_T3 
         DR_T1 DR_T2 DR_T3 DR_T4 
@@ -46,6 +48,7 @@
         (modo_reconocer)
 
         ; Contexts
+        (legal-context ?legalctxt - context)
         (token-context ?tkctxt - context)
         (sequence-context ?seqctxt - context)
         (breakType-context ?drivctxt - context)
@@ -346,7 +349,10 @@
             :tasks (
                 (reset_counters)
 
+                (b_legal no)
                 (CDD ?d)
+                (b_legal yes)
+
                 (DD ?d)
             )
         )
@@ -355,7 +361,10 @@
         (:method rest_day
             :precondition (secuencia_entrada_no_vacia)
             :tasks (
+                (b_legal no)
                 (REST ?d)
+                (b_legal yes)
+
                 (print_new_day)
                 (DD ?d)
             )
@@ -365,7 +374,10 @@
         (:method ignore_action ;anomaly
             :precondition (secuencia_entrada_no_vacia)
             :tasks (
+                (b_legal no)
                 (IGNORE_ACTIVITY ?d)
+                (b_legal yes)
+
                 (DD ?d)
             )
         )
@@ -743,6 +755,7 @@
                 )
             )
         )
+
         (:method Weekly
             ; Comprobar que se ha realizado en menos de 6 períodos de 24h
             :precondition (wr_in_less_than_6_24)
@@ -775,6 +788,58 @@
 
 
         ; TODO: Método indicando que no se ha tomado el descanso bajo las condiciones de tiempo
+        (:method illegal_daily
+            :precondition ()
+            :tasks (
+                (DR ?d)
+
+                ; A daily rest is not bigger than 24h
+                (:inline
+                    (< (current_bt) (* 24 (hours_in_mins)))
+                    ()
+                )
+
+                ; Save last DR timestamp
+                (:inline
+                    (and 
+                        (bind ?k (- (current_index_action) 1))
+                        (index_action ?sa ?k)
+                        (end_action ?sa ?final)
+                    )
+                    (assign (last_dr) ?final)
+                )
+            )
+        )
+
+        (:method illegal_weekly
+            ; Comprobar que se ha realizado en menos de 6 períodos de 24h
+            :precondition ()
+            :tasks (
+                (WR ?d)
+
+                (:inline
+                    ()
+                    (and
+                        (assign (edds_in_week) 0)
+                        (assign (dt_wd) 0)
+                    )
+                )
+
+                ; Save last WR timestamp
+                (:inline
+                    (and 
+                        (bind ?k (- (current_index_action) 1))
+                        (index_action ?sa ?k)
+                        (end_action ?sa ?final)
+                    )
+                    (and
+                        (assign (last_dr) ?final)
+                        (assign (last_wr) ?final)
+                    )
+                )
+                ; Resear contador de DR_T2
+            )
+        )
     )
 
     ; Daily rest
@@ -1147,7 +1212,7 @@
 	    :parameters ()
 	    :meta (
             (:tag prettyprint "# ----------------------------------------------------NEW DAY----------------------------------------------------
-#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DayType	Sequence	BreakType	Token"))
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DayType	Sequence	BreakType	Token	Legal"))
             :duration ()
             :condition (:print "> One Driving Day processed\n")
             :effect ()
@@ -1157,7 +1222,7 @@
     ; Actions
     ; =========================================================================
 
-    (:action EndOfDay ;
+    (:action EndOfDay
         :parameters ()
         :precondition ()
         :effect ()
@@ -1165,20 +1230,13 @@
 
     ; -------------------------------------------------------------------------
 
-    (:action EndOfSequece ;
+    (:action EndOfSequece
         :parameters ()
         :precondition ()
         :effect ()
     )
 
     ; -------------------------------------------------------------------------
-
-    ;CADA tarea primitva PUEDE AÑADIRSE AL PLAN EN DOS MODOS DISTINTOS: modo reconocer "token" o modo generar
-    ;Por tanto cada tarea primitiva tiene asociada una tarea compuesta con dos metodos, uno para el modo reconocer plan y otro para el modo generar plan
-    ; el modo GENERAR plan es el de siempre: se añade directamente la primitiva al plan (y si no se pueden cumplir las restricciones/condiciones pues fallará ). 
-    ; el modo RECONOCER parte de que en el estado inicial hay una secuencia de acciones que hay que reconocer
-    ; IMPORTANTE: estos dos metodos no son alternativas de hacer una tarea, son  dos formas excluyentes de hacer una tarea, e.d., si entra por un metodo y falla, 
-    ; entonces no entra por el otro y la tarea compuesta directamente falla. Por eso tiene el simbolo ! (corte alla PROLOG)
 
     (:task D
         :parameters (?d - Driver ?dur - number) 
@@ -1195,23 +1253,7 @@
             )
 
         )
-    ) ; observar, ESTO SIGNIFICA lo siguiente
-
-    ;add_the corrent action to plan consiste en:
-    ; k = current_index
-    ; Comprobar la condicion de  reconocimiento de token
-    ; accion(k) es de tipo Conducir (en el caso de :task C...
-    ; Si se cumple la condicion de reconocimiento de token
-    ; capturar parametros (parameters_typeD (symbol(accion(k))) ?p1 ?p2 ... ?pn) , hay que saber cuantos parameters tiene cada accion
-    ; capturar inicio, fin, duracion
-    ; ( (AND (=?start inicio)(= ?end fin) (= ?duration duracion))
-    ;	 (D_p ?p1 ?p2 ... ?pn)
-    ; Si se inserta con exito, entonces es cuando hay que INCREMENTAR_CURRENT_INDEX para capturar la siguiente acción del plan
-
-    ; ES IMPORTANTE, CRUCIAL, PASARLE EL TIPO "TypoConduccion" porque la interpretación aquí es:
-    ; "El planificador espera que, para que la accion se reconozca como parte de una secuencia <del_tipo_qu_sea>, 
-    ;	(1) la accion tiene que ser NECESARIAMENTE de tipo <typeD> y
-    ;  (2) las restricciones temporales de la accion tienen que ser satisfacibles con el estado actual del plan reconocido"
+    )
 
     ;*********************************************************************************************************
     ; POR CADA TIPO DE ACCION PRIMITIVA ASOCIAR UNA TAREA COMPUESTA QUE TENGA MODO RECONOCER Y MODO GENERAR
@@ -1323,17 +1365,20 @@
                 )
                 ;captura el contexto
                 (:inline
-                    (and (token-context ?tkctxt)
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
                         (breakType-context ?drivctxt)
                         (sequence-context ?seqctxt)
                         (dayType-context ?dayctxt)
                         (weekly-context ?weectxt)
-                        (monthly-context ?monctxt))
+                        (monthly-context ?monctxt)
+                    )
                     ()
                 )
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-                    (D_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
+                    (D_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt)
                 )
             )
         )
@@ -1350,17 +1395,20 @@
                 )
                 ;captura el contexto
                 (:inline
-                    (and (token-context ?tkctxt)
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
                         (breakType-context ?drivctxt)
                         (sequence-context ?seqctxt)
                         (dayType-context ?dayctxt)
                         (weekly-context ?weectxt)
-                        (monthly-context ?monctxt))
+                        (monthly-context ?monctxt)
+                    )
                     ()
                 )
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-                    (O_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
+                    (O_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt)
                 )
             )
         )
@@ -1377,17 +1425,20 @@
                 )
                 ;captura el contexto
                 (:inline
-                    (and (token-context ?tkctxt)
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
                         (breakType-context ?drivctxt)
                         (sequence-context ?seqctxt)
                         (dayType-context ?dayctxt)
                         (weekly-context ?weectxt)
-                        (monthly-context ?monctxt))
+                        (monthly-context ?monctxt)
+                    )
                     ()
                 )
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-                    (B_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
+                    (B_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt)
                 )
             )
         )
@@ -1404,17 +1455,20 @@
                 )
                 ;captura el contexto
                 (:inline
-                    (and (token-context ?tkctxt)
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
                         (breakType-context ?drivctxt)
                         (sequence-context ?seqctxt)
                         (dayType-context ?dayctxt)
                         (weekly-context ?weectxt)
-                        (monthly-context ?monctxt))
+                        (monthly-context ?monctxt)
+                    )
                     ()
                 )
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-                    (I_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
+                    (I_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt)
                 )
             )
         )
@@ -1423,6 +1477,32 @@
 
     ; -------------------------------------------------------------------------
     ; Contexts
+    ; -------------------------------------------------------------------------
+
+    (:task b_legal
+        :parameters (?ctxt - context) 
+        (:method unico
+            :precondition ()
+            :tasks (
+                :inline (legal-context ?current)
+                (and (legal-context ?ctxt) 
+                    (not (legal-context ?current))
+                )
+            )
+        )
+    )
+
+    (:task e_legal
+        :parameters (?ctxt - context) 
+        (:method unico
+            :precondition ()
+            :tasks (
+                :inline ()
+                (and (not (legal-context ?ctxt)) (legal-context none))
+            )
+        )
+    )
+
     ; -------------------------------------------------------------------------
 
     (:task b_token
@@ -1535,10 +1615,10 @@
     ; -------------------------------------------------------------------------
     ; DRIVING
 
-    (:durative-action D_p2 ;_p es sufijo de primitiva; 2 is because action as contexts in parameters
-        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
+    (:durative-action D_p
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt  - context)
         :meta (
-            (:tag prettyprint "?d	?start	?end	?duration	Driving	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
+            (:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
             :duration (= ?duration ?dur)
             :condition()
             :effect ()
@@ -1547,10 +1627,10 @@
     ; -------------------------------------------------------------------------
     ; OTHER WORK
 
-    (:durative-action O_p2
-        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
+    (:durative-action O_p
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt  - context)
         :meta (
-            (:tag prettyprint "?d	?start	?end	?duration	Other	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
+            (:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
             :duration (= ?duration ?dur)
             :condition()
             :effect ()
@@ -1559,10 +1639,10 @@
     ; -------------------------------------------------------------------------
     ; BREAK
 
-    (:durative-action B_p2
-        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
+    (:durative-action B_p
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt  - context)
         :meta (
-            (:tag prettyprint "?d	?start	?end	?duration	Break	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
+            (:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
             :duration (= ?duration ?dur)
             :condition()
             :effect ()
@@ -1571,10 +1651,10 @@
     ; -------------------------------------------------------------------------
     ; IDLE
 
-    (:durative-action I_p2
-        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
+    (:durative-action I_p
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt  - context)
         :meta (
-            (:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
+            (:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
             :duration (= ?duration ?dur)
             :condition()
             :effect ()

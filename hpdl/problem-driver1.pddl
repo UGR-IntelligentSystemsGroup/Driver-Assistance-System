@@ -22,6 +22,7 @@
 		(modo_reconocer)
 
 		; Initialize contexts
+		(legal-context yes)
 		(token-context none)
 		(sequence-context none)
 		(breakType-context none)

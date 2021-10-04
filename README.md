@@ -151,6 +151,14 @@ The regulation constrains the total accumulated driving time during any two cons
 
 - Intervalos de los Breaks ampliados para no ser estrictos. Si lo que queremos es reconocer patrones nos interesa, si lo que queremos es que los conductores se ajusten a la regulación no deberían ampliarse.
 
+---
+
+Domain-strict:
+
+- Ajustado estrictamente a la regulación
+
+- Nuevo contexto: legal. Indica si se ha cometido una ilegalidad (no se ha reconocido algún patrón). Técnicamente si es __no__ -> Algún otro contexto es __none__
+
 ### Notation
 
 | Símbolo | Actividad        | Tipo Acción | Índice Registro |
