@@ -159,6 +159,10 @@ Domain-strict:
 
 - Nuevo contexto: legal. Indica si se ha cometido una ilegalidad (no se ha reconocido algún patrón). Técnicamente si es __no__ -> Algún otro contexto es __none__
 
+TODO: (last-dr) y (last-wr) inicializadas en el problema
+
+- Las 00:00 las paso al día siguiente en el dataset (algunas veces estaba de una forma y algunas de otra)
+
 ### Notation
 
 | Símbolo | Actividad        | Tipo Acción | Índice Registro |

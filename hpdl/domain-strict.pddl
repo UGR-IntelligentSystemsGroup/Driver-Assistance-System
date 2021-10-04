@@ -357,7 +357,7 @@
             )
         )
 
-        ; Anomaly? Hace que termine la secuencia no reconocida
+        ; Hace que termine la secuencia no reconocida
         (:method rest_day
             :precondition (secuencia_entrada_no_vacia)
             :tasks (
@@ -369,9 +369,8 @@
                 (DD ?d)
             )
         )
-
-        ; PUEDE QUE NO FUNCIONE
-        (:method ignore_action ;anomaly
+        
+        (:method ignore_action
             :precondition (secuencia_entrada_no_vacia)
             :tasks (
                 (b_legal no)
@@ -432,12 +431,6 @@
                         (assign (bt_dd) (bt_cdd))
                     )
                 )
-
-                ; To ensure no RD in first CDD
-                ; (:inline
-                ;     (<= (bt_dd) (* 3.0 (hours_in_mins)))
-                ;     ()
-                ; )
 
                 ; -------------------------------------------
 
@@ -791,7 +784,9 @@
         (:method illegal_daily
             :precondition ()
             :tasks (
+                (b_legal no)
                 (DR ?d)
+                (b_legal yes)
 
                 ; A daily rest is not bigger than 24h
                 (:inline
@@ -815,7 +810,9 @@
             ; Comprobar que se ha realizado en menos de 6 períodos de 24h
             :precondition ()
             :tasks (
+                (b_legal no)
                 (WR ?d)
+                (b_legal yes)
 
                 (:inline
                     ()
@@ -1255,10 +1252,6 @@
         )
     )
 
-    ;*********************************************************************************************************
-    ; POR CADA TIPO DE ACCION PRIMITIVA ASOCIAR UNA TAREA COMPUESTA QUE TENGA MODO RECONOCER Y MODO GENERAR
-    ;*********************************************************************************************************
-
     (:task O
         :parameters (?d - Driver ?dur - number) 
         (:method modo_reconocer
@@ -1536,8 +1529,7 @@
         (:method unico
             :precondition ()
             :tasks (
-                :inline
-                (breakType-context ?current)
+                :inline (breakType-context ?current)
                 (and (breakType-context ?ctxt) (not (breakType-context ?current)))
             )
         )
@@ -1617,11 +1609,10 @@
 
     (:durative-action D_p
         :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt  - context)
-        :meta (
-            (:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
-            :duration (= ?duration ?dur)
-            :condition()
-            :effect ()
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Driving	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :duration (= ?duration ?dur)
+        :condition()
+        :effect ()
     )
 
     ; -------------------------------------------------------------------------
@@ -1629,11 +1620,10 @@
 
     (:durative-action O_p
         :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt  - context)
-        :meta (
-            (:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
-            :duration (= ?duration ?dur)
-            :condition()
-            :effect ()
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Other	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :duration (= ?duration ?dur)
+        :condition()
+        :effect ()
     )
 
     ; -------------------------------------------------------------------------
@@ -1641,11 +1631,10 @@
 
     (:durative-action B_p
         :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt  - context)
-        :meta (
-            (:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
-            :duration (= ?duration ?dur)
-            :condition()
-            :effect ()
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Break	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :duration (= ?duration ?dur)
+        :condition()
+        :effect ()
     )
 
     ; -------------------------------------------------------------------------
@@ -1653,10 +1642,9 @@
 
     (:durative-action I_p
         :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt  - context)
-        :meta (
-            (:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
-            :duration (= ?duration ?dur)
-            :condition()
-            :effect ()
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :duration (= ?duration ?dur)
+        :condition()
+        :effect ()
     )
 )

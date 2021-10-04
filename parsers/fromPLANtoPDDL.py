@@ -100,6 +100,7 @@ def getProblemInit(eventsFile):
 \t\t(modo_reconocer)
 
 \t\t; Initialize contexts
+\t\t(legal-context yes)
 \t\t(token-context none)
 \t\t(sequence-context none)
 \t\t(breakType-context none)
