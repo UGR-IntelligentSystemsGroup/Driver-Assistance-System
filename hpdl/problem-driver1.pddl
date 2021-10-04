@@ -32,10 +32,13 @@
 
 		; Initialize functions
 		(= (hours_in_mins) 60)
+
 		(= (edds_in_week) 0)
+
 		(= (current_index_action) 0)
-		(= (last_dr) "02/01/2017 18:13")
-		(= (last_wr) "02/01/2017 18:13")
+
+		(= (last_dr) "02/01/2017 17:59")
+		(= (last_wr) "02/01/2017 17:59")
 
 		; Events
 		(index_action B1 0)
@@ -1265,8 +1268,6 @@
 	)
 	(:tasks-goal
 		:tasks (
-			; (print_new_day)
-			; (DD driver1)
 			(WD driver1)
 		)
 	)

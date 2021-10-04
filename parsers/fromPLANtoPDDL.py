@@ -110,12 +110,22 @@ def getProblemInit(eventsFile):
 
 \t\t; Initialize functions
 \t\t(= (hours_in_mins) 60)
+
+\t\t(= (edds_in_week) 0)
+
 """
 
     # Translate PLAN events into PDDL predicates
     eventsAsPddl, drivers, index = getPDDLActions(eventsFile)
 
     problemInit += "\t\t(= (current_index_action) {})\n\n".format(index)
+
+    # Initializing (last-dr) and (last-wr)
+    timestamp = eventsAsPddl[0]
+    timestamp = timestamp.split("\"")[1]
+
+    problemInit += "\t\t(= (last_dr) \"" + timestamp + "\")\n"
+    problemInit += "\t\t(= (last_wr) \"" + timestamp + "\")\n\n"
 
     problemInit += "\t\t; Events\n"
 
@@ -132,10 +142,9 @@ def getProblemInit(eventsFile):
 def getProblemTask(drivers):
     problemFooter = """\t(:tasks-goal
 \t\t:tasks (
-\t\t\t(print_new_day)
 """
     for d in drivers:
-        problemFooter += "\t\t\t(DD {})\n".format(d)
+        problemFooter += "\t\t\t(WD {})\n".format(d)
 
     problemFooter += "\t\t)\n\t)\n)"
 
