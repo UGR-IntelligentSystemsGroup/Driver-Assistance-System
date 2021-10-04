@@ -232,22 +232,14 @@ B_T10: BREAK OF [45h,infty)
 | (duration_action O5 1) | Duración en segundos
 | (parameters_typeO O5 driver1) | Conductor asociado
 
-CDD_T1 (Driving continous): A(4.5th) - B_T1(45m) - A - RD(>9h)
-CDD_T2 (Driving split): A(4.5h) - B_T1/2/3 - A - B_T1/2/3   (Si el primero fue 3, luego 1, e viceversa? O siempre la primera de 15)
+---
 
+driver1	12/01/2017 03:17	12/01/2017 06:30	193.000000	Break	edd	third	uninterrupted	DR_T3	yes
+# ----------------------------------------------------NEW DAY----------------------------------------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DayType	Sequence	BreakType	Token	Legal
+driver1	12/01/2017 06:30	12/01/2017 06:33	3.000000	Driving	ndd	unique	uninterrupted	A	yes
+driver1	12/01/2017 06:33	14/01/2017 12:02	3209.000000	Break	ndd	unique	uninterrupted	WR_T1	yes
 
-; (:inline
-; 	(bind ?n
-; 		(dt_current_cdd))
-; 	()
-; )
-; (:inline
-;     (:print ?n)
-;     ()
-; )
-; (:inline
-;     (:print "HOLA")
-;     ()
-; )
+Técnicamente esto es legal, la ley no dice lo contrario
 
-Día de acción 115: Revisar
+---
