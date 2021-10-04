@@ -91,6 +91,11 @@
         (currentindex_is_typeO ?k - number ?sa - TaskInstanceSymbol)
         (currentindex_is_typeB ?k - number ?sa - TaskInstanceSymbol)
         (currentindex_is_typeI ?k - number ?sa - TaskInstanceSymbol)
+
+        (dr_in_less_than_24)    ; To check if a DR is taken each 24h
+        (wr_in_less_than_6_24)  ; To check if a WR is taken each "week" (6 x 24h)
+
+        (next_dr_is_t3) ; If a DR_T3 is found, next DR must be DR_T4
     )
 
     ; =========================================================================
@@ -101,6 +106,7 @@
         (current_index_action) ; represnta el indice actual que apunta a la accion que hay que procesar en modo reconocer
 
         ;ACUMULADORES POR DIA
+        (dt_wd)
         (dt_dd)         ; Driving time for a daily drive
         (dt_cdd)        ; Driving time for a continuous daily drive (<4.5h)
         (dt_cdd_unint)  ; Driving time for an uninterrupted cdd   
@@ -108,6 +114,7 @@
         (dt_cdd_split2)
         (dt_activity)   ; Driving time for a sequence of activities
 
+        (bt_wd)
         (bt_dd)
         (bt_cdd)
         (bt_cdd_unint)
@@ -120,11 +127,48 @@
 
         ; Time constants
         (hours_in_mins) ; = 60
+
+        (edds_in_week) ; Number of EDD sequences in current week
+
+        (last_dr) ; Last timestamp a Daily Rest was detected
+        (last_wr) ; Last timestamp a Weekly Rest was detected
     )
 
     ; =========================================================================
     ; DERIVED
     ; =========================================================================
+
+    ; To check a DR is taken each 24h
+    (:derived (dr_in_less_than_24)
+        (and
+            ; Get actual stating timestamp
+            (bind ?k (current_index_action))
+            (index_action ?sa ?k)
+            (start_action ?sa ?final)
+
+            ; Compare with last DR
+            (<= ?final
+                (+ (* 24 (hours_in_mins)) (last_dr))
+            )
+        )
+    )
+
+    ; To check if a WR is taken each "week" (6 x 24h)
+    (:derived (wr_in_less_than_6_24)
+        (and
+            ; Get actual starting timestamp
+            (bind ?k (current_index_action))
+            (index_action ?sa ?k)
+            (start_action ?sa ?final)
+
+            ; Compare with last DR
+            (<= ?final
+                (+ (* 6 (* 24 (hours_in_mins))) (last_dr))
+            )
+        )
+    )
+
+    ; -------------------------------------------------------------------------
 
     (:derived (fin_secuencia_entrada)
         (AND
@@ -142,6 +186,8 @@
         )
     )
 
+    ; -------------------------------------------------------------------------
+
     (:derived (current_action_is_a_break_greater_15)
         (AND
             (currentindex_is_typeB ?k ?sa)
@@ -154,6 +200,35 @@
     ; TASKS
     ; =========================================================================
 
+    ; Search for new sequence
+    (:task reset_counters
+        :parameters () 
+        (:method SINGLE
+            :precondition ()
+            :tasks (
+                (:inline
+                    ()
+                    (and
+                        (assign (dt_dd) 0)
+                        (assign (dt_cdd) 0)
+                        (assign (dt_cdd_unint) 0)
+                        (assign (dt_cdd_split1) 0)
+                        (assign (dt_cdd_split2) 0)
+                        (assign (dt_activity) 0)
+
+                        (assign (bt_dd) 0)
+                        (assign (bt_cdd) 0)
+                        (assign (bt_cdd_unint) 0)
+                        (assign (bt_cdd_split1) 0)
+                        (assign (bt_cdd_split2) 0)
+                    )
+                )
+            )
+        )
+    )
+
+    ; -------------------------------------------------------------------------
+
     ; BiWeekly Driving
     ; (:task BWD
     ;   Comprobar que no se pasa de 90h
@@ -162,11 +237,53 @@
     ; )
 
     ; Weekly Driving
-    ; (:task WD
+    (:task WD
+        :parameters (?d - Driver)
     ;   Comprobar que no se pasa de 56h
     ;   Tener en cuenta también que la secuencia se puede quedar vacía
     ;   Tener en cuenta que no puede haber más de dos EDD, ponerlos aquí y/o en la condición del método en DD
-    ; )
+        (:method normal
+            :precondition (secuencia_entrada_no_vacia)
+            :tasks (
+                (print_new_day)
+                (DD ?d)
+
+                ; (:inline
+                ;     (and
+                ;         (<= (edds_in_week) 2)
+                ;         (<= (dt_wd) (* 56.0 (hours_in_mins)))
+                ;     )
+                ;     ()
+                ; )
+
+                ; (WD ?d)
+            )
+        )
+
+        ; (:method WR
+        ;     :precondition (secuencia_entrada_no_vacia)
+        ;     :tasks (
+        ;         (WR ?d)
+
+        ;         (:inline
+        ;             ()
+        ;             (and
+        ;                 (assign (edds_in_week) 0)
+        ;                 (assign (dt_wd) 0)
+        ;             )
+        ;         )
+
+        ;         (WD ?d)
+        ;     )
+        ; )
+
+        (:method error
+            :precondition ()
+            :tasks ()
+        )
+    )
+
+    ; -------------------------------------------------------------------------
 
     ; Daily Driving
     (:task DD
@@ -180,19 +297,39 @@
                 (NDD ?d)
                 (e_dayType NDD)
 
+                (:inline
+                    ()
+                    (and
+                        (increase (dt_wd) (dt_dd))
+                        (increase (bt_wd) (bt_dd))
+                    )
+                )
+
                 (print_new_day)
                 (DD ?d)
             )
         )
         
         (:method edd
-            :precondition (secuencia_entrada_no_vacia)
+            :precondition (and
+                (<= (edds_in_week) 2)
+                (secuencia_entrada_no_vacia)
+            )
             :tasks (
                 (reset_counters)
 
                 (b_dayType EDD)
                 (EDD ?d)
                 (e_dayType EDD)
+
+                (:inline
+                    ()
+                    (and
+                        (increase (dt_wd) (dt_dd))
+                        (increase (bt_wd) (bt_dd))
+                        (increase (edds_in_week) 1)
+                    )
+                )
 
                 (print_new_day)
                 (DD ?d)
@@ -228,8 +365,7 @@
         (:method ignore_action ;anomaly
             :precondition (secuencia_entrada_no_vacia)
             :tasks (
-                (reset_counters)
-                (Process_A ?d)
+                (IGNORE_ACTIVITY ?d)
                 (DD ?d)
             )
         )
@@ -249,29 +385,18 @@
 
     ; -------------------------------------------------------------------------
 
-    ; Search for new sequence
-    (:task reset_counters
-        :parameters () 
-        (:method SINGLE
+    (:task IGNORE_ACTIVITY
+        :parameters (?d - Driver)
+        (:method Activity
             :precondition ()
             :tasks (
-                (:inline
-                    ()
-                    (and
-                        (assign (dt_dd) 0)
-                        (assign (dt_cdd) 0)
-                        (assign (dt_cdd_unint) 0)
-                        (assign (dt_cdd_split1) 0)
-                        (assign (dt_cdd_split2) 0)
-                        (assign (dt_activity) 0)
-
-                        (assign (bt_dd) 0)
-                        (assign (bt_cdd) 0)
-                        (assign (bt_cdd_unint) 0)
-                        (assign (bt_cdd_split1) 0)
-                        (assign (bt_cdd_split2) 0)
-                    )
-                )
+                (Process_A ?d)
+            )
+        )
+        (:method Unknown_Break
+            :precondition ()
+            :tasks (
+                (B ?d ?dur)
             )
         )
     )
@@ -297,10 +422,10 @@
                 )
 
                 ; To ensure no RD in first CDD
-                (:inline
-                    (<= (bt_dd) (* 3.0 (hours_in_mins)))
-                    ()
-                )
+                ; (:inline
+                ;     (<= (bt_dd) (* 3.0 (hours_in_mins)))
+                ;     ()
+                ; )
 
                 ; -------------------------------------------
 
@@ -325,7 +450,7 @@
 
                 ; To ensure RD after second CDD
                 (:inline
-                    (>= (bt_cdd) (* 9.0 (hours_in_mins)))
+                    (>= (bt_cdd) (* 3.0 (hours_in_mins)))
                     ()
                 )
             )
@@ -350,7 +475,7 @@
                 ; Similar to break periods, rest periods can also be taken in two parts, whereas the first part must have a duration of at least three hours and the second part must have a duration of at least nine hours.
                 ; To ensure RD after CDD
                 (:inline
-                    (>= (bt_dd) (* 9.0 (hours_in_mins)))
+                    (>= (bt_dd) (* 3.0 (hours_in_mins)))
                     ()
                 )
             )
@@ -407,7 +532,7 @@
 
                 ; -------------------------------------------
 
-                ; Because NDD is first in the tree: (9,10]h
+                ; Because NDD is placed before in the tree: (9,10]h
                 (:inline
                     (<= (dt_dd) (* 10.0 (hours_in_mins)))
                     ()
@@ -418,8 +543,6 @@
                     (>= (bt_cdd) (* 3.0 (hours_in_mins)))
                     ()
                 )
-
-                ; Aumentar contador de EDD
             )
         )
     )
@@ -597,31 +720,89 @@
     (:task REST
         :parameters (?d - Driver)
         (:method Daily
-            :precondition ()
+            ; Comprobar que se ha realizado en menos de 24h
+            ; Habría que tener en cuenta en equipo, por ahora los vamos a ignorar
+            :precondition (dr_in_less_than_24)
             :tasks (
-                (RD ?d)
+                (DR ?d)
 
+                ; A daily rest is not bigger than 24h
                 (:inline
                     (< (current_bt) (* 24 (hours_in_mins)))
                     ()
                 )
-                ; Comprobar que se ha realizado en menos de 24h
-                ; Habría que tener en cuenta en equipo, por ahora los vamos a ignorar
+
+                ; Save last DR timestamp
+                (:inline
+                    (and 
+                        (bind ?k (- (current_index_action) 1))
+                        (index_action ?sa ?k)
+                        (end_action ?sa ?final)
+                    )
+                    (assign (last_dr) ?final)
+                )
             )
         )
         (:method Weekly
-            :precondition ()
+            ; Comprobar que se ha realizado en menos de 6 períodos de 24h
+            :precondition (wr_in_less_than_6_24)
             :tasks (
                 (WR ?d)
-                ; Comprobar que se ha realizado en menos de 6 períodos de 24h
+
+                (:inline
+                    ()
+                    (and
+                        (assign (edds_in_week) 0)
+                        (assign (dt_wd) 0)
+                    )
+                )
+
+                ; Save last WR timestamp
+                (:inline
+                    (and 
+                        (bind ?k (- (current_index_action) 1))
+                        (index_action ?sa ?k)
+                        (end_action ?sa ?final)
+                    )
+                    (and
+                        (assign (last_dr) ?final)
+                        (assign (last_wr) ?final)
+                    )
+                )
                 ; Resear contador de DR_T2
             )
         )
+
+
+        ; TODO: Método indicando que no se ha tomado el descanso bajo las condiciones de tiempo
     )
 
     ; Daily rest
-    (:task RD
-        :parameters (?d - Driver) 
+    (:task DR
+        :parameters (?d - Driver)
+        (:method DR_T4
+            ; :precondition (split-rest) No entraría aquí por las otras, ponerlo el primero y añadirle una precondición para asegurarse que es un split
+            :precondition (next_dr_is_t3)
+            :tasks (
+                (b_token DR_T4)
+                (B ?d ?dur)
+                (:inline
+                    (>= ?dur (* 9 (hours_in_mins)))
+                    ()
+                )
+                (e_token DR_T4)
+
+                (:inline
+                    ()
+                    (and
+                        (not (next_dr_is_t3))
+                        (assign (current_bt) ?dur)
+                        (assign (dt_activity) 0)
+                    )
+                )
+            )
+        )
+
         (:method DR_T1
             :precondition ()
             :tasks (
@@ -679,28 +860,7 @@
                 (:inline
                     ()
                     (and
-                        (assign (current_bt) ?dur)
-                        (assign (dt_activity) 0)
-                    )
-                )
-            )
-        )
-
-        (:method DR_T4
-            ; :precondition (split-rest) No entraría aquí por las otras, ponerlo el primero y añadirle una precondición para asegurarse que es un split
-            :precondition ()
-            :tasks (
-                (b_token DR_T4)
-                (B ?d ?dur)
-                (:inline
-                    (>= ?dur (* 9 (hours_in_mins)))
-                    ()
-                )
-                (e_token DR_T4)
-
-                (:inline
-                    ()
-                    (and
+                        (next_dr_is_t3)
                         (assign (current_bt) ?dur)
                         (assign (dt_activity) 0)
                     )
@@ -709,8 +869,10 @@
         )
     )
 
-    ; Weakly rest
-    (:task WD
+    ; -------------------------------------------------------------------------
+
+    ; Weekly rest
+    (:task WR
         :parameters (?d - Driver) 
         (:method WR_T1
             :precondition ()
@@ -761,7 +923,6 @@
     ; Breaks
     ; ****************************
 
-    ; BREAK OF [45min, 3h)
     (:task B_T1
         :parameters (?d - Driver)
         (:method B_T1
@@ -770,7 +931,7 @@
                 (b_token B_T1)		
                 (B ?d ?dur)
                 (:inline
-                    (>= ?dur 45)
+                    (and (>= ?dur 45) (< ?dur (* 3.0 (hours_in_mins))))
                     ()
                 )
                 (e_token B_T1)
@@ -789,7 +950,6 @@
 
     ; -------------------------------------------------------------------------
 
-    ; BREAK OF [15min, 30) -> LO AMPLÍO PARA NO SER ESTRICTO
     (:task B_T2
         :parameters (?d - Driver) 
         (:method B_T2
@@ -798,7 +958,7 @@
                 (b_token B_T2)
                 (B ?d ?dur)
                 (:inline
-                    (>= ?dur 15)
+                    (and (>= ?dur 15) (< ?dur (* 3.0 (hours_in_mins))))
                     ()
                 )
                 (e_token B_T2)
@@ -817,7 +977,6 @@
 
     ; -------------------------------------------------------------------------
 
-    ; BREAK OF [30min, 45min). Ahora lo he puesto [30min, 3h)
     (:task B_T3
         :parameters (?d - Driver) 
         (:method B_t3 
@@ -826,7 +985,7 @@
                 (b_token B_T3)
                 (B ?d ?dur)
                 (:inline
-                    (>= ?dur 30)
+                    (and (>= ?dur 30) (< ?dur (* 3.0 (hours_in_mins))))
                     ()
                 )
                 (e_token B_T3)
@@ -950,95 +1109,6 @@
                 )
             )
         ) 
-        
-        ; (:method B_T2 ; BREAK of [15min, 30min)
-        ;     :precondition ()
-        ;     :tasks (
-        ;         (b_token B_T2)
-        ;         (B ?d ?dur)
-        ;         (:inline
-        ;             (and (>= ?dur 15) (<= ?dur 50))
-        ;             ()
-        ;         )
-        ;         (e_token B_T2)
-
-        ;         (:inline
-        ;             ()
-        ;             (and
-        ;                 (assign (current_bt) ?dur)
-        ;                 (assign (current_dt) 0)
-        ;                 (assign (dt_activity) 0)
-        ;             )
-        ;         )
-        ;     )
-        ; )
-        
-        ; (:method B_T3 ; BREAK OF [30min, 45min) - Está puesto hasta 3h
-        ;     :precondition ()
-        ;     :tasks (
-        ;         (b_token B_T3)
-        ;         (B ?d ?dur)
-        ;         (:inline
-        ;             ; (and (>= ?dur 30) (< ?dur (* (hours_in_mins) 3)))
-        ;             (and (>= ?dur 30) (< ?dur 90))
-        ;             ()
-        ;         )
-        ;         (e_token B_T3)
-
-        ;         (:inline
-        ;             ()
-        ;             (and
-        ;                 (assign (current_bt) ?dur)
-        ;                 (assign (current_dt) 0)
-        ;                 (assign (dt_activity) 0)
-        ;             )
-        ;         )
-        ;     )
-        ; )
-                
-        ; (:method B_T1 ; BREAK OF [45min, 3h)
-        ;     :precondition ()
-        ;     :tasks (
-        ;         (b_token B_T1)
-        ;         (B ?d ?dur)
-        ;         (:inline
-        ;             (and (>= ?dur 45) (< ?dur (* (hours_in_mins) 3.5)))
-        ;             ()
-        ;         )
-        ;         (e_token B_T1)
-
-        ;         (:inline
-        ;             ()
-        ;             (and
-        ;                 (assign (current_bt) ?dur)
-        ;                 (assign (current_dt) 0)
-        ;                 (assign (dt_activity) 0)
-        ;             )
-        ;         )
-        ;     )
-        ; )
-
-        ; (:method B_T4 ; BREAK OF [3h, 9h)
-        ;     :precondition ()
-        ;     :tasks (
-        ;         (b_token B_T4)
-        ;         (B ?d ?dur)
-        ;         (:inline
-        ;             (and (>= ?dur (* (hours_in_mins) 3)) (< ?dur (* (hours_in_mins) 9)))
-        ;             ()
-        ;         )
-        ;         (e_token B_T4)
-
-        ;         (:inline
-        ;             ()
-        ;             (and
-        ;                 (assign (current_bt) ?dur)
-        ;                 (assign (current_dt) 0)
-        ;                 (assign (dt_activity) 0)
-        ;             )
-        ;         )
-        ;     )
-        ; )
         
         ; Idle
         (:method IXX
@@ -1471,13 +1541,6 @@
             (:tag prettyprint "?d	?start	?end	?duration	Driving	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
             :duration (= ?duration ?dur)
             :condition()
-            ; :condition (and
-            ; 	(:print "Recognized [DRIVING] task for driver ")
-            ; 	(:print ?d)
-            ; 	(:print " of ")
-            ; 	(:print ?dur)
-            ; 	(:print "minutes\n")
-            ; )
             :effect ()
     )
 
@@ -1490,13 +1553,6 @@
             (:tag prettyprint "?d	?start	?end	?duration	Other	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
             :duration (= ?duration ?dur)
             :condition()
-            ; :condition (and
-            ; 	(:print "Recognized [OTHER] task for driver ")
-            ; 	(:print ?d)
-            ; 	(:print " of ")
-            ; 	(:print ?dur)
-            ; 	(:print "minutes\n")
-            ; )
             :effect ()
     )
 
@@ -1509,13 +1565,6 @@
             (:tag prettyprint "?d	?start	?end	?duration	Break	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
             :duration (= ?duration ?dur)
             :condition()
-            ; :condition (and
-            ; 	(:print "Recognized [BREAK] task for driver ")
-            ; 	(:print ?d)
-            ; 	(:print " of ")
-            ; 	(:print ?dur)
-            ; 	(:print "minutes\n")
-            ; )
             :effect ()
     )
 
@@ -1528,13 +1577,6 @@
             (:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
             :duration (= ?duration ?dur)
             :condition()
-            ; :condition (and
-            ; 	(:print "Recognized [IDLE] task for driver ")
-            ; 	(:print ?d)
-            ; 	(:print " of ")
-            ; 	(:print ?dur)
-            ; 	(:print "minutes\n")
-            ; )
             :effect ()
     )
 )

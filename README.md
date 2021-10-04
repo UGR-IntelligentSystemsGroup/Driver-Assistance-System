@@ -30,31 +30,7 @@ Integrating Machine Learning with Automated Planning
 
 ---
 
-- Por dónde empiezo? Qué fallos tiene?
-  - Entiendo que uno de los fallos son los NA, no reconoce si es NDD o EDD
-
-  - Tambien veo que hay Breaks que marca con contexto de Activity. Parece que son los de <15m. Se deberían marcar como Idle? La cosa es que en el dataset vienen que son pausas, lo pongo entonces como B_T0. Técnicamente si está cerca de 15 y viene después de una conducción debería considerarse como Break, pero si es de pocos minutos es más lógico considerarlo como Idle.
-
-  - The HoS regulation establishes that a basic sequence is a sequence of any number of activities such that the duration of any Pause is strictly less than 15 mins. Tengo entonces que poner B_T0 como A?
-
-- Si hay una memoria o cualquier tipo de documento adicional con información sobre esto lo agradecería.
-
-- Para asegurarme: El backtracking deshace los efectos de un inline, verdad? Refiriéndome a casos como:
-  - (b_daily_context NDD) <- Inline, si sale se deshace, no?
-  - (CDD ?d)
-  - (e_daily_context NDD)
-
-- B_T3 pasa como máximo de 45m a 3h, pero si pasa de 45 debería ser una anomalía. No sería mejor modelarlo con otra tarea? Por qué si se quita no funciona?
-
-- Por qué esa nomenclatura en los Breaks (1,2,3), no sería más legible que estén ordenados?
-
 - **IMPORTANTE** Las horas de Other no se deberían contar? Sino estamos contando jornadas de >9h como NDD si conduce poco (probablemente sea un repartidor que pasa más tiempo entregando cosas)
-
-- No entiendo por qué la task EDD es así. Cada CDDs_S tiene un RD dentro por lo que en total habría 3 para una supuesta jornada. La cosa es que el día 06/01 lo coge bien.
-
-- Muy pocos "En espera". Es normal?
-
-- Por qué las durative-actions no tienen un último paréntesis que cierre?
 
 - (modo_generar) bucle infinito? Qué hace? se añade directamente la primitiva al plan (y si no se pueden cumplir las restricciones/condiciones pues fallará?
   - Para generar acciones deberíamos saber localización y recursos, no?
@@ -84,8 +60,6 @@ Integrating Machine Learning with Automated Planning
 
 - **IMPORTANTE** La regulación HOS cambió en junio de 2020: https://www.fmcsa.dot.gov/regulations/hours-of-service
 
-- C_p2 ;_p es sufijo de primitiva; 2 is because action has contexts in parameters
-
 - Los metatags son una extensión del lenguaje que actualmente está en fase experimental, por lo que puede cambiar en futuras versiones. El concepto subyacente a los metatags es poder incluir información extra en el dominio, que aunque no sea directamente utilizable por el planificador, pueda ser utilizada por otros módulos, o en un análisis posterior del plan resultante.
 
 - El corte (!) es otro de los conceptos introducidos para mejorar la eficiencia del proceso de planificación. Este concepto está tomado del lenguaje PROLOG [PROLOG] donde se utiliza para “olvidar” las unificaciones previas si se vuelve por backtracking. Obviamente el uso del corte afecta a la completitud del proceso de refutación, por lo que debe de ser utilizado con cuidado. En HTN-PDDL es posible usar el corte para parar el backtracking en dos lugares distintos:
@@ -107,6 +81,8 @@ The regulation constrains the total accumulated driving time during any two cons
   - After CDD -> Uninterrupted Break >45m (B_T1)
     - After CDD -> Split1 Break >15m (B_T2) and Split2 Break >30m (B_T3)
   
+  - Because DailyRest are >3h -> B_TX [,3h)
+
   - <=9h Driving -> NDD
   - [9h,10h] Driving -> EDD
 

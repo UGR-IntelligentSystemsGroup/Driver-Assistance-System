@@ -108,9 +108,6 @@ def getProblemInit(eventsFile):
 \t\t(monthly-context none)
 
 \t\t; Initialize functions
-\t\t(= (minutos_consumidos) 0)
-\t\t(= (contador_veces_AMPLIADA_en_semana) 0)
-
 \t\t(= (hours_in_mins) 60)
 """
 
@@ -118,16 +115,6 @@ def getProblemInit(eventsFile):
     eventsAsPddl, drivers, index = getPDDLActions(eventsFile)
 
     problemInit += "\t\t(= (current_index_action) {})\n\n".format(index)
-
-    for d in drivers:
-        problemInit += "\t\t; ------------{}-------------\n".format(d)
-        problemInit += "\t\t(= (tiempo_conduccion {}) 0)\n".format(d)
-        problemInit += "\t\t(= (tiempo_otros {}) 0)\n".format(d)
-        problemInit += "\t\t(= (tiempo_parada {}) 0)\n".format(d)
-        problemInit += "\t\t(= (tiempo_espera {}) 0)\n".format(d)
-        problemInit += "\t\t(= (tiempo_otros_dia {}) 0)\n".format(d)
-        problemInit += "\t\t(= (tiempo_parada_dia {}) 0)\n".format(d)
-        problemInit += "\t\t(= (tiempo_espera_dia {}) 0)\n\n".format(d)
 
     problemInit += "\t\t; Events\n"
 
