@@ -106,8 +106,10 @@
         (current_index_action) ; represnta el indice actual que apunta a la accion que hay que procesar en modo reconocer
 
         ; Acumulators
-        (dt_wd)
-        (dt_dd)         ; Driving time for a daily drive
+        (dt_bwd)
+        (dt_previous_wd) ; Driving time for last week
+        (dt_wd)         ; Driving time for current week
+        (dt_dd)        ; Driving time for a daily drive
         (dt_cdd)        ; Driving time for a continuous daily drive (<4.5h)
         (dt_cdd_unint)  ; Driving time for an uninterrupted cdd   
         (dt_cdd_split1) ; Driving time for the first split of a cdd   
@@ -269,12 +271,25 @@
                 (:inline
                     ()
                     (and
-                        (assign (edds_in_week) 0)
+                        (assign (dt_bwd) 
+                            (+ (dt_wd) (dt_previous_wd)))
+
+                        (assign (dt_previous_wd) (dt_wd))
+
+                        ; Reset functions
                         (assign (dt_wd) 0)
                         (assign (bt_wd) 0)
                         (assign (current_bt) 0)
+
+                        (assign (edds_in_week) 0)
                         (increase (week-counter) 1)
                     )
+                )
+
+                ; At most 90h driving in two consecutives weeks
+                (:inline
+                    (<= (dt_bwd) (* 90 (hours_in_mins)))
+                    ()
                 )
 
                 (WD ?d)
@@ -282,6 +297,8 @@
         )
 
         ; Tener en cuenta también que la secuencia se puede quedar vacía
+        ; Podría ponerse otro método igual que este sin la comprobación para
+        ; cuando no se cumplan las condiciones (para poner una tag)
         (:method normal
             :precondition (secuencia_entrada_no_vacia)
             :tasks (

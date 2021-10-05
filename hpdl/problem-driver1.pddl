@@ -36,6 +36,8 @@
 		(= (edds_in_week) 0)
 		(= (week-counter) 1)
 		(= (day-counter) 1)
+		
+		(= (dt_previous_wd) 0)
 
 		(= (current_index_action) 0)
 

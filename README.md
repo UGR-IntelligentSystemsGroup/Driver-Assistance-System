@@ -20,6 +20,8 @@ Integrating Machine Learning with Automated Planning
 
 - Contextos semanales y bisemanales? Números, o decir que es normal?
 
+- He mirado un poco y parece que no, pero se puede forzar el prettyprint de flotantes a enteros?
+
 - El tiempo de otros trabajos no cuenta para nada, no? Me resulta raro pero no viene explícitamente dicho en ningún lado.
 
 - Token de salida split, ¿con o sin número?
