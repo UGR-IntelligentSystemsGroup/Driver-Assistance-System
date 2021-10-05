@@ -40,6 +40,11 @@
 		(= (last_dr) "02/01/2017 17:59")
 		(= (last_wr) "02/01/2017 17:59")
 
+		; (= (current_index_action) 141)
+
+		; (= (last_dr) "15/01/2017 14:19")
+		; (= (last_wr) "15/01/2017 14:19")
+
 		; Events
 		(index_action B1 0)
 		(is_action B1)

@@ -1,5 +1,5 @@
 (define (domain GantaBi)
-    (:requirements :adl :typing :fluents :derived-predicates :htn-expansion :durative-actions :equality :metatags :timed-initial-literals)
+    (:requirements :adl :fluents :derived-predicates :htn-expansion :durative-actions :equality :metatags :timed-initial-literals)
 
     ; =========================================================================
     ; TYPES
@@ -9,7 +9,6 @@
         TaskInstanceSymbol
         TipoAccion
         Driver
-        Mensaje
         context 
             - object
     )
@@ -19,8 +18,6 @@
     ; =========================================================================
 
     (:constants
-        DIA_CONSUMIDO SECUENCIA_TERMINADA BREAK_CONSIDERED_REST PAUSE_CONSIDERED_BREAK FALLO_LATASK- Mensaje
-
         Procesa_Accion - TaskSymbol
 
         typeD typeO typeB typeI - TipoAccion
@@ -99,6 +96,8 @@
         (wr_in_less_than_6_24)  ; To check if a WR is taken each "week" (6 x 24h)
 
         (next_dr_is_t3) ; If a DR_T3 is found, next DR must be DR_T4
+
+        (is_activity_illegal) ; To set legal context ("no" if some other context is none)
     )
 
     ; =========================================================================
@@ -108,7 +107,7 @@
     (:functions
         (current_index_action) ; represnta el indice actual que apunta a la accion que hay que procesar en modo reconocer
 
-        ;ACUMULADORES POR DIA
+        ; Acumulators
         (dt_wd)
         (dt_dd)         ; Driving time for a daily drive
         (dt_cdd)        ; Driving time for a continuous daily drive (<4.5h)
@@ -131,8 +130,11 @@
         ; Time constants
         (hours_in_mins) ; = 60
 
+        ; Activities counters
         (edds_in_week) ; Number of EDD sequences in current week
+        (drt2_in_week)  ; Number of DR_T2 activities in current week
 
+        ; Timestamps
         (last_dr) ; Last timestamp a Daily Rest was detected
         (last_wr) ; Last timestamp a Weekly Rest was detected
     )
@@ -199,6 +201,20 @@
         )
     )
 
+    ; -------------------------------------------------------------------------
+
+    (:derived (is_activity_illegal)
+        (OR
+            ; (legal-context ?legalctxt)
+            (token-context none)
+            (breakType-context none)
+            (sequence-context none)
+            (dayType-context none)
+            ; (weekly-context ?weectxt)
+            ; (monthly-context ?monctxt)
+        )
+    )
+
     ; =========================================================================
     ; TASKS
     ; =========================================================================
@@ -218,12 +234,14 @@
                         (assign (dt_cdd_split1) 0)
                         (assign (dt_cdd_split2) 0)
                         (assign (dt_activity) 0)
+                        (assign (current_dt) 0)
 
                         (assign (bt_dd) 0)
                         (assign (bt_cdd) 0)
                         (assign (bt_cdd_unint) 0)
                         (assign (bt_cdd_split1) 0)
                         (assign (bt_cdd_split2) 0)
+                        (assign (current_bt) 0)
                     )
                 )
             )
@@ -348,10 +366,7 @@
             :precondition (secuencia_entrada_no_vacia)
             :tasks (
                 (reset_counters)
-
-                (b_legal no)
                 (CDD ?d)
-                (b_legal yes)
 
                 (DD ?d)
             )
@@ -361,9 +376,7 @@
         (:method rest_day
             :precondition (secuencia_entrada_no_vacia)
             :tasks (
-                (b_legal no)
                 (REST ?d)
-                (b_legal yes)
 
                 (print_new_day)
                 (DD ?d)
@@ -373,9 +386,7 @@
         (:method ignore_action
             :precondition (secuencia_entrada_no_vacia)
             :tasks (
-                (b_legal no)
                 (IGNORE_ACTIVITY ?d)
-                (b_legal yes)
 
                 (DD ?d)
             )
@@ -417,7 +428,7 @@
     ; Normal Daily Driving - <9h driving total
     (:task NDD
         :parameters (?d - Driver) 
-        (:method SINGLE
+        (:method Two_CDDs
             :precondition()
             :tasks (
                 (b_sequence first)
@@ -430,6 +441,12 @@
                         (assign (dt_dd) (dt_cdd))
                         (assign (bt_dd) (bt_cdd))
                     )
+                )
+
+                ; To ensure no RD after first CDD
+                (:inline
+                    (<= (current_bt) (* 3.0 (hours_in_mins)))
+                    ()
                 )
 
                 ; -------------------------------------------
@@ -455,7 +472,7 @@
 
                 ; To ensure RD after second CDD
                 (:inline
-                    (>= (bt_cdd) (* 3.0 (hours_in_mins)))
+                    (>= (current_bt) (* 3.0 (hours_in_mins)))
                     ()
                 )
             )
@@ -480,7 +497,7 @@
                 ; Similar to break periods, rest periods can also be taken in two parts, whereas the first part must have a duration of at least three hours and the second part must have a duration of at least nine hours.
                 ; To ensure RD after CDD
                 (:inline
-                    (>= (bt_dd) (* 3.0 (hours_in_mins)))
+                    (>= (current_bt) (* 3.0 (hours_in_mins)))
                     ()
                 )
             )
@@ -507,6 +524,12 @@
                     )
                 )
 
+                ; To ensure no RD after first CDD
+                (:inline
+                    (<= (current_bt) (* 3.0 (hours_in_mins)))
+                    ()
+                )
+
                 ; -------------------------------------------
 
                 (b_sequence second)
@@ -519,6 +542,12 @@
                         (increase (dt_dd) (dt_cdd))
                         (increase (bt_dd) (bt_cdd))
                     )
+                )
+
+                ; To ensure no RD after first CDD
+                (:inline
+                    (<= (current_bt) (* 3.0 (hours_in_mins)))
+                    ()
                 )
 
                 ; -------------------------------------------
@@ -545,7 +574,7 @@
 
                 ; To ensure RD after CDD
                 (:inline
-                    (>= (bt_cdd) (* 3.0 (hours_in_mins)))
+                    (>= (current_bt) (* 3.0 (hours_in_mins)))
                     ()
                 )
             )
@@ -693,7 +722,7 @@
 
                 (:inline
                     ()
-                    (assign (bt_cdd_split1) (current_bt))
+                    (assign (bt_cdd_split2) (current_bt))
                 )
             )
         ) 
@@ -712,7 +741,7 @@
 
                 (:inline
                     ()
-                    (assign (bt_cdd_unint) (current_bt))
+                    (assign (bt_cdd_split2) (current_bt))
                 )
             )
         )
@@ -784,9 +813,9 @@
         (:method illegal_daily
             :precondition ()
             :tasks (
-                (b_legal no)
+                ; (b_legal no)
                 (DR ?d)
-                (b_legal yes)
+                ; (b_legal yes)
 
                 ; A daily rest is not bigger than 24h
                 (:inline
@@ -810,9 +839,9 @@
             ; Comprobar que se ha realizado en menos de 6 períodos de 24h
             :precondition ()
             :tasks (
-                (b_legal no)
+                ; (b_legal no)
                 (WR ?d)
-                (b_legal yes)
+                ; (b_legal yes)
 
                 (:inline
                     ()
@@ -843,7 +872,6 @@
     (:task DR
         :parameters (?d - Driver)
         (:method DR_T4
-            ; :precondition (split-rest) No entraría aquí por las otras, ponerlo el primero y añadirle una precondición para asegurarse que es un split
             :precondition (next_dr_is_t3)
             :tasks (
                 (b_token DR_T4)
@@ -1084,7 +1112,8 @@
                     (increase (dt_activity) (current_dt))
                 );calculates driving time of current subsequence
 
-                (A ?d))
+                (A ?d)
+            )
         ) 
         
         ;aquí viene porque se encontró un B con una duración mayor de 15 mins
@@ -1239,8 +1268,7 @@
         :parameters (?d - Driver ?dur - number) 
         (:method modo_reconocer
             :precondition (modo_reconocer)
-            :tasks
-            (
+            :tasks (
                 (add_the_current_action_to_plan typeD ?dur)
                 ;incrementar el current index para reconocer la siguiente accion de la secuencia)
                 (:inline
@@ -1305,7 +1333,8 @@
     ; =========================================================================
 
     (:derived
-        (currentindex_is_typeD ?k ?sa)	; ?K y ?sa se pasan "POR REFERENCIA" (en HPDL se puede, en OTROS PDDL lenguajes no), ES DECIR, se calculan dentro
+        ; ?K y ?sa se pasan "POR REFERENCIA" (en HPDL se puede), ES DECIR, se calculan dentro
+        (currentindex_is_typeD ?k ?sa)	
         (and (bind ?k
                 (current_index_action))	; CAPTURO EL INDICE ACTUAL DE SECUENCIA DE ACCIONES
             (index_action ?sa ?k)		; CAPTURO EL SIMBOLO DE LA ACCIONES(K)
@@ -1356,6 +1385,17 @@
                         (duration_action ?sa ?dur))
                     ()
                 )
+
+                ; Set legal context
+                (:inline ()
+                    (when (is_activity_illegal) 
+                        (and
+                            (not (legal-context yes))
+                            (legal-context no)
+                        )
+                    )
+                )
+
                 ;captura el contexto
                 (:inline
                     (and 
@@ -1369,9 +1409,20 @@
                     )
                     ()
                 )
+                
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
                     (D_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt)
+                )
+
+                ; Set legal context
+                (:inline ()
+                    (when (is_activity_illegal) 
+                        (and
+                            (not (legal-context no))
+                            (legal-context yes)
+                        )
+                    )
                 )
             )
         )
@@ -1386,6 +1437,17 @@
                         (duration_action ?sa ?dur))
                     ()
                 )
+
+                ; Set legal context
+                (:inline ()
+                    (when (is_activity_illegal) 
+                        (and
+                            (not (legal-context yes))
+                            (legal-context no)
+                        )
+                    )
+                )
+
                 ;captura el contexto
                 (:inline
                     (and 
@@ -1399,9 +1461,20 @@
                     )
                     ()
                 )
+
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
                     (O_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt)
+                )
+
+                ; Set legal context
+                (:inline ()
+                    (when (is_activity_illegal) 
+                        (and
+                            (not (legal-context no))
+                            (legal-context yes)
+                        )
+                    )
                 )
             )
         )
@@ -1416,6 +1489,17 @@
                         (duration_action ?sa ?dur))
                     ()
                 )
+
+                ; Set legal context
+                (:inline ()
+                    (when (is_activity_illegal) 
+                        (and
+                            (not (legal-context yes))
+                            (legal-context no)
+                        )
+                    )
+                )
+
                 ;captura el contexto
                 (:inline
                     (and 
@@ -1429,9 +1513,20 @@
                     )
                     ()
                 )
+
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
                     (B_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt)
+                )
+
+                ; Set legal context
+                (:inline ()
+                    (when (is_activity_illegal) 
+                        (and
+                            (not (legal-context no))
+                            (legal-context yes)
+                        )
+                    )
                 )
             )
         )
@@ -1446,6 +1541,17 @@
                         (duration_action ?sa ?dur))
                     ()
                 )
+
+                ; Set legal context
+                (:inline ()
+                    (when (is_activity_illegal) 
+                        (and
+                            (not (legal-context yes))
+                            (legal-context no)
+                        )
+                    )
+                )
+
                 ;captura el contexto
                 (:inline
                     (and 
@@ -1459,43 +1565,27 @@
                     )
                     ()
                 )
+
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
                     (I_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt)
                 )
+
+                ; Set legal context
+                (:inline ()
+                    (when (is_activity_illegal) 
+                        (and
+                            (not (legal-context no))
+                            (legal-context yes)
+                        )
+                    )
+                )
             )
-        )
-        )
+        )) ; Two ")" due to the !
     )
 
     ; -------------------------------------------------------------------------
     ; Contexts
-    ; -------------------------------------------------------------------------
-
-    (:task b_legal
-        :parameters (?ctxt - context) 
-        (:method unico
-            :precondition ()
-            :tasks (
-                :inline (legal-context ?current)
-                (and (legal-context ?ctxt) 
-                    (not (legal-context ?current))
-                )
-            )
-        )
-    )
-
-    (:task e_legal
-        :parameters (?ctxt - context) 
-        (:method unico
-            :precondition ()
-            :tasks (
-                :inline ()
-                (and (not (legal-context ?ctxt)) (legal-context none))
-            )
-        )
-    )
-
     ; -------------------------------------------------------------------------
 
     (:task b_token
@@ -1540,8 +1630,7 @@
         (:method unico
             :precondition ()
             :tasks (
-                :inline
-                ()
+                :inline ()
                 (and (not (breakType-context ?ctxt)) (breakType-context none))
             )
 
@@ -1567,8 +1656,7 @@
         (:method unico
             :precondition ()
             :tasks (
-                :inline
-                ()
+                :inline ()
                 (and (not (sequence-context ?ctxt)) (sequence-context none))
             )
 
@@ -1594,8 +1682,7 @@
         (:method unico
             :precondition ()
             :tasks (
-                :inline
-                ()
+                :inline ()
                 (and (not (dayType-context ?ctxt)) (dayType-context none))
             )
 
