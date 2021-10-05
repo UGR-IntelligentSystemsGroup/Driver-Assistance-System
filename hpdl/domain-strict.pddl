@@ -788,6 +788,7 @@
                     ()
                     (and
                         (assign (edds_in_week) 0)
+                        (assign (drt2_in_week) 0)
                         (assign (dt_wd) 0)
                     )
                 )
@@ -930,9 +931,9 @@
                     (and
                         (assign (current_bt) ?dur)
                         (assign (dt_activity) 0)
+                        (increase (drt2_in_week) 1)
                     )
                 )
-                ; Aumentar contador DR_T2
             )
         )
 
@@ -982,7 +983,7 @@
                         (assign (dt_activity) 0)
                     )
                 )
-                ; Aumentar contador de WR_T1 y WR_T2
+                ; Aumentar contador de WR_T1 y WR_T2 (Biweekly)
             )
         ) 
         
