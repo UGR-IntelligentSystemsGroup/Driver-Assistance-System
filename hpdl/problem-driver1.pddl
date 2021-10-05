@@ -27,13 +27,15 @@
 		(sequence-context none)
 		(breakType-context none)
 		(dayType-context none)
-		(weekly-context none)
-		(monthly-context none)
+		; (weekly-context none)
+		; (monthly-context none)
 
 		; Initialize functions
 		(= (hours_in_mins) 60)
 
 		(= (edds_in_week) 0)
+		(= (week-counter) 1)
+		(= (day-counter) 1)
 
 		(= (current_index_action) 0)
 

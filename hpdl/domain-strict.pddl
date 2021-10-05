@@ -23,17 +23,17 @@
         typeD typeO typeB typeI - TipoAccion
 
         ; Contexts
-        yes no                                              ; Legal
+        yes no                              ; Legal
         
         A I B_T0 
         B_T1 B_T2 B_T3 
         DR_T1 DR_T2 DR_T3 DR_T4 
-        WR_T1 WR_T2                                         ; Token
+        WR_T1 WR_T2                         ; Token
 
-        split split_1 split_2 uninterrupted                 ; BreakType
-        first second third unique                           ; Sequence
-        ndd edd                                             ; DayType
-        wd bwd month none - context
+        split split_1 split_2 uninterrupted ; BreakType
+        first second third unique           ; Sequence
+        ndd edd                             ; DayType
+        none - context
     )
 
     ; =========================================================================
@@ -50,8 +50,6 @@
         (sequence-context ?seqctxt - context)
         (breakType-context ?drivctxt - context)
         (dayType-context ?dayctxt - context)
-        (weekly-context ?weectxt - context)
-        (monthly-context ?monctxt - context)
 
         ;;***********************************
         ;; TOKEN conditions
@@ -95,7 +93,7 @@
         (dr_in_less_than_24)    ; To check if a DR is taken each 24h
         (wr_in_less_than_6_24)  ; To check if a WR is taken each "week" (6 x 24h)
 
-        (next_dr_is_t3) ; If a DR_T3 is found, next DR must be DR_T4
+        (next_dr_is_t4) ; If a DR_T3 is found, next DR must be DR_T4
 
         (is_activity_illegal) ; To set legal context ("no" if some other context is none)
     )
@@ -133,6 +131,9 @@
         ; Activities counters
         (edds_in_week) ; Number of EDD sequences in current week
         (drt2_in_week)  ; Number of DR_T2 activities in current week
+
+        (week-counter)
+        (day-counter)
 
         ; Timestamps
         (last_dr) ; Last timestamp a Daily Rest was detected
@@ -205,13 +206,10 @@
 
     (:derived (is_activity_illegal)
         (OR
-            ; (legal-context ?legalctxt)
             (token-context none)
             (breakType-context none)
             (sequence-context none)
             (dayType-context none)
-            ; (weekly-context ?weectxt)
-            ; (monthly-context ?monctxt)
         )
     )
 
@@ -257,50 +255,55 @@
     ;   Habría que tener en cuenta la compensación, por ahora ignorarla
     ; )
 
+    ; -------------------------------------------------------------------------
+
     ; Weekly Driving
     (:task WD
         :parameters (?d - Driver)
-    ;   Comprobar que no se pasa de 56h
-    ;   Tener en cuenta también que la secuencia se puede quedar vacía
-    ;   Tener en cuenta que no puede haber más de dos EDD, ponerlos aquí y/o en la condición del método en DD
-        (:method normal
-            :precondition (secuencia_entrada_no_vacia)
+
+        ; Last REST was a WR
+        (:method WR
+            :precondition (>= (current_bt) (* 24 (hours_in_mins)))
             :tasks (
-                (print_new_day)
-                (DD ?d)
+                (print_new_week)
+                (:inline
+                    ()
+                    (and
+                        (assign (edds_in_week) 0)
+                        (assign (dt_wd) 0)
+                        (assign (bt_wd) 0)
+                        (assign (current_bt) 0)
+                        (increase (week-counter) 1)
+                    )
+                )
 
-                ; (:inline
-                ;     (and
-                ;         (<= (edds_in_week) 2)
-                ;         (<= (dt_wd) (* 56.0 (hours_in_mins)))
-                ;     )
-                ;     ()
-                ; )
-
-                ; (WD ?d)
+                (WD ?d)
             )
         )
 
-        ; (:method WR
-        ;     :precondition (secuencia_entrada_no_vacia)
-        ;     :tasks (
-        ;         (WR ?d)
+        ; Tener en cuenta también que la secuencia se puede quedar vacía
+        (:method normal
+            :precondition (secuencia_entrada_no_vacia)
+            :tasks (
+                (DD ?d)
 
-        ;         (:inline
-        ;             ()
-        ;             (and
-        ;                 (assign (edds_in_week) 0)
-        ;                 (assign (dt_wd) 0)
-        ;             )
-        ;         )
+                (:inline
+                    (and
+                        (<= (edds_in_week) 2)
+                        (<= (dt_wd) (* 56.0 (hours_in_mins)))
+                    )
+                    ()
+                )
 
-        ;         (WD ?d)
-        ;     )
-        ; )
+                (WD ?d)
+            )
+        )
 
-        (:method error
+        (:method END
             :precondition ()
-            :tasks ()
+            :tasks (
+                (:inline (:print "# Using WD method END\n") ())
+            )
         )
     )
 
@@ -323,11 +326,10 @@
                     (and
                         (increase (dt_wd) (dt_dd))
                         (increase (bt_wd) (bt_dd))
+                        (increase (day-counter) 1)
                     )
                 )
-
                 (print_new_day)
-                (DD ?d)
             )
         )
         
@@ -349,11 +351,10 @@
                         (increase (dt_wd) (dt_dd))
                         (increase (bt_wd) (bt_dd))
                         (increase (edds_in_week) 1)
+                        (increase (day-counter) 1)
                     )
                 )
-
                 (print_new_day)
-                (DD ?d)
             )
         )
 
@@ -367,8 +368,6 @@
             :tasks (
                 (reset_counters)
                 (CDD ?d)
-
-                (DD ?d)
             )
         )
 
@@ -377,9 +376,11 @@
             :precondition (secuencia_entrada_no_vacia)
             :tasks (
                 (REST ?d)
-
+                (:inline
+                    ()
+                    (increase (day-counter) 1)
+                )
                 (print_new_day)
-                (DD ?d)
             )
         )
         
@@ -394,19 +395,17 @@
 
         ; --------------------------------------------------------------
 
-        (:method end
+        (:method END
             :precondition ()
             :tasks (
-                (:inline
-                    (:print "# Salgo\n")
-                    ()
-                )
+                (:inline (:print "# Using DD method END\n") ())
             )
         )
     )
 
     ; -------------------------------------------------------------------------
 
+    ; If activity doesn't fit in any pattern, process it and ignore it
     (:task IGNORE_ACTIVITY
         :parameters (?d - Driver)
         (:method Activity
@@ -494,7 +493,6 @@
                     )
                 )
 
-                ; Similar to break periods, rest periods can also be taken in two parts, whereas the first part must have a duration of at least three hours and the second part must have a duration of at least nine hours.
                 ; To ensure RD after CDD
                 (:inline
                     (>= (current_bt) (* 3.0 (hours_in_mins)))
@@ -873,7 +871,7 @@
     (:task DR
         :parameters (?d - Driver)
         (:method DR_T4
-            :precondition (next_dr_is_t3)
+            :precondition (next_dr_is_t4)
             :tasks (
                 (b_token DR_T4)
                 (B ?d ?dur)
@@ -886,7 +884,7 @@
                 (:inline
                     ()
                     (and
-                        (not (next_dr_is_t3))
+                        (not (next_dr_is_t4))
                         (assign (current_bt) ?dur)
                         (assign (dt_activity) 0)
                     )
@@ -951,7 +949,7 @@
                 (:inline
                     ()
                     (and
-                        (next_dr_is_t3)
+                        (next_dr_is_t4)
                         (assign (current_bt) ?dur)
                         (assign (dt_activity) 0)
                     )
@@ -1232,20 +1230,6 @@
     )
 
     ; =========================================================================
-    ; Debug
-    ; =========================================================================
-
-    (:durative-action print_new_day
-	    :parameters ()
-	    :meta (
-            (:tag prettyprint "# ----------------------------------------------------NEW DAY----------------------------------------------------
-#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DayType	Sequence	BreakType	Token	Legal"))
-            :duration ()
-            :condition (:print "> One Driving Day processed\n")
-            :effect ()
-    )
-
-    ; =========================================================================
     ; Actions
     ; =========================================================================
 
@@ -1405,15 +1389,15 @@
                         (breakType-context ?drivctxt)
                         (sequence-context ?seqctxt)
                         (dayType-context ?dayctxt)
-                        (weekly-context ?weectxt)
-                        (monthly-context ?monctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
                     )
                     ()
                 )
                 
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-                    (D_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt)
+                    (D_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
                 )
 
                 ; Set legal context
@@ -1457,15 +1441,15 @@
                         (breakType-context ?drivctxt)
                         (sequence-context ?seqctxt)
                         (dayType-context ?dayctxt)
-                        (weekly-context ?weectxt)
-                        (monthly-context ?monctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
                     )
                     ()
                 )
 
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-                    (O_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt)
+                    (O_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
                 )
 
                 ; Set legal context
@@ -1509,15 +1493,15 @@
                         (breakType-context ?drivctxt)
                         (sequence-context ?seqctxt)
                         (dayType-context ?dayctxt)
-                        (weekly-context ?weectxt)
-                        (monthly-context ?monctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
                     )
                     ()
                 )
 
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-                    (B_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt)
+                    (B_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
                 )
 
                 ; Set legal context
@@ -1536,7 +1520,8 @@
             :precondition (and (currentindex_is_typeI ?k ?sa) (= ?tact typeI)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
             :tasks (
                 (:inline
-                    (and (parameters_typeI ?sa ?driver)
+                    (and
+                        (parameters_typeI ?sa ?driver)
                         (start_action ?sa ?inicio)
                         (end_action ?sa ?final)
                         (duration_action ?sa ?dur))
@@ -1561,15 +1546,15 @@
                         (breakType-context ?drivctxt)
                         (sequence-context ?seqctxt)
                         (dayType-context ?dayctxt)
-                        (weekly-context ?weectxt)
-                        (monthly-context ?monctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
                     )
                     ()
                 )
 
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-                    (I_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt)
+                    (I_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
                 )
 
                 ; Set legal context
@@ -1696,8 +1681,8 @@
     ; DRIVING
 
     (:durative-action D_p
-        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt  - context)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Driving	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
         :duration (= ?duration ?dur)
         :condition()
         :effect ()
@@ -1707,8 +1692,8 @@
     ; OTHER WORK
 
     (:durative-action O_p
-        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt  - context)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Other	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Other	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
         :duration (= ?duration ?dur)
         :condition()
         :effect ()
@@ -1718,8 +1703,8 @@
     ; BREAK
 
     (:durative-action B_p
-        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt  - context)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Break	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Break	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
         :duration (= ?duration ?dur)
         :condition()
         :effect ()
@@ -1729,10 +1714,38 @@
     ; IDLE
 
     (:durative-action I_p
-        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt ?legalctxt  - context)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Idle	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
         :duration (= ?duration ?dur)
         :condition()
         :effect ()
+    )
+
+    ; =========================================================================
+    ; Debug
+    ; =========================================================================
+
+    (:durative-action print_new_day
+	    :parameters ()
+	    :meta (
+            (:tag prettyprint "#-----------------------
+# NEW DAY
+#-----------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal"))
+            :duration ()
+            :condition (:print "> One Driving Day processed\n")
+            :effect ()
+    )
+
+    (:durative-action print_new_week
+	    :parameters ()
+	    :meta (
+            (:tag prettyprint "#=======================================
+# NEW WEEK
+#=======================================
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal"))
+            :duration ()
+            :condition (:print ">> One Week processed\n")
+            :effect ()
     )
 )

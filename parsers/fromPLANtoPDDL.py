@@ -105,8 +105,8 @@ def getProblemInit(eventsFile):
 \t\t(sequence-context none)
 \t\t(breakType-context none)
 \t\t(dayType-context none)
-\t\t(weekly-context none)
-\t\t(monthly-context none)
+\t\t(= (week-counter) 1)
+\t\t(= (day-counter) 1)
 
 \t\t; Initialize functions
 \t\t(= (hours_in_mins) 60)

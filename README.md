@@ -18,6 +18,8 @@ Integrating Machine Learning with Automated Planning
 
 ## Doubts
 
+- Contextos semanales y bisemanales? Números, o decir que es normal?
+
 - El tiempo de otros trabajos no cuenta para nada, no? Me resulta raro pero no viene explícitamente dicho en ningún lado.
 
 - Token de salida split, ¿con o sin número?
@@ -141,6 +143,9 @@ The regulation constrains the total accumulated driving time during any two cons
   - unique: No splits, Activities ending with a RD
   - breakType none: No breaks that are not RD
 
+  - Week: Week number
+  - Day: Day number
+
   - DayType: Normal (9h) or Extended(10h)
   - Sequence: First sequence (<4.5h), second or third (only if EDD)
   - BreakType: Split, uninterrupted or unique (if ending in RD)
@@ -158,8 +163,6 @@ Domain-strict:
 - Ajustado estrictamente a la regulación
 
 - Nuevo contexto: legal. Indica si se ha cometido una ilegalidad (no se ha reconocido algún patrón). Técnicamente si es __no__ -> Algún otro contexto es __none__
-
-TODO: (last-dr) y (last-wr) inicializadas en el problema
 
 - Las 00:00 las paso al día siguiente en el dataset (algunas veces estaba de una forma y algunas de otra)
 
