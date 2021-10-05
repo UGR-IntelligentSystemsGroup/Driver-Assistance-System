@@ -18,6 +18,10 @@ Integrating Machine Learning with Automated Planning
 
 ## Doubts
 
+- Contextos semanales y bisemanales? Números, o decir que es normal?
+
+- He mirado un poco y parece que no, pero se puede forzar el prettyprint de flotantes a enteros?
+
 - El tiempo de otros trabajos no cuenta para nada, no? Me resulta raro pero no viene explícitamente dicho en ningún lado.
 
 - Token de salida split, ¿con o sin número?
@@ -26,31 +30,11 @@ Integrating Machine Learning with Automated Planning
 
 - Puedo subir el dataset, las trazas o los resultados a GitHub? Por si acaso son privados
 
-- Por dónde empiezo? Qué fallos tiene?
-  - Entiendo que uno de los fallos son los NA, no reconoce si es NDD o EDD
+- Puede que haya datos de conducción en equipo que no se tengan en cuenta (en menos de dos semanas dos conductores por misma matrícula)
 
-  - Tambien veo que hay Breaks que marca con contexto de Activity. Parece que son los de <15m. Se deberían marcar como Idle? La cosa es que en el dataset vienen que son pausas, lo pongo entonces como B_T0. Técnicamente si está cerca de 15 y viene después de una conducción debería considerarse como Break, pero si es de pocos minutos es más lógico considerarlo como Idle.
-
-  - The HoS regulation establishes that a basic sequence is a sequence of any number of activities such that the duration of any Pause is strictly less than 15 mins. Tengo entonces que poner B_T0 como A?
-
-- Si hay una memoria o cualquier tipo de documento adicional con información sobre esto lo agradecería.
-
-- Para asegurarme: El backtracking deshace los efectos de un inline, verdad? Refiriéndome a casos como:
-  - (b_daily_context NDD) <- Inline, si sale se deshace, no?
-  - (CDD ?d)
-  - (e_daily_context NDD)
-
-- B_T3 pasa como máximo de 45m a 3h, pero si pasa de 45 debería ser una anomalía. No sería mejor modelarlo con otra tarea? Por qué si se quita no funciona?
-
-- Por qué esa nomenclatura en los Breaks (1,2,3), no sería más legible que estén ordenados?
+---
 
 - **IMPORTANTE** Las horas de Other no se deberían contar? Sino estamos contando jornadas de >9h como NDD si conduce poco (probablemente sea un repartidor que pasa más tiempo entregando cosas)
-
-- No entiendo por qué la task EDD es así. Cada CDDs_S tiene un RD dentro por lo que en total habría 3 para una supuesta jornada. La cosa es que el día 06/01 lo coge bien.
-
-- Muy pocos "En espera". Es normal?
-
-- Por qué las durative-actions no tienen un último paréntesis que cierre?
 
 - (modo_generar) bucle infinito? Qué hace? se añade directamente la primitiva al plan (y si no se pueden cumplir las restricciones/condiciones pues fallará?
   - Para generar acciones deberíamos saber localización y recursos, no?
@@ -80,8 +64,6 @@ Integrating Machine Learning with Automated Planning
 
 - **IMPORTANTE** La regulación HOS cambió en junio de 2020: https://www.fmcsa.dot.gov/regulations/hours-of-service
 
-- C_p2 ;_p es sufijo de primitiva; 2 is because action has contexts in parameters
-
 - Los metatags son una extensión del lenguaje que actualmente está en fase experimental, por lo que puede cambiar en futuras versiones. El concepto subyacente a los metatags es poder incluir información extra en el dominio, que aunque no sea directamente utilizable por el planificador, pueda ser utilizada por otros módulos, o en un análisis posterior del plan resultante.
 
 - El corte (!) es otro de los conceptos introducidos para mejorar la eficiencia del proceso de planificación. Este concepto está tomado del lenguaje PROLOG [PROLOG] donde se utiliza para “olvidar” las unificaciones previas si se vuelve por backtracking. Obviamente el uso del corte afecta a la completitud del proceso de refutación, por lo que debe de ser utilizado con cuidado. En HTN-PDDL es posible usar el corte para parar el backtracking en dos lugares distintos:
@@ -90,7 +72,44 @@ Integrating Machine Learning with Automated Planning
 
   - En la lista de métodos de una tarea abstracta. Sirve para que una vez que se han probado como ciertas las precondiciones de un método se descarte probar con el resto de métodos. Nuevamente usado con cuidado este corte tampoco tiene por que afectar a la completitud del algoritmo. El escritor de dominios puede conocer que los métodos son mutuamente excluyentes y que una vez que se prueba con uno, el resto ya son inválidos.
 
-- According to Regulation (EC) No 561/2006, a driver must not drive for more than 4.5h without taking a break of at least 45 min duration, during which the driver may not carry out any work. The break can also be taken in two parts, whereas the first part must have a duration of at least 15 min and the second part must have a duration of at least 30 min. After a total of 9 h of driving, a driver must take a rest period of 11 h duration, during which the driver may freely dispose of her or his time. Similar to break periods, rest periods can also be taken in two parts, whereas the first part must have a duration of at least three hours and the second part must have a duration of at least nine hours. Thus, if a rest period is taken in two parts, a total rest of 12 h is required before the driver may continue to drive again. Three times a week, the regular duration of a rest period may be reduced to at least 9 h, and twice a week, the total driving time between rests may be extended to 10 h. In any case, the required amount of rest must have been taken within 24 h after the end of the previous rest period. The accumulated amount of driving and the accumulated amount of working within a week are restricted to at most 56 and 60 h and a weekly rest period of at least 45 h must be taken after at most 144 h after the end of the previous weekly rest period. Alternatively, a reduced weekly rest period of 24 h may be taken if the reduction is compensated by an equivalent period of rest taken in a subsequent week. The regulation constrains the total accumulated driving time during any two consecutive calendar weeks to at most 90 h and in any period of four months, the average working time during a calendar week must not exceed 48 h.
+- «conducción en equipo»: la situación en la que, durante cualquier período de conducción entre **cualesquiera dos períodos consecutivos de descanso diario, o entre un período de descanso diario y un período de descanso semanal**, haya al menos dos conductores en el **vehículo** que participen en la conducción. Durante la primera hora de conducción en equipo, la presencia de otro conductor o conductores es optativa, pero durante el período restante es obligatoria;
+
+- According to Regulation (EC) No 561/2006, a driver must not drive for more than 4.5h without taking a break of at least 45 min duration, during which the driver may not carry out any work. The break can also be taken in two parts, whereas the first part must have a duration of at least 15 min and the second part must have a duration of at least 30 min.
+After a total of 9h of driving, a driver must take a rest period of 11h duration, during which the driver may freely dispose of her or his time. Similar to break periods, rest periods can also be taken in two parts, whereas the first part must have a duration of at least three hours and the second part must have a duration of at least nine hours. Thus, if a rest period is taken in two parts, a total rest of 12h is required before the driver may continue to drive again.
+Three times a week, the regular duration of a rest period may be reduced to at least 9h, and twice a week, the total driving time between rests may be extended to 10 h. In any case, the required amount of rest must have been taken within 24 h after the end of the previous rest period.
+The accumulated amount of driving and the accumulated amount of working within a week are restricted to at most 56 and 60h and a weekly rest period of at least 45 h must be taken after at most 144 h after the end of the previous weekly rest period. Alternatively, a reduced weekly rest period of 24 h may be taken if the reduction is compensated by an equivalent period of rest taken in a subsequent week.
+The regulation constrains the total accumulated driving time during any two consecutive calendar weeks to at most 90 h and in any period of four months, the average working time during a calendar week must not exceed 48 h.
+
+  - CDD -> Driving of 4.5h
+
+  - After CDD -> Uninterrupted Break >45m (B_T1)
+    - After CDD -> Split1 Break >15m (B_T2) and Split2 Break >30m (B_T3)
+  
+  - Because DailyRest are >3h -> B_TX [,3h)
+
+  - <=9h Driving -> NDD
+  - [9h,10h] Driving -> EDD
+
+  - After NDD/EDD -> Normal DailyRest >11h (DR_T1)
+    - After NDD/EDD -> Reduced DailyRest [9h,11h] (DR_T2)
+    - After NDD/EDD -> Split1 DailyRest >3h (DR_T3) and Split2 DailyRest >9h (DR_T4)
+  
+  - Week -> Monday 00:00 to Sunday 24:00
+
+  - Normal WeeklyRest >45h (WR_T1)
+  - Reduced WeeklyRest [24h,45h] (WR_T2)
+
+  - DR_T2 -> Up to 3 times a week (Between WR)
+  - DR -> In less than 24h (includes WR) (except team: DR >9h in less than 30h)
+  - EDD -> Up to 2 times a week
+
+  - BiWeekly -> At least 2 WR_T1
+    - BiWeekly -> At least 1 WR_T1 and 1 WR_T2, compensated in the third week (un período de descanso semanal normal y un período de descanso semanal reducido de al menos 24 horas; no obstante, la reducción se compensará con un descanso equivalente tomado en una sola vez antes de finalizar la tercera semana siguiente a la semana de que se trate. Los descansos tomados como compensación por un período de descanso semanal reducido deberán tomarse junto con otro período de descanso de al menos nueve horas)
+
+  - WR -> In less than 6 days (24h) after last WR
+
+  - Weekly Driving -> Up to 56h
+  - BiWeely Driving -> Up to 90h
 
 ### Changes
 
@@ -126,6 +145,9 @@ Integrating Machine Learning with Automated Planning
   - unique: No splits, Activities ending with a RD
   - breakType none: No breaks that are not RD
 
+  - Week: Week number
+  - Day: Day number
+
   - DayType: Normal (9h) or Extended(10h)
   - Sequence: First sequence (<4.5h), second or third (only if EDD)
   - BreakType: Split, uninterrupted or unique (if ending in RD)
@@ -135,6 +157,16 @@ Integrating Machine Learning with Automated Planning
 - Simplificado el dominio
 
 - Intervalos de los Breaks ampliados para no ser estrictos. Si lo que queremos es reconocer patrones nos interesa, si lo que queremos es que los conductores se ajusten a la regulación no deberían ampliarse.
+
+---
+
+Domain-strict:
+
+- Ajustado estrictamente a la regulación
+
+- Nuevo contexto: legal. Indica si se ha cometido una ilegalidad (no se ha reconocido algún patrón). Técnicamente si es __no__ -> Algún otro contexto es __none__
+
+- Las 00:00 las paso al día siguiente en el dataset (algunas veces estaba de una forma y algunas de otra)
 
 ### Notation
 
@@ -205,22 +237,14 @@ B_T10: BREAK OF [45h,infty)
 | (duration_action O5 1) | Duración en segundos
 | (parameters_typeO O5 driver1) | Conductor asociado
 
-CDD_T1 (Driving continous): A(4.5th) - B_T1(45m) - A - RD(>9h)
-CDD_T2 (Driving split): A(4.5h) - B_T1/2/3 - A - B_T1/2/3   (Si el primero fue 3, luego 1, e viceversa? O siempre la primera de 15)
+---
 
+driver1	12/01/2017 03:17	12/01/2017 06:30	193.000000	Break	edd	third	uninterrupted	DR_T3	yes
+# ----------------------------------------------------NEW DAY----------------------------------------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DayType	Sequence	BreakType	Token	Legal
+driver1	12/01/2017 06:30	12/01/2017 06:33	3.000000	Driving	ndd	unique	uninterrupted	A	yes
+driver1	12/01/2017 06:33	14/01/2017 12:02	3209.000000	Break	ndd	unique	uninterrupted	WR_T1	yes
 
-; (:inline
-; 	(bind ?n
-; 		(dt_current_cdd))
-; 	()
-; )
-; (:inline
-;     (:print ?n)
-;     ()
-; )
-; (:inline
-;     (:print "HOLA")
-;     ()
-; )
+Técnicamente esto es legal, la ley no dice lo contrario
 
-Día de acción 115: Revisar
+---

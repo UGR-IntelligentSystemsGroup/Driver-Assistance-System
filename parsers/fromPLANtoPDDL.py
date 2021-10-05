@@ -100,18 +100,19 @@ def getProblemInit(eventsFile):
 \t\t(modo_reconocer)
 
 \t\t; Initialize contexts
+\t\t(legal-context yes)
 \t\t(token-context none)
 \t\t(sequence-context none)
 \t\t(breakType-context none)
 \t\t(dayType-context none)
-\t\t(weekly-context none)
-\t\t(monthly-context none)
+\t\t(= (week-counter) 1)
+\t\t(= (day-counter) 1)
 
 \t\t; Initialize functions
-\t\t(= (minutos_consumidos) 0)
-\t\t(= (contador_veces_AMPLIADA_en_semana) 0)
-
 \t\t(= (hours_in_mins) 60)
+
+\t\t(= (edds_in_week) 0)
+
 """
 
     # Translate PLAN events into PDDL predicates
@@ -119,15 +120,12 @@ def getProblemInit(eventsFile):
 
     problemInit += "\t\t(= (current_index_action) {})\n\n".format(index)
 
-    for d in drivers:
-        problemInit += "\t\t; ------------{}-------------\n".format(d)
-        problemInit += "\t\t(= (tiempo_conduccion {}) 0)\n".format(d)
-        problemInit += "\t\t(= (tiempo_otros {}) 0)\n".format(d)
-        problemInit += "\t\t(= (tiempo_parada {}) 0)\n".format(d)
-        problemInit += "\t\t(= (tiempo_espera {}) 0)\n".format(d)
-        problemInit += "\t\t(= (tiempo_otros_dia {}) 0)\n".format(d)
-        problemInit += "\t\t(= (tiempo_parada_dia {}) 0)\n".format(d)
-        problemInit += "\t\t(= (tiempo_espera_dia {}) 0)\n\n".format(d)
+    # Initializing (last-dr) and (last-wr)
+    timestamp = eventsAsPddl[0]
+    timestamp = timestamp.split("\"")[1]
+
+    problemInit += "\t\t(= (last_dr) \"" + timestamp + "\")\n"
+    problemInit += "\t\t(= (last_wr) \"" + timestamp + "\")\n\n"
 
     problemInit += "\t\t; Events\n"
 
@@ -144,10 +142,9 @@ def getProblemInit(eventsFile):
 def getProblemTask(drivers):
     problemFooter = """\t(:tasks-goal
 \t\t:tasks (
-\t\t\t(print_new_day)
 """
     for d in drivers:
-        problemFooter += "\t\t\t(DD {})\n".format(d)
+        problemFooter += "\t\t\t(WD {})\n".format(d)
 
     problemFooter += "\t\t)\n\t)\n)"
 
