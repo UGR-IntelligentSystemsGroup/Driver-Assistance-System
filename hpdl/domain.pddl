@@ -872,6 +872,7 @@
                         (end_action ?sa ?final)
                     )
                     (and
+                        (not (next_dr_is_t4))
                         (assign (last_dr) ?final)
                         (assign (last_wr) ?final)
                     )
@@ -925,6 +926,7 @@
                         (end_action ?sa ?final)
                     )
                     (and
+                        (not (next_dr_is_t4))
                         (assign (last_dr) ?final)
                         (assign (last_wr) ?final)
                     )
