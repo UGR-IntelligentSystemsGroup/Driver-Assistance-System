@@ -54,45 +54,6 @@ Integrating Machine Learning with Automated Planning
 
   - En la lista de métodos de una tarea abstracta. Sirve para que una vez que se han probado como ciertas las precondiciones de un método se descarte probar con el resto de métodos. Nuevamente usado con cuidado este corte tampoco tiene por que afectar a la completitud del algoritmo. El escritor de dominios puede conocer que los métodos son mutuamente excluyentes y que una vez que se prueba con uno, el resto ya son inválidos.
 
-- «conducción en equipo»: la situación en la que, durante cualquier período de conducción entre **cualesquiera dos períodos consecutivos de descanso diario, o entre un período de descanso diario y un período de descanso semanal**, haya al menos dos conductores en el **vehículo** que participen en la conducción. Durante la primera hora de conducción en equipo, la presencia de otro conductor o conductores es optativa, pero durante el período restante es obligatoria;
-
-- According to Regulation (EC) No 561/2006, a driver must not drive for more than 4.5h without taking a break of at least 45 min duration, during which the driver may not carry out any work. The break can also be taken in two parts, whereas the first part must have a duration of at least 15 min and the second part must have a duration of at least 30 min.
-After a total of 9h of driving, a driver must take a rest period of 11h duration, during which the driver may freely dispose of her or his time. Similar to break periods, rest periods can also be taken in two parts, whereas the first part must have a duration of at least three hours and the second part must have a duration of at least nine hours. Thus, if a rest period is taken in two parts, a total rest of 12h is required before the driver may continue to drive again.
-Three times a week, the regular duration of a rest period may be reduced to at least 9h, and twice a week, the total driving time between rests may be extended to 10 h. In any case, the required amount of rest must have been taken within 24 h after the end of the previous rest period.
-The accumulated amount of driving and the accumulated amount of working within a week are restricted to at most 56 and 60h and a weekly rest period of at least 45 h must be taken after at most 144 h after the end of the previous weekly rest period. Alternatively, a reduced weekly rest period of 24 h may be taken if the reduction is compensated by an equivalent period of rest taken in a subsequent week.
-The regulation constrains the total accumulated driving time during any two consecutive calendar weeks to at most 90 h and in any period of four months, the average working time during a calendar week must not exceed 48 h.
-
-  - CDD -> Driving of 4.5h
-
-  - After CDD -> Uninterrupted Break >45m (B_T1)
-    - After CDD -> Split1 Break >15m (B_T2) and Split2 Break >30m (B_T3)
-  
-  - Because DailyRest are >3h -> B_TX [,3h)
-
-  - <=9h Driving -> NDD
-  - [9h,10h] Driving -> EDD
-
-  - After NDD/EDD -> Normal DailyRest >11h (DR_T1)
-    - After NDD/EDD -> Reduced DailyRest [9h,11h] (DR_T2)
-    - After NDD/EDD -> Split1 DailyRest >3h (DR_T3) and Split2 DailyRest >9h (DR_T4)
-  
-  - Week -> Monday 00:00 to Sunday 24:00
-
-  - Normal WeeklyRest >45h (WR_T1)
-  - Reduced WeeklyRest [24h,45h] (WR_T2)
-
-  - DR_T2 -> Up to 3 times a week (Between WR)
-  - DR -> In less than 24h (includes WR) (except team: DR >9h in less than 30h)
-  - EDD -> Up to 2 times a week
-
-  - BiWeekly -> At least 2 WR_T1
-    - BiWeekly -> At least 1 WR_T1 and 1 WR_T2, compensated in the third week (un período de descanso semanal normal y un período de descanso semanal reducido de al menos 24 horas; no obstante, la reducción se compensará con un descanso equivalente tomado en una sola vez antes de finalizar la tercera semana siguiente a la semana de que se trate. Los descansos tomados como compensación por un período de descanso semanal reducido deberán tomarse junto con otro período de descanso de al menos nueve horas)
-
-  - WR -> In less than 6 days (24h) after last WR
-
-  - Weekly Driving -> Up to 56h
-  - BiWeely Driving -> Up to 90h
-
 ### Changes
 
 - NA context by default or after daily_reset -> Lo cambio a NONE
@@ -159,47 +120,59 @@ Domain-strict:
 |-----|----|
 | B | Break |
 | A | Actividad (si break -> B < 15m)|
-| P_A | Process Activity, trozo de A
+| P_A | Process Activity
 | CDD | continuous Daily Driving
-| CDD_T1 | Continued Daily Driving of type 1 (normal, sin partición)
-| CDD_T2 | Continued Daily Driving of type 2 (particionada)
-| CDDs_S | continuous Daily Driving - Start
-| CDDs_E | continuous Daily Driving - End
 | NDD | Normal Daily Driving
 | EDD | Extended Daily Driving - En total <10h
 | RD | Daily Rest
 | RW | Weekly Rest
 | TDD | Team Daily Driving
-| SRDD | Split Rest Daily Driving
 | WD | Weekly Driving
-|||
-| slice | Subsequence
-| rt | Rest time
+| bt | Break time
 | dt | Driving time
-| BWD |
-| A_B_T3 | SUBSECUENCIA TERMINADA EN B_T3
-| elt | element
-| baseq | basic sequence
+| BWD | BiWeekly Driving
 
-### Tipos de descansos
+### Regulation
 
-```
-B_T0; BREAK LESSER THAN 15 mins
+- «conducción en equipo»: la situación en la que, durante cualquier período de conducción entre **cualesquiera dos períodos consecutivos de descanso diario, o entre un período de descanso diario y un período de descanso semanal**, haya al menos dos conductores en el **vehículo** que participen en la conducción. Durante la primera hora de conducción en equipo, la presencia de otro conductor o conductores es optativa, pero durante el período restante es obligatoria;
 
-//From 15 mins a pause is considered a BREAK
-B_T2: BREAK of [15min, 30min)   -> [15, 45)
-B_T3: BREAK OF [30min, 45min)   -> [30, 60)
-B_T1: BREAK OF [45min, 3h)      -> [45, 3.5)
+- According to Regulation (EC) No 561/2006, a driver must not drive for more than 4.5h without taking a break of at least 45 min duration, during which the driver may not carry out any work. The break can also be taken in two parts, whereas the first part must have a duration of at least 15 min and the second part must have a duration of at least 30 min.
+After a total of 9h of driving, a driver must take a rest period of 11h duration, during which the driver may freely dispose of her or his time. Similar to break periods, rest periods can also be taken in two parts, whereas the first part must have a duration of at least three hours and the second part must have a duration of at least nine hours. Thus, if a rest period is taken in two parts, a total rest of 12h is required before the driver may continue to drive again.
+Three times a week, the regular duration of a rest period may be reduced to at least 9h, and twice a week, the total driving time between rests may be extended to 10 h. In any case, the required amount of rest must have been taken within 24 h after the end of the previous rest period.
+The accumulated amount of driving and the accumulated amount of working within a week are restricted to at most 56 and 60h and a weekly rest period of at least 45 h must be taken after at most 144 h after the end of the previous weekly rest period. Alternatively, a reduced weekly rest period of 24 h may be taken if the reduction is compensated by an equivalent period of rest taken in a subsequent week.
+The regulation constrains the total accumulated driving time during any two consecutive calendar weeks to at most 90 h and in any period of four months, the average working time during a calendar week must not exceed 48 h.
 
-// RESTS are breaks of at least 3 hours.
-B_T4: break of [3h, 9h)
-B_T5: break of [9h, 11h)
-B_T6: BREAK OF [11h, 24h)
-B_T7: BREAK OF [24h, 45h)
-B_T8: BREAK OF (9, 45-24+9) - COMPENSATION BREAK - PROBLEMATICO 
-B_T9: BREAK OF TEAM.
-B_T10: BREAK OF [45h,infty)
-```
+  - CDD -> Driving of 4.5h
+
+  - After CDD -> Uninterrupted Break >45m (B_T1)
+    - After CDD -> Split1 Break >15m (B_T2) and Split2 Break >30m (B_T3)
+  
+  - Because DailyRest are >3h -> B_TX [,3h)
+
+  - <=9h Driving -> NDD
+  - [9h,10h] Driving -> EDD
+
+  - After NDD/EDD -> Normal DailyRest >11h (DR_T1)
+    - After NDD/EDD -> Reduced DailyRest [9h,11h] (DR_T2)
+    - After NDD/EDD -> Split1 DailyRest >3h (DR_T3) and Split2 DailyRest >9h (DR_T4)
+  
+  - Week -> Monday 00:00 to Sunday 24:00
+
+  - Normal WeeklyRest >45h (WR_T1)
+  - Reduced WeeklyRest [24h,45h] (WR_T2)
+
+  - DR_T2 -> Up to 3 times a week (Between WR)
+  - DR -> In less than 24h (includes WR) (except team: DR >9h in less than 30h)
+  - EDD -> Up to 2 times a week
+
+  - BiWeekly -> At least 2 WR_T1
+    - BiWeekly -> At least 1 WR_T1 and 1 WR_T2, compensated in the third week (un período de descanso semanal normal y un período de descanso semanal reducido de al menos 24 horas; no obstante, la reducción se compensará con un descanso equivalente tomado en una sola vez antes de finalizar la tercera semana siguiente a la semana de que se trate. Los descansos tomados como compensación por un período de descanso semanal reducido deberán tomarse junto con otro período de descanso de al menos nueve horas)
+
+  - WR -> In less than 6 days (24h) after last WR
+
+  - Weekly Driving -> Up to 56h
+  - BiWeely Driving -> Up to 90h
+
 
 ### Log
 
@@ -215,6 +188,7 @@ B_T10: BREAK OF [45h,infty)
 
 ---
 
+```
 driver1	12/01/2017 03:17	12/01/2017 06:30	193.000000	Break	edd	third	uninterrupted	DR_T3	yes
 # ----------------------------------------------------NEW DAY----------------------------------------------------
 #Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DayType	Sequence	BreakType	Token	Legal
@@ -222,5 +196,5 @@ driver1	12/01/2017 06:30	12/01/2017 06:33	3.000000	Driving	ndd	unique	uninterrup
 driver1	12/01/2017 06:33	14/01/2017 12:02	3209.000000	Break	ndd	unique	uninterrupted	WR_T1	yes
 
 Técnicamente esto es legal, la ley no dice lo contrario
-
+```
 ---

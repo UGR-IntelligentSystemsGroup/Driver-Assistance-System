@@ -51,26 +51,18 @@
         (breakType-context ?drivctxt - context)
         (dayType-context ?dayctxt - context)
 
-        ;;***********************************
-        ;; TOKEN conditions
-        ;;**********************************
-        (current_action_is_a_break_greater_15)
-
-        ;;**********************************
-        ;;	 FEASIBILITIY conditions
-        ;;**********************************
-        (secuencia_entrada_no_vacia)
-        (fin_secuencia_entrada)
-
-        ;REPRESENTACION DE UNA ACCION PRIMITIVA EN EL PROBLEMA
+        ;****************************************
+        ; Activity representation in PDDL problem
+        ;****************************************
         (is_action ?sa - TaskInstanceSymbol) ; cada accion tiene un simbolo asociado este simbolo es de tipo accion 
         (index_action ?sa - TaskInstanceSymbol ?i - number); UN array simulado: cada simbolo de accion tiene asociado un indice, que empieza en 0, el indice indica la posición en la secuencia
         
-        ;(= (start_action C1) "01/07/2018 00:00:00"); las acciones tienen un punto de inicio. Ejemplo de Representación como funcion
-        (start_action ?sa - TaskInstanceSymbol ?s - number); Todavía no se que representacion es mejor: como predicado o commo funcion
+        ;(= (start_action C1) "01/07/2018 00:00:00"); las acciones tienen un punto de inicio
         ;(= (end_action C1) "01/07/2018 00:37:00"); ... y un punto de fin
-        (end_action ?sa - TaskInstanceSymbol ?e - number)
         ;(= (duration_action C1) 37); ... y una duracion
+
+        (start_action ?sa - TaskInstanceSymbol ?s - number)
+        (end_action ?sa - TaskInstanceSymbol ?e - number)
         (duration_action ?sa - TaskInstanceSymbol ?d - number)
 
         ;PREDICADOS PARA REPRESENTAR DE QUÉ TIPO ES CADA ACCION
@@ -85,10 +77,21 @@
         (parameters_typeB ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
         (parameters_typeI ?sa - TaskInstanceSymbol ?d - Driver); interpretese: los parametros CONCRETOS (estado inicial) de la accion ?sa son: ?d - Driver. 
 
+        ;***********************************
+        ; Derived
+        ;***********************************
+
         (currentindex_is_typeD ?k - number ?sa - TaskInstanceSymbol)
         (currentindex_is_typeO ?k - number ?sa - TaskInstanceSymbol)
         (currentindex_is_typeB ?k - number ?sa - TaskInstanceSymbol)
         (currentindex_is_typeI ?k - number ?sa - TaskInstanceSymbol)
+
+        ;; TOKEN conditions
+        (current_action_is_a_break_greater_15)
+
+        ;; FEASIBILITIY conditions        
+        (secuencia_entrada_no_vacia)
+        (fin_secuencia_entrada)
 
         (dr_in_less_than_24)    ; To check if a DR is taken each 24h
         (wr_in_less_than_6_24)  ; To check if a WR is taken each "week" (6 x 24h)
@@ -206,12 +209,58 @@
 
     ; -------------------------------------------------------------------------
 
+    ; If any context is none -> Illegal activity
     (:derived (is_activity_illegal)
         (OR
             (token-context none)
             (breakType-context none)
             (sequence-context none)
             (dayType-context none)
+        )
+    )
+
+    
+    ; =========================================================================
+    ; PREDICADOS DERIVADOS QUE REPRESENTAN LA "CONDICION DE RECONOCIMIENTO DE TOKEN"
+    ; 
+    ; SE REPLICA LA MISMA CONDICION PARA CADA TIPO DE ACCION PRIMITIVA (DOBI)
+    ; Solo cambia el (is_type)
+    ; =========================================================================
+
+    (:derived
+        ; ?K y ?sa se pasan "POR REFERENCIA" (en HPDL se puede), ES DECIR, se calculan dentro
+        (currentindex_is_typeD ?k ?sa)	
+        (and (bind ?k
+                (current_index_action))	; CAPTURO EL INDICE ACTUAL DE SECUENCIA DE ACCIONES
+            (index_action ?sa ?k)		; CAPTURO EL SIMBOLO DE LA ACCIONES(K)
+            (is_typeD ?sa)				; PREGUNTO SI EL SIMBOLO ES typeD
+        )
+    )
+
+    (:derived
+        (currentindex_is_typeO ?k ?sa)
+        (and (bind ?k
+                (current_index_action))
+            (index_action ?sa ?k)
+            (is_typeO ?sa)
+        )
+    )
+
+    (:derived
+        (currentindex_is_typeB ?k ?sa)
+        (and (bind ?k
+                (current_index_action))
+            (index_action ?sa ?k)
+            (is_typeB ?sa)
+        )
+    )
+
+    (:derived
+        (currentindex_is_typeI ?k ?sa)
+        (and (bind ?k
+                (current_index_action))
+            (index_action ?sa ?k)
+            (is_typeI ?sa)
         )
     )
 
@@ -257,9 +306,10 @@
     ;   Habría que tener en cuenta la compensación, por ahora ignorarla
     ; )
 
-    ; -------------------------------------------------------------------------
-
+    ; ****************************
     ; Weekly Driving
+    ; ****************************
+
     (:task WD
         :parameters (?d - Driver)
 
@@ -296,9 +346,6 @@
             )
         )
 
-        ; Tener en cuenta también que la secuencia se puede quedar vacía
-        ; Podría ponerse otro método igual que este sin la comprobación para
-        ; cuando no se cumplan las condiciones (para poner una tag)
         (:method normal
             :precondition (secuencia_entrada_no_vacia)
             :tasks (
@@ -324,7 +371,9 @@
         )
     )
 
-    ; -------------------------------------------------------------------------
+    ; ****************************
+    ; Daily Driving
+    ; ****************************
 
     ; Daily Driving
     (:task DD
@@ -388,7 +437,7 @@
             )
         )
 
-        ; Hace que termine la secuencia no reconocida
+        ; RD in non-recognized sequence
         (:method rest_day
             :precondition (secuencia_entrada_no_vacia)
             :tasks (
@@ -401,6 +450,7 @@
             )
         )
         
+        ; Action doesn't fit in any sequence
         (:method ignore_action
             :precondition (secuencia_entrada_no_vacia)
             :tasks (
@@ -412,6 +462,7 @@
 
         ; --------------------------------------------------------------
 
+        ; Empty input
         (:method END
             :precondition ()
             :tasks (
@@ -596,7 +647,9 @@
         )
     )
 
-    ; -------------------------------------------------------------------------
+    ; ****************************
+    ; Continuos Daily Driving
+    ; ****************************
 
     ; Continuous Daily Driving -> <4.5h
     (:task CDD
@@ -644,6 +697,7 @@
 
     ; -------------------------------------------------------------------------
 
+    ; Uninterrupted. Ending in RD or B_T1
     (:task CDD_Unint
         :parameters (?d - Driver) 
         (:method B_T1
@@ -697,6 +751,7 @@
 
     ; -------------------------------------------------------------------------
 
+    ; First split of a CDD. Ending in B_T2
     (:task CDD_SPLIT_1
         :parameters (?d - Driver)
         (:method B_T2
@@ -721,6 +776,7 @@
 
     ; -------------------------------------------------------------------------
 
+    ; Second split of a CDD. Ending in B_T3 or RD
     (:task CDD_SPLIT_2
         :parameters (?d - Driver)
         (:method B_T3
@@ -820,18 +876,15 @@
                         (assign (last_wr) ?final)
                     )
                 )
-                ; Resear contador de DR_T2
             )
         )
 
 
-        ; TODO: Método indicando que no se ha tomado el descanso bajo las condiciones de tiempo
+        ; TODO: Indicate illegality in output
         (:method illegal_daily
             :precondition ()
             :tasks (
-                ; (b_legal no)
                 (DR ?d)
-                ; (b_legal yes)
 
                 ; A daily rest is not bigger than 24h
                 (:inline
@@ -852,17 +905,15 @@
         )
 
         (:method illegal_weekly
-            ; Comprobar que se ha realizado en menos de 6 períodos de 24h
             :precondition ()
             :tasks (
-                ; (b_legal no)
                 (WR ?d)
-                ; (b_legal yes)
 
                 (:inline
                     ()
                     (and
                         (assign (edds_in_week) 0)
+                        (assign (drt2_in_week) 0)
                         (assign (dt_wd) 0)
                     )
                 )
@@ -879,10 +930,11 @@
                         (assign (last_wr) ?final)
                     )
                 )
-                ; Resear contador de DR_T2
             )
         )
     )
+
+    ; -------------------------------------------------------------------------
 
     ; Daily rest
     (:task DR
@@ -998,7 +1050,7 @@
                         (assign (dt_activity) 0)
                     )
                 )
-                ; Aumentar contador de WR_T1 y WR_T2 (Biweekly)
+                ; TODO: Aumentar contador de WR_T1 y WR_T2 (Biweekly)
             )
         ) 
         
@@ -1108,9 +1160,11 @@
         )
     )
     
-    ; -------------------------------------------------------------------------
-    ; Recognizes a sequence of Activities (D|O|B|I) such that dur(B)< 15mins
+    ; ****************************
+    ; Activity
+    ; ****************************
 
+    ; Recognizes a sequence of Activities (D|O|B|I) such that dur(B)< 15mins
     (:task A
         :parameters (?d - Driver) 
         (:method recurrir
@@ -1236,35 +1290,9 @@
         )
     )
 
-    ; -------------------------------------------------------------------------
-
-    (:task break
-        :parameters () 
-        (:method unico
-            :precondition ()
-            :tasks ()
-        )
-    )
-
-    ; =========================================================================
-    ; Actions
-    ; =========================================================================
-
-    (:action EndOfDay
-        :parameters ()
-        :precondition ()
-        :effect ()
-    )
-
-    ; -------------------------------------------------------------------------
-
-    (:action EndOfSequece
-        :parameters ()
-        :precondition ()
-        :effect ()
-    )
-
-    ; -------------------------------------------------------------------------
+    ; ****************************
+    ; Basic Actions
+    ; ****************************
 
     (:task D
         :parameters (?d - Driver ?dur - number) 
@@ -1324,50 +1352,6 @@
                     (increase (current_index_action) 1)
                 )
             )
-        )
-    )
-
-    ; =========================================================================
-    ; PREDICADOS DERIVADOS QUE REPRESENTAN LA "CONDICION DE RECONOCIMIENTO DE TOKEN"
-    ; 
-    ; SE REPLICA LA MISMA CONDICION PARA CADA TIPO DE ACCION PRIMITIVA (DOBI)
-    ; Solo cambia el (is_type)
-    ; =========================================================================
-
-    (:derived
-        ; ?K y ?sa se pasan "POR REFERENCIA" (en HPDL se puede), ES DECIR, se calculan dentro
-        (currentindex_is_typeD ?k ?sa)	
-        (and (bind ?k
-                (current_index_action))	; CAPTURO EL INDICE ACTUAL DE SECUENCIA DE ACCIONES
-            (index_action ?sa ?k)		; CAPTURO EL SIMBOLO DE LA ACCIONES(K)
-            (is_typeD ?sa)				; PREGUNTO SI EL SIMBOLO ES typeD
-        )
-    )
-
-    (:derived
-        (currentindex_is_typeO ?k ?sa)
-        (and (bind ?k
-                (current_index_action))
-            (index_action ?sa ?k)
-            (is_typeO ?sa)
-        )
-    )
-
-    (:derived
-        (currentindex_is_typeB ?k ?sa)
-        (and (bind ?k
-                (current_index_action))
-            (index_action ?sa ?k)
-            (is_typeB ?sa)
-        )
-    )
-
-    (:derived
-        (currentindex_is_typeI ?k ?sa)
-        (and (bind ?k
-                (current_index_action))
-            (index_action ?sa ?k)
-            (is_typeI ?sa)
         )
     )
 
@@ -1692,11 +1676,27 @@
         )
     )
 
-    ; -------------------------------------------------------------------------
-    ; Primitives
-    ; -------------------------------------------------------------------------
-    ; DRIVING
+    ; =========================================================================
+    ; Actions
+    ; =========================================================================
 
+    (:action EndOfDay
+        :parameters ()
+        :precondition ()
+        :effect ()
+    )
+
+    ; -------------------------------------------------------------------------
+
+    (:action EndOfSequece
+        :parameters ()
+        :precondition ()
+        :effect ()
+    )
+
+    ; -------------------------------------------------------------------------
+
+    ; DRIVING
     (:durative-action D_p
         :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
@@ -1706,8 +1706,8 @@
     )
 
     ; -------------------------------------------------------------------------
-    ; OTHER WORK
 
+    ; OTHER WORK
     (:durative-action O_p
         :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Other	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
@@ -1717,8 +1717,8 @@
     )
 
     ; -------------------------------------------------------------------------
-    ; BREAK
 
+    ; BREAK
     (:durative-action B_p
         :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Break	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
@@ -1728,8 +1728,8 @@
     )
 
     ; -------------------------------------------------------------------------
-    ; IDLE
 
+    ; IDLE
     (:durative-action I_p
         :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Idle	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
