@@ -548,7 +548,7 @@
         ; No breaks, ending in RD
         (:method unique
         	:precondition()
-        	:tasks ( 
+        	:tasks (
                 (b_sequence unique)
                 (CDD ?d)
                 (e_sequence unique)
@@ -654,7 +654,7 @@
     ; Continuous Daily Driving -> <4.5h
     (:task CDD
         :parameters (?d - Driver) 
-        ; Uninterr (normal, no splits)
+        ; Uninterrupted (normal, no splits)
         (:method uninterrupted
             :precondition()
             :tasks (
@@ -891,7 +891,6 @@
                     (< (current_bt) (* 24 (hours_in_mins)))
                     ()
                 )
-
                 ; Save last DR timestamp
                 (:inline
                     (and 
@@ -1018,10 +1017,15 @@
                 (:inline
                     ()
                     (and
-                        (next_dr_is_t4)
                         (assign (current_bt) ?dur)
                         (assign (dt_activity) 0)
                     )
+                )
+
+                ; Next DR must be T4 o WD
+                (:inline 
+                    (not (next_dr_is_t4))
+                    (next_dr_is_t4)
                 )
             )
         )

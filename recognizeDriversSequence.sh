@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for filename in `ls hpdl/problems/problem-driver*.pddl | sort -V | tail -n +2`; do
+for filename in `ls hpdl/problems/problem-driver*.pddl | sort -V | tail -n +1`; do
     echo "Recognizing driver activity for file $filename..."
 
     # Get driver name
