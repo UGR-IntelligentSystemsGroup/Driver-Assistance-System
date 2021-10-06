@@ -136,6 +136,14 @@ Domain-strict:
 
 ### Regulation
 
+![Weekly Driving Example](./doc/graphs/wd_example.svg)
+
+![Driving Day Types](./doc/graphs/dd_types.svg)
+
+![Driving Sequence Types](./doc/graphs/cdd_types.svg)
+
+![Rest Day Types](./doc/graphs/rd_types.svg)
+
 - «conducción en equipo»: la situación en la que, durante cualquier período de conducción entre **cualesquiera dos períodos consecutivos de descanso diario, o entre un período de descanso diario y un período de descanso semanal**, haya al menos dos conductores en el **vehículo** que participen en la conducción. Durante la primera hora de conducción en equipo, la presencia de otro conductor o conductores es optativa, pero durante el período restante es obligatoria;
 
 - According to Regulation (EC) No 561/2006, a driver must not drive for more than 4.5h without taking a break of at least 45 min duration, during which the driver may not carry out any work. The break can also be taken in two parts, whereas the first part must have a duration of at least 15 min and the second part must have a duration of at least 30 min.
