@@ -1,5 +1,5 @@
 (define (domain GantaBi)
-    (:requirements :adl :fluents :derived-predicates :htn-expansion :durative-actions :equality :metatags :timed-initial-literals)
+    (:requirements :adl :typing :fluents :derived-predicates :htn-expansion :durative-actions :equality :metatags :timed-initial-literals)
 
     ; =========================================================================
     ; TYPES
@@ -9,6 +9,7 @@
         TaskInstanceSymbol
         TipoAccion
         Driver
+        Mensaje
         context 
             - object
     )
@@ -18,22 +19,18 @@
     ; =========================================================================
 
     (:constants
+        DIA_CONSUMIDO SECUENCIA_TERMINADA BREAK_CONSIDERED_REST PAUSE_CONSIDERED_BREAK FALLO_LATASK- Mensaje
+
         Procesa_Accion - TaskSymbol
 
         typeD typeO typeB typeI - TipoAccion
 
         ; Contexts
-        yes no                              ; Legal
-        
-        A I B_T0 
-        B_T1 B_T2 B_T3 
-        DR_T1 DR_T2 DR_T3 DR_T4 
-        WR_T1 WR_T2                         ; Token
-
-        split split_1 split_2 uninterrupted ; BreakType
-        first second third unique           ; Sequence
-        ndd edd                             ; DayType
-        none - context
+        A I B_T0 B_T1 B_T2 B_T3 B_T4 B_T5 B_T6 B_T7 B_T10   ; Token
+        split split_1 split_2 uninterrupted                 ; BreakType
+        first second third unique                           ; Sequence
+        ndd edd                                             ; DayType
+        wd bwd month none - context
     )
 
     ; =========================================================================
@@ -44,12 +41,17 @@
         (modo_generar)
         (modo_reconocer)
 
+        (dia_consumido)
+
+        (task_failed ?t - TaskSymbol) ;para saber si una task ha fallado, se añade como efecto en los métodos de fallo de tarea
+
         ; Contexts
-        (legal-context ?legalctxt - context)
         (token-context ?tkctxt - context)
         (sequence-context ?seqctxt - context)
         (breakType-context ?drivctxt - context)
         (dayType-context ?dayctxt - context)
+        (weekly-context ?weectxt - context)
+        (monthly-context ?monctxt - context)
 
         ;;***********************************
         ;; TOKEN conditions
@@ -59,6 +61,21 @@
         ;;**********************************
         ;;	 FEASIBILITIY conditions
         ;;**********************************
+        (conditions_NDD ?d - Driver)
+        (less_than_15min ?d)
+
+        (puede_otros_NORMAL ?d - Driver)
+        (puede_parada_NORMAL ?d - Driver)
+        (puede_espera_NORMAL ?d - Driver)
+
+        (puede_conducir_AMPLIADA ?d - Driver)
+        (puede_otros_AMPLIADA ?d - Driver)
+        (puede_parada_AMPLIADA ?d - Driver)
+        (puede_espera_AMPLIADA ?d - Driver)
+
+        (continuar_recursion)
+
+        (secuencia_entrada_vacia)
         (secuencia_entrada_no_vacia)
         (fin_secuencia_entrada)
 
@@ -90,12 +107,9 @@
         (currentindex_is_typeB ?k - number ?sa - TaskInstanceSymbol)
         (currentindex_is_typeI ?k - number ?sa - TaskInstanceSymbol)
 
-        (dr_in_less_than_24)    ; To check if a DR is taken each 24h
-        (wr_in_less_than_6_24)  ; To check if a WR is taken each "week" (6 x 24h)
-
-        (next_dr_is_t4) ; If a DR_T3 is found, next DR must be DR_T4
-
-        (is_activity_illegal) ; To set legal context ("no" if some other context is none)
+        ; Depuración
+        (modo_depuracion)
+        (DEBUG ?msg - Mensaje)
     )
 
     ; =========================================================================
@@ -105,18 +119,26 @@
     (:functions
         (current_index_action) ; represnta el indice actual que apunta a la accion que hay que procesar en modo reconocer
 
-        ; Acumulators
-        (dt_bwd)
-        (dt_previous_wd) ; Driving time for last week
-        (dt_wd)         ; Driving time for current week
-        (dt_dd)        ; Driving time for a daily drive
+        ;ACUMULADORES TOTALES
+        (tiempo_conduccion ?d - Driver)
+        (tiempo_otros ?d - Driver)
+        (tiempo_parada ?d - Driver)
+        (tiempo_espera ?d - Driver)
+
+        ;ACUMULADORES POR SEMANA
+        (tiempo_conduccion_semana ?d - Driver)
+        (tiempo_otros_semana ?d - Driver)
+        (tiempo_parada_semana ?d - Driver)
+        (tiempo_espera_semana ?d - Driver)
+
+        ;ACUMULADORES POR DIA
+        (dt_dd)         ; Driving time for a daily drive
         (dt_cdd)        ; Driving time for a continuous daily drive (<4.5h)
         (dt_cdd_unint)  ; Driving time for an uninterrupted cdd   
         (dt_cdd_split1) ; Driving time for the first split of a cdd   
         (dt_cdd_split2)
         (dt_activity)   ; Driving time for a sequence of activities
 
-        (bt_wd)
         (bt_dd)
         (bt_cdd)
         (bt_cdd_unint)
@@ -127,52 +149,73 @@
         (current_bt) ;tiempo de descanso actual, se entiende que el recién reconocido
         (current_dt) ;current driving time of the recently recognized activity
 
+        (dt_day ?d - Driver)
+
+        (tiempo_otros_dia ?d - Driver)
+        (tiempo_parada_dia ?d - Driver)
+        (tiempo_espera_dia ?d - Driver)
+
+
+        (minutos_consumidos)
+
+        (contador_veces_AMPLIADA_en_semana)
+
+        ; en el  modo generar la duración de la conducción dependerá del tipo de conductor
+        ; esto es un ejemplo y se podría hacer directamente sin codigo python 
+        ; PINTA QUE ESTÁ INCOMPLETO, NO? Debería calcular la duración en base al tiempo restante
+        (calcula_duracion_C ?d) { return 4 }
+        (calcula_duracion_O ?d) { return 2 } ; lo mismo para OPE
+        (calcula_duracion_P ?d) { return 2 }
+        (calcula_duracion_E ?d) { return 2 }
+
         ; Time constants
-        (hours_in_mins) ; = 60
-
-        ; Activities counters
-        (edds_in_week) ; Number of EDD sequences in current week
-        (drt2_in_week)  ; Number of DR_T2 activities in current week
-
-        (week-counter)
-        (day-counter)
-
-        ; Timestamps
-        (last_dr) ; Last timestamp a Daily Rest was detected
-        (last_wr) ; Last timestamp a Weekly Rest was detected
+        ; (one_year) { return 365.0*24.0 }
+        ; (one_month) { return 30.0*24.0 }
+        (hours_in_mins)
     )
 
     ; =========================================================================
     ; DERIVED
     ; =========================================================================
 
-    ; To check a DR is taken each 24h
-    (:derived (dr_in_less_than_24)
-        (and
-            ; Get actual stating timestamp
-            (bind ?k (current_index_action))
-            (index_action ?sa ?k)
-            (start_action ?sa ?final)
+    ; Depuración
+    (:derived (task_failed ?p) { 
+            print "HA FALLADO", ?p 
+            return 1 
+        }
+    )
 
-            ; Compare with last DR
-            (<= ?final
-                (+ (* 24 (hours_in_mins)) (last_dr))
-            )
+    ; -------------------------------------------------------------------------
+    ; Condiciones para realizar una acción
+
+    (:derived (conditions_NDD ?d)
+        (AND
+            (<= (dt_day ?d) (* 9 (hours_in_mins)))
         )
     )
 
-    ; To check if a WR is taken each "week" (6 x 24h)
-    (:derived (wr_in_less_than_6_24)
-        (and
-            ; Get actual starting timestamp
-            (bind ?k (current_index_action))
-            (index_action ?sa ?k)
-            (start_action ?sa ?final)
+    (:derived (puede_otros_NORMAL ?d)
+        (AND
+            (<= (tiempo_otros_dia ?d) (* 5 (hours_in_mins)))
+        )
+    )
 
-            ; Compare with last DR
-            (<= ?final
-                (+ (* 6 (* 24 (hours_in_mins))) (last_dr))
-            )
+    (:derived (puede_parada_NORMAL ?d)
+        (AND
+            (<= (tiempo_parada_dia ?d) (* 5 (hours_in_mins)))
+        )
+    )
+
+    (:derived (puede_espera_NORMAL ?d)
+        (AND
+            (<= (tiempo_espera_dia ?d) (* 5 (hours_in_mins)))
+        )
+    )
+
+    (:derived (puede_conducir_AMPLIADA ?d)
+        (AND
+            (<= (dt_day ?d) (* 10 (hours_in_mins)))
+            (<= (contador_veces_AMPLIADA_en_semana) 2)
         )
     )
 
@@ -194,7 +237,24 @@
         )
     )
 
-    ; -------------------------------------------------------------------------
+    (:derived (dia_consumido)
+        (AND
+            ( > (minutos_consumidos) (* 24 (hours_in_mins)))
+        )
+    )
+
+    (:derived (continuar_recursion)
+        (AND
+            ( <= (minutos_consumidos) (* 24 (hours_in_mins)))
+            (secuencia_entrada_no_vacia)
+        )
+    )
+
+    (:derived (less_than_15min ?d)
+        (AND
+            (<= (dt_day ?d) (* 9 (hours_in_mins)))
+        )
+    )
 
     (:derived (current_action_is_a_break_greater_15)
         (AND
@@ -204,20 +264,95 @@
         )
     )
 
-    ; -------------------------------------------------------------------------
-
-    (:derived (is_activity_illegal)
-        (OR
-            (token-context none)
-            (breakType-context none)
-            (sequence-context none)
-            (dayType-context none)
-        )
-    )
-
     ; =========================================================================
     ; TASKS
     ; =========================================================================
+
+    ; Weekly Driving
+    ; (:task WD
+    
+    ; )
+
+    ; Daily Driving
+    (:task DD
+        :parameters (?d - Driver)
+        (:method ndd
+            :precondition (secuencia_entrada_no_vacia)
+            :tasks (
+                (reset_counters)
+
+                (b_dayType NDD)
+                (NDD ?d)
+                (e_dayType NDD)
+
+                (print_new_day)
+                (DD ?d)
+            )
+        )
+        
+        (:method edd
+            :precondition (secuencia_entrada_no_vacia)
+            :tasks (
+                (reset_counters)
+
+                (b_dayType EDD)
+                (EDD ?d)
+                (e_dayType EDD)
+
+                (print_new_day)
+                (DD ?d)
+            )
+        )
+
+        ; --------------------------------------------------------------
+        ; Below: DayType not recognized
+        ; --------------------------------------------------------------
+
+        ; Don't tag a type of day, but try at least find the sequence
+        (:method cdd
+            :precondition (secuencia_entrada_no_vacia)
+            :tasks (
+                (reset_counters)
+
+                (CDD ?d)
+                (DD ?d)
+            )
+        )
+
+        ; Anomaly? Hace que termine la secuencia no reconocida
+        (:method rest_day
+            :precondition (secuencia_entrada_no_vacia)
+            :tasks (
+                (RD ?d)
+                (print_new_day)
+                (DD ?d)
+            )
+        )
+
+        ; PUEDE QUE NO FUNCIONE
+        (:method ignore_action ;anomaly
+            :precondition (secuencia_entrada_no_vacia)
+            :tasks (
+                (reset_counters)
+                (Process_A ?d)
+                (DD ?d)
+            )
+        )
+
+        ; --------------------------------------------------------------
+
+        (:method end
+            :precondition ()
+            :tasks (
+                (:inline
+                    (:print "# Salgo\n")
+                    ()
+                )
+            )
+        )
+    )
+
+    ; -------------------------------------------------------------------------
 
     ; Search for new sequence
     (:task reset_counters
@@ -234,207 +369,14 @@
                         (assign (dt_cdd_split1) 0)
                         (assign (dt_cdd_split2) 0)
                         (assign (dt_activity) 0)
-                        (assign (current_dt) 0)
 
                         (assign (bt_dd) 0)
                         (assign (bt_cdd) 0)
                         (assign (bt_cdd_unint) 0)
                         (assign (bt_cdd_split1) 0)
                         (assign (bt_cdd_split2) 0)
-                        (assign (current_bt) 0)
                     )
                 )
-            )
-        )
-    )
-
-    ; -------------------------------------------------------------------------
-
-    ; BiWeekly Driving
-    ; (:task BWD
-    ;   Comprobar que no se pasa de 90h
-    ;   Tener en cuenta también que la secuencia se puede quedar vacía
-    ;   Habría que tener en cuenta la compensación, por ahora ignorarla
-    ; )
-
-    ; -------------------------------------------------------------------------
-
-    ; Weekly Driving
-    (:task WD
-        :parameters (?d - Driver)
-
-        ; Last REST was a WR
-        (:method WR
-            :precondition (>= (current_bt) (* 24 (hours_in_mins)))
-            :tasks (
-                (print_new_week)
-                (:inline
-                    ()
-                    (and
-                        (assign (dt_bwd) 
-                            (+ (dt_wd) (dt_previous_wd)))
-
-                        (assign (dt_previous_wd) (dt_wd))
-
-                        ; Reset functions
-                        (assign (dt_wd) 0)
-                        (assign (bt_wd) 0)
-                        (assign (current_bt) 0)
-
-                        (assign (edds_in_week) 0)
-                        (increase (week-counter) 1)
-                    )
-                )
-
-                ; At most 90h driving in two consecutives weeks
-                (:inline
-                    (<= (dt_bwd) (* 90 (hours_in_mins)))
-                    ()
-                )
-
-                (WD ?d)
-            )
-        )
-
-        ; Tener en cuenta también que la secuencia se puede quedar vacía
-        ; Podría ponerse otro método igual que este sin la comprobación para
-        ; cuando no se cumplan las condiciones (para poner una tag)
-        (:method normal
-            :precondition (secuencia_entrada_no_vacia)
-            :tasks (
-                (DD ?d)
-
-                (:inline
-                    (and
-                        (<= (edds_in_week) 2)
-                        (<= (dt_wd) (* 56.0 (hours_in_mins)))
-                    )
-                    ()
-                )
-
-                (WD ?d)
-            )
-        )
-
-        (:method END
-            :precondition ()
-            :tasks (
-                (:inline (:print "# Using WD method END\n") ())
-            )
-        )
-    )
-
-    ; -------------------------------------------------------------------------
-
-    ; Daily Driving
-    (:task DD
-        :parameters (?d - Driver)
-        (:method ndd
-            :precondition (secuencia_entrada_no_vacia)
-            :tasks (
-                (reset_counters)
-
-                (b_dayType NDD)
-                (NDD ?d)
-                (e_dayType NDD)
-
-                (:inline
-                    ()
-                    (and
-                        (increase (dt_wd) (dt_dd))
-                        (increase (bt_wd) (bt_dd))
-                        (increase (day-counter) 1)
-                    )
-                )
-                (print_new_day)
-            )
-        )
-        
-        (:method edd
-            :precondition (and
-                (<= (edds_in_week) 2)
-                (secuencia_entrada_no_vacia)
-            )
-            :tasks (
-                (reset_counters)
-
-                (b_dayType EDD)
-                (EDD ?d)
-                (e_dayType EDD)
-
-                (:inline
-                    ()
-                    (and
-                        (increase (dt_wd) (dt_dd))
-                        (increase (bt_wd) (bt_dd))
-                        (increase (edds_in_week) 1)
-                        (increase (day-counter) 1)
-                    )
-                )
-                (print_new_day)
-            )
-        )
-
-        ; --------------------------------------------------------------
-        ; Below: DayType not recognized
-        ; --------------------------------------------------------------
-
-        ; Don't tag a type of day, but try at least find the sequence
-        (:method cdd
-            :precondition (secuencia_entrada_no_vacia)
-            :tasks (
-                (reset_counters)
-                (CDD ?d)
-            )
-        )
-
-        ; Hace que termine la secuencia no reconocida
-        (:method rest_day
-            :precondition (secuencia_entrada_no_vacia)
-            :tasks (
-                (REST ?d)
-                (:inline
-                    ()
-                    (increase (day-counter) 1)
-                )
-                (print_new_day)
-            )
-        )
-        
-        (:method ignore_action
-            :precondition (secuencia_entrada_no_vacia)
-            :tasks (
-                (IGNORE_ACTIVITY ?d)
-
-                (DD ?d)
-            )
-        )
-
-        ; --------------------------------------------------------------
-
-        (:method END
-            :precondition ()
-            :tasks (
-                (:inline (:print "# Using DD method END\n") ())
-            )
-        )
-    )
-
-    ; -------------------------------------------------------------------------
-
-    ; If activity doesn't fit in any pattern, process it and ignore it
-    (:task IGNORE_ACTIVITY
-        :parameters (?d - Driver)
-        (:method Activity
-            :precondition ()
-            :tasks (
-                (Process_A ?d)
-            )
-        )
-        (:method Unknown_Break
-            :precondition ()
-            :tasks (
-                (B ?d ?dur)
             )
         )
     )
@@ -444,7 +386,7 @@
     ; Normal Daily Driving - <9h driving total
     (:task NDD
         :parameters (?d - Driver) 
-        (:method Two_CDDs
+        (:method SINGLE
             :precondition()
             :tasks (
                 (b_sequence first)
@@ -459,9 +401,9 @@
                     )
                 )
 
-                ; To ensure no RD after first CDD
+                ; To ensure no RD in first CDD
                 (:inline
-                    (<= (current_bt) (* 3.0 (hours_in_mins)))
+                    (<= (bt_dd) (* 3.0 (hours_in_mins)))
                     ()
                 )
 
@@ -488,7 +430,7 @@
 
                 ; To ensure RD after second CDD
                 (:inline
-                    (>= (current_bt) (* 3.0 (hours_in_mins)))
+                    (>= (bt_cdd) (* 9.0 (hours_in_mins)))
                     ()
                 )
             )
@@ -510,9 +452,10 @@
                     )
                 )
 
+                ; Similar to break periods, rest periods can also be taken in two parts, whereas the first part must have a duration of at least three hours and the second part must have a duration of at least nine hours.
                 ; To ensure RD after CDD
                 (:inline
-                    (>= (current_bt) (* 3.0 (hours_in_mins)))
+                    (>= (bt_dd) (* 9.0 (hours_in_mins)))
                     ()
                 )
             )
@@ -539,12 +482,6 @@
                     )
                 )
 
-                ; To ensure no RD after first CDD
-                (:inline
-                    (<= (current_bt) (* 3.0 (hours_in_mins)))
-                    ()
-                )
-
                 ; -------------------------------------------
 
                 (b_sequence second)
@@ -557,12 +494,6 @@
                         (increase (dt_dd) (dt_cdd))
                         (increase (bt_dd) (bt_cdd))
                     )
-                )
-
-                ; To ensure no RD after first CDD
-                (:inline
-                    (<= (current_bt) (* 3.0 (hours_in_mins)))
-                    ()
                 )
 
                 ; -------------------------------------------
@@ -581,7 +512,6 @@
 
                 ; -------------------------------------------
 
-                ; Because NDD is placed before in the tree: (9,10]h
                 (:inline
                     (<= (dt_dd) (* 10.0 (hours_in_mins)))
                     ()
@@ -589,7 +519,7 @@
 
                 ; To ensure RD after CDD
                 (:inline
-                    (>= (current_bt) (* 3.0 (hours_in_mins)))
+                    (>= (bt_cdd) (* 3.0 (hours_in_mins)))
                     ()
                 )
             )
@@ -623,13 +553,14 @@
         (:method split
             :precondition()
             :tasks (
+                ; (b_breakType split)
                 (b_breakType split_1)
                 (CDD_SPLIT_1 ?d)
                 (e_breakType split_1)
-
                 (b_breakType split_2)
                 (CDD_SPLIT_2 ?d)
                 (e_breakType split_2)
+                ; (e_breakType split)
 
                 (:inline
                     ()
@@ -640,6 +571,34 @@
                 )
             )
         )
+
+        ; Technically the splits are not permutable
+        ; (:method split2
+        ;     :precondition()
+        ;     :tasks (
+        ;         ; Reset CDD counters
+        ;         (:inline
+        ;             ()
+        ;             (and
+        ;                 (assign (dt_cdd) 0)
+        ;                 (assign (bt_cdd) 0)
+        ;             )
+        ;         )
+            
+        ;         (b_breakType split)
+        ;         (CDD_SPLIT_2 ?d)
+        ;         (CDD_SPLIT_1 ?d)
+        ;         (e_breakType split)
+
+        ;         (:inline
+        ;             ()
+        ;             (and
+        ;                 (increase (dt_cdd) (+ (dt_cdd_split1) (dt_cdd_split2)))
+        ;                 (increase (bt_cdd) (+ (bt_cdd_split1) (bt_cdd_split2)))
+        ;             )
+        ;         )
+        ;     )
+        ; )
     )
 
     ; -------------------------------------------------------------------------
@@ -670,7 +629,7 @@
             )
         )
 
-        (:method REST
+        (:method RD
             :precondition()
             :tasks (
                 (A ?d)
@@ -685,7 +644,7 @@
                     (assign (dt_cdd_unint) (dt_activity))
                 )
 
-                (REST ?d)
+                (RD ?d)
 
                 (:inline
                     ()
@@ -737,7 +696,7 @@
 
                 (:inline
                     ()
-                    (assign (bt_cdd_split2) (current_bt))
+                    (assign (bt_cdd_split1) (current_bt))
                 )
             )
         ) 
@@ -752,12 +711,25 @@
                     (assign (dt_cdd_split2) (dt_activity))
                 )
 
-                (REST ?d)
+                (RD ?d)
 
                 (:inline
                     ()
-                    (assign (bt_cdd_split2) (current_bt))
+                    (assign (bt_cdd_unint) (current_bt))
                 )
+
+                ; (:inline
+                ;     (AND
+                ;         (<= (+ (dt_current_cdd_t2_sequence) (dt_last_slice)) 270); (* (hours_in_mins) 4.5))
+                ;         (>= (bt_current_cdd_t2_sequence) 15))
+                ;     ()
+                ; )
+                ; (:inline
+                ;     ()
+                ;     (assign
+                ;         (dt_cdd_split2)
+                ;         (+ (dt_current_cdd_t2_sequence) (dt_last_slice)))
+                ; )
             )
         )
     )
@@ -766,256 +738,73 @@
     ; Rests
     ; ****************************
 
-    (:task REST
-        :parameters (?d - Driver)
-        (:method Daily
-            ; Comprobar que se ha realizado en menos de 24h
-            ; Habría que tener en cuenta en equipo, por ahora los vamos a ignorar
-            :precondition (dr_in_less_than_24)
-            :tasks (
-                (DR ?d)
-
-                ; A daily rest is not bigger than 24h
-                (:inline
-                    (< (current_bt) (* 24 (hours_in_mins)))
-                    ()
-                )
-
-                ; Save last DR timestamp
-                (:inline
-                    (and 
-                        (bind ?k (- (current_index_action) 1))
-                        (index_action ?sa ?k)
-                        (end_action ?sa ?final)
-                    )
-                    (assign (last_dr) ?final)
-                )
-            )
-        )
-
-        (:method Weekly
-            ; Comprobar que se ha realizado en menos de 6 períodos de 24h
-            :precondition (wr_in_less_than_6_24)
-            :tasks (
-                (WR ?d)
-
-                (:inline
-                    ()
-                    (and
-                        (assign (edds_in_week) 0)
-                        (assign (drt2_in_week) 0)
-                        (assign (dt_wd) 0)
-                    )
-                )
-
-                ; Save last WR timestamp
-                (:inline
-                    (and 
-                        (bind ?k (- (current_index_action) 1))
-                        (index_action ?sa ?k)
-                        (end_action ?sa ?final)
-                    )
-                    (and
-                        (assign (last_dr) ?final)
-                        (assign (last_wr) ?final)
-                    )
-                )
-                ; Resear contador de DR_T2
-            )
-        )
-
-
-        ; TODO: Método indicando que no se ha tomado el descanso bajo las condiciones de tiempo
-        (:method illegal_daily
-            :precondition ()
-            :tasks (
-                ; (b_legal no)
-                (DR ?d)
-                ; (b_legal yes)
-
-                ; A daily rest is not bigger than 24h
-                (:inline
-                    (< (current_bt) (* 24 (hours_in_mins)))
-                    ()
-                )
-
-                ; Save last DR timestamp
-                (:inline
-                    (and 
-                        (bind ?k (- (current_index_action) 1))
-                        (index_action ?sa ?k)
-                        (end_action ?sa ?final)
-                    )
-                    (assign (last_dr) ?final)
-                )
-            )
-        )
-
-        (:method illegal_weekly
-            ; Comprobar que se ha realizado en menos de 6 períodos de 24h
-            :precondition ()
-            :tasks (
-                ; (b_legal no)
-                (WR ?d)
-                ; (b_legal yes)
-
-                (:inline
-                    ()
-                    (and
-                        (assign (edds_in_week) 0)
-                        (assign (dt_wd) 0)
-                    )
-                )
-
-                ; Save last WR timestamp
-                (:inline
-                    (and 
-                        (bind ?k (- (current_index_action) 1))
-                        (index_action ?sa ?k)
-                        (end_action ?sa ?final)
-                    )
-                    (and
-                        (assign (last_dr) ?final)
-                        (assign (last_wr) ?final)
-                    )
-                )
-                ; Resear contador de DR_T2
-            )
-        )
-    )
-
     ; Daily rest
-    (:task DR
-        :parameters (?d - Driver)
-        (:method DR_T4
-            :precondition (next_dr_is_t4)
-            :tasks (
-                (b_token DR_T4)
-                (B ?d ?dur)
-                (:inline
-                    (>= ?dur (* 9 (hours_in_mins)))
-                    ()
-                )
-                (e_token DR_T4)
-
-                (:inline
-                    ()
-                    (and
-                        (not (next_dr_is_t4))
-                        (assign (current_bt) ?dur)
-                        (assign (dt_activity) 0)
-                    )
-                )
-            )
-        )
-
-        (:method DR_T1
+    (:task RD
+        :parameters (?d - Driver) 
+        ; Reduced daily rest
+        (:method B_T5 ; Break of [9h, 11h)
             :precondition ()
             :tasks (
-                (b_token DR_T1)
-                (B ?d ?dur)
-                (:inline
-                    (>= ?dur (* 11 (hours_in_mins)))
-                    ()
-                )
-                (e_token DR_T1)
-
-                (:inline
-                    ()
-                    (and
-                        (assign (current_bt) ?dur)
-                        (assign (dt_activity) 0)
-                    )
-                )
-            )
-        ) 
-        
-        (:method DR_T2
-            :precondition ()
-            :tasks (
-                (b_token DR_T2)
+                (b_token B_T5)
                 (B ?d ?dur)
                 (:inline
                     (and (>= ?dur (* 9 (hours_in_mins))) (< ?dur (* 11 (hours_in_mins))))
                     ()
                 )
-                (e_token DR_T2)
+                (e_token B_T5)
 
                 (:inline
                     ()
                     (and
+                        (assign (minutos_consumidos) 0)
+                        (increase (tiempo_parada_dia ?d) ?dur)
                         (assign (current_bt) ?dur)
                         (assign (dt_activity) 0)
-                        (increase (drt2_in_week) 1)
                     )
                 )
             )
-        )
-
-        (:method DR_T3
+        ) 
+        
+        ; Normal daily rest
+        (:method B_T6 ; BREAK OF [11h, 24h)
             :precondition ()
             :tasks (
-                (b_token DR_T3)
+                (b_token B_T6)
                 (B ?d ?dur)
                 (:inline
-                    (>= ?dur (* 3 (hours_in_mins)))
+                    (and (>= ?dur (* 11 (hours_in_mins))) (< ?dur (* 24 (hours_in_mins))))
                     ()
                 )
-                (e_token DR_T3)
+                (e_token B_T6)
 
                 (:inline
                     ()
                     (and
-                        (next_dr_is_t4)
+                        (assign (minutos_consumidos) 0)
+                        (increase (tiempo_parada_dia ?d) ?dur)
                         (assign (current_bt) ?dur)
                         (assign (dt_activity) 0)
                     )
                 )
             )
         )
-    )
 
-    ; -------------------------------------------------------------------------
-
-    ; Weekly rest
-    (:task WR
-        :parameters (?d - Driver) 
-        (:method WR_T1
+        (:method B_T10 ; BREAK OF [45h,infty) Weekly rest
             :precondition ()
             :tasks (
-                (b_token WR_T1)
+                (b_token B_T10)
                 (B ?d ?dur)
                 (:inline
                     (>= ?dur (* 45 (hours_in_mins)))
                     ()
                 )
-                (e_token WR_T1)
+                (e_token B_T10)
 
                 (:inline
                     ()
                     (and
-                        (assign (current_bt) ?dur)
-                        (assign (dt_activity) 0)
-                    )
-                )
-                ; Aumentar contador de WR_T1 y WR_T2 (Biweekly)
-            )
-        ) 
-        
-        (:method WR_T2
-            :precondition ()
-            :tasks (
-                (b_token WR_T2)
-                (B ?d ?dur)
-                (:inline
-                    (and (>= ?dur (* 24 (hours_in_mins))) (< ?dur (* 45 (hours_in_mins))))
-                    ()
-                )
-                (e_token WR_T2)
-
-                (:inline
-                    ()
-                    (and
+                        (assign (minutos_consumidos) 0)
+                        (increase (tiempo_parada_dia ?d) ?dur)
                         (assign (current_bt) ?dur)
                         (assign (dt_activity) 0)
                     )
@@ -1029,6 +818,7 @@
     ; Breaks
     ; ****************************
 
+    ; BREAK OF [45min, 3h)
     (:task B_T1
         :parameters (?d - Driver)
         (:method B_T1
@@ -1037,7 +827,7 @@
                 (b_token B_T1)		
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur 45) (< ?dur (* 3.0 (hours_in_mins))))
+                    (and (>= ?dur 45) (< ?dur (* (hours_in_mins) 3.5)))
                     ()
                 )
                 (e_token B_T1)
@@ -1045,6 +835,8 @@
                 (:inline
                     ()
                     (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
                         (assign (current_bt) ?dur)
                         (assign (current_dt) 0)
                         (assign (dt_activity) 0)
@@ -1056,6 +848,7 @@
 
     ; -------------------------------------------------------------------------
 
+    ; BREAK OF [15min, 30) -> LO AMPLÍO PARA NO SER ESTRICTO
     (:task B_T2
         :parameters (?d - Driver) 
         (:method B_T2
@@ -1064,7 +857,7 @@
                 (b_token B_T2)
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur 15) (< ?dur (* 3.0 (hours_in_mins))))
+                    (and (>= ?dur 15) (<= ?dur 50))
                     ()
                 )
                 (e_token B_T2)
@@ -1072,6 +865,8 @@
                 (:inline
                     ()
                     (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
                         (assign (current_bt) ?dur)
                         (assign (current_dt) 0)
                         (assign (dt_activity) 0)
@@ -1083,6 +878,7 @@
 
     ; -------------------------------------------------------------------------
 
+    ; BREAK OF [30min, 45min). Ahora lo he puesto [30min, 3h)
     (:task B_T3
         :parameters (?d - Driver) 
         (:method B_t3 
@@ -1091,7 +887,8 @@
                 (b_token B_T3)
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur 30) (< ?dur (* 3.0 (hours_in_mins))))
+                    ; (and (>= ?dur 30) (< ?dur (* (hours_in_mins) 3)))
+                    (and (>= ?dur 30) (< ?dur 90))
                     ()
                 )
                 (e_token B_T3)
@@ -1099,6 +896,8 @@
                 (:inline
                     ()
                     (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
                         (assign (current_bt) ?dur)
                         (assign (current_dt) 0)
                         (assign (dt_activity) 0)
@@ -1114,12 +913,12 @@
     (:task A
         :parameters (?d - Driver) 
         (:method recurrir
-            :precondition (secuencia_entrada_no_vacia)
+            :precondition (continuar_recursion)
             :tasks (
                 (Process_A ?d)
 
                 (:inline
-                    (< (current_bt) 15)
+                    (< (current_bt) 18) ; MUST BE THE SAME AS B_T0
                     ()
                 )
 
@@ -1128,14 +927,21 @@
                     (increase (dt_activity) (current_dt))
                 );calculates driving time of current subsequence
 
-                (A ?d)
-            )
+                (A ?d))
         ) 
         
         ;aquí viene porque se encontró un B con una duración mayor de 15 mins
         (:method PAUSE_CONSIDERED_BREAK
             :precondition (current_action_is_a_break_greater_15) 
             :tasks ()
+        ) 
+        
+        ; aquí se acabó el día. Cuando sale por aquí ha reconocido una secuencia de 24 horas. CORRECTO  Y DEBE CONTINUAR
+        (:method dia_consumido
+            :precondition (dia_consumido)
+            :tasks (
+                EndOfDay
+            )
         ) 
         
         ; aquí se acabó la secuencia de acciones, cuando sale por aquí se le ha acabado la secuencia y CORRECTO Y DEBE TERMINAR
@@ -1169,6 +975,8 @@
                 (:inline
                     ()
                     (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (dt_day ?d) ?dur)
                         (assign (current_bt) 0)
                         (assign (current_dt) ?dur)
                     )
@@ -1187,6 +995,8 @@
                 (:inline
                     ()
                     (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_otros_dia ?d) ?dur)
                         (assign (current_bt) 0)
                         (assign (current_dt) 0)
                     )
@@ -1201,7 +1011,7 @@
                 (b_token B_T0)
                 (B ?d ?dur)
                 (:inline
-                    (and (< ?dur 15))
+                    (and (< ?dur 18))
                     ()
                 )
                 (e_token B_T0)
@@ -1209,6 +1019,8 @@
                 (:inline
                     ()
                     (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
                         (assign (current_bt) ?dur)
                         (assign (current_dt) 0)
                         (assign (dt_activity) 0)
@@ -1217,9 +1029,106 @@
             )
         ) 
         
+        (:method B_T2 ; BREAK of [15min, 30min)
+            :precondition ()
+            :tasks (
+                (b_token B_T2)
+                (B ?d ?dur)
+                (:inline
+                    (and (>= ?dur 15) (<= ?dur 50))
+                    ()
+                )
+                (e_token B_T2)
+
+                (:inline
+                    ()
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (current_dt) 0)
+                        (assign (dt_activity) 0)
+                    )
+                )
+            )
+        ) 
+        
+        (:method B_T3 ; BREAK OF [30min, 45min) - Está puesto hasta 3h
+            :precondition ()
+            :tasks (
+                (b_token B_T3)
+                (B ?d ?dur)
+                (:inline
+                    ; (and (>= ?dur 30) (< ?dur (* (hours_in_mins) 3)))
+                    (and (>= ?dur 30) (< ?dur 90))
+                    ()
+                )
+                (e_token B_T3)
+
+                (:inline
+                    ()
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (current_dt) 0)
+                        (assign (dt_activity) 0)
+                    )
+                )
+            )
+        )
+                
+        (:method B_T1 ; BREAK OF [45min, 3h)
+            :precondition ()
+            :tasks (
+                (b_token B_T1)
+                (B ?d ?dur)
+                (:inline
+                    (and (>= ?dur 45) (< ?dur (* (hours_in_mins) 3.5)))
+                    ()
+                )
+                (e_token B_T1)
+
+                (:inline
+                    ()
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (current_dt) 0)
+                        (assign (dt_activity) 0)
+                    )
+                )
+            )
+        )
+
+        (:method B_T4 ; BREAK OF [3h, 9h)
+            :precondition ()
+            :tasks (
+                (b_token B_T4)
+                (B ?d ?dur)
+                (:inline
+                    (and (>= ?dur (* (hours_in_mins) 3)) (< ?dur (* (hours_in_mins) 9)))
+                    ()
+                )
+                (e_token B_T4)
+
+                (:inline
+                    ()
+                    (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_parada_dia ?d) ?dur)
+                        (assign (current_bt) ?dur)
+                        (assign (current_dt) 0)
+                        (assign (dt_activity) 0)
+                    )
+                )
+            )
+        )
+        
         ; Idle
         (:method IXX
-            :precondition ()
+            :precondition (puede_espera_NORMAL ?d)
             :tasks (
                 (b_token I)
                 (I ?d ?dur)
@@ -1228,6 +1137,8 @@
                 (:inline
                     ()
                     (and
+                        (increase (minutos_consumidos) ?dur)
+                        (increase (tiempo_espera_dia ?d) ?dur)
                         (assign (current_bt) 0)
                         (assign (current_dt) 0)
                     )
@@ -1247,51 +1158,122 @@
     )
 
     ; =========================================================================
+    ; Debug
+    ; =========================================================================
+
+    (:durative-action print_new_day
+	    :parameters ()
+	    :meta (
+            (:tag prettyprint "# ----------------------------------------------------NEW DAY----------------------------------------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	DayType	Sequence	BreakType	Token"))
+            :duration ()
+            :condition (:print "> One Driving Day processed\n")
+            :effect ()
+    )
+
+    ; =========================================================================
     ; Actions
     ; =========================================================================
 
-    (:action EndOfDay
+    (:action EndOfDay ;
         :parameters ()
+        ;:duration (= ?duration ?dur)
         :precondition ()
-        :effect ()
+        :effect ();(increase (tiempo_conduccion ?d) ?dur)
     )
 
     ; -------------------------------------------------------------------------
 
-    (:action EndOfSequece
+    (:action EndOfSequece ;
         :parameters ()
+        ;:duration (= ?duration ?dur)
         :precondition ()
-        :effect ()
+        :effect ();(increase (tiempo_conduccion ?d) ?dur)
     )
 
     ; -------------------------------------------------------------------------
+
+    ;CADA tarea primitva PUEDE AÑADIRSE AL PLAN EN DOS MODOS DISTINTOS: modo reconocer "token" o modo generar
+    ;Por tanto cada tarea primitiva tiene asociada una tarea compuesta con dos metodos, uno para el modo reconocer plan y otro para el modo generar plan
+    ; el modo GENERAR plan es el de siempre: se añade directamente la primitiva al plan (y si no se pueden cumplir las restricciones/condiciones pues fallará ). 
+    ; el modo RECONOCER parte de que en el estado inicial hay una secuencia de acciones que hay que reconocer
+    ; IMPORTANTE: estos dos metodos no son alternativas de hacer una tarea, son  dos formas excluyentes de hacer una tarea, e.d., si entra por un metodo y falla, 
+    ; entonces no entra por el otro y la tarea compuesta directamente falla. Por eso tiene el simbolo ! (corte alla PROLOG)
 
     (:task D
         :parameters (?d - Driver ?dur - number) 
-        (:method modo_reconocer
-            :precondition (modo_reconocer)
-            :tasks (
-                (add_the_current_action_to_plan typeD ?dur)
-                ;incrementar el current index para reconocer la siguiente accion de la secuencia)
-                (:inline
-                    ()
-                    (increase (current_index_action) 1)
-                )
+        (!
+            (:method modo_generar
+                :precondition (modo_generar)
+                :tasks
+                (
+                    (:inline
+                        (bind ?dur
+                            (calcula_duracion_C ?d))
+                        ()
+                    )
+                    (D_p ?d ?dur))
             )
+            (:method modo_reconocer
+                :precondition (modo_reconocer)
+                :tasks
+                (
+                    (add_the_current_action_to_plan typeD ?dur)
+                    ;incrementar el current index para reconocer la siguiente accion de la secuencia)
+                    (:inline
+                        ()
+                        (increase (current_index_action) 1)
+                    )
+                )
 
+            )
         )
-    )
+    ) ; observar, ESTO SIGNIFICA lo siguiente
+
+    ;add_the corrent action to plan consiste en:
+    ; k = current_index
+    ; Comprobar la condicion de  reconocimiento de token
+    ; accion(k) es de tipo Conducir (en el caso de :task C...
+    ; Si se cumple la condicion de reconocimiento de token
+    ; capturar parametros (parameters_typeD (symbol(accion(k))) ?p1 ?p2 ... ?pn) , hay que saber cuantos parameters tiene cada accion
+    ; capturar inicio, fin, duracion
+    ; ( (AND (=?start inicio)(= ?end fin) (= ?duration duracion))
+    ;	 (D_p ?p1 ?p2 ... ?pn)
+    ; Si se inserta con exito, entonces es cuando hay que INCREMENTAR_CURRENT_INDEX para capturar la siguiente acción del plan
+
+    ; ES IMPORTANTE, CRUCIAL, PASARLE EL TIPO "TypoConduccion" porque la interpretación aquí es:
+    ; "El planificador espera que, para que la accion se reconozca como parte de una secuencia <del_tipo_qu_sea>, 
+    ;	(1) la accion tiene que ser NECESARIAMENTE de tipo <typeD> y
+    ;  (2) las restricciones temporales de la accion tienen que ser satisfacibles con el estado actual del plan reconocido"
+
+    ;*********************************************************************************************************
+    ; POR CADA TIPO DE ACCION PRIMITIVA ASOCIAR UNA TAREA COMPUESTA QUE TENGA MODO RECONOCER Y MODO GENERAR
+    ;*********************************************************************************************************
 
     (:task O
         :parameters (?d - Driver ?dur - number) 
-        (:method modo_reconocer
-            :precondition (modo_reconocer)
-            :tasks (
-                (add_the_current_action_to_plan typeO ?dur)
-                ;incrementar el current index para reconocer la siguiente accion de la secuencia)
-                (:inline
-                    ()
-                    (increase (current_index_action) 1)
+        (!
+            (:method modo_generar
+                :precondition (modo_generar)
+                :tasks (
+                    (:inline
+                        (bind ?dur
+                            (calcula_duracion_O ?d))
+                        ()
+                    )
+                    (O_p ?d ?dur)
+                )
+            )
+
+            (:method modo_reconocer
+                :precondition (modo_reconocer)
+                :tasks (
+                    (add_the_current_action_to_plan typeO ?dur)
+                    ;incrementar el current index para reconocer la siguiente accion de la secuencia)
+                    (:inline
+                        ()
+                        (increase (current_index_action) 1)
+                    )
                 )
             )
         )
@@ -1299,29 +1281,55 @@
 
     (:task B
         :parameters (?d - Driver ?dur - number) 
-        (:method modo_reconocer
-            :precondition (modo_reconocer)
-            :tasks (
-                (add_the_current_action_to_plan typeB ?dur)
-                ;incrementar el current index para reconocer la siguiente accion de la secuencia)
-                (:inline
-                    ()
-                    (increase (current_index_action) 1)
-                )				
+        (!
+            (:method modo_generar
+                :precondition (modo_generar)
+                :tasks (
+                    (:inline
+                        (bind ?dur
+                            (calcula_duracion_P ?d))
+                        ()
+                    )
+                    (B_p ?d ?dur)
+                )
+            )
+            (:method modo_reconocer
+                :precondition (modo_reconocer)
+                :tasks (
+                    (add_the_current_action_to_plan typeB ?dur)
+                    ;incrementar el current index para reconocer la siguiente accion de la secuencia)
+                    (:inline
+                        ()
+                        (increase (current_index_action) 1)
+                    )				
+                )
             )
         )
     )
 
     (:task I
         :parameters (?d - Driver ?dur - number) 
-        (:method modo_reconocer
-            :precondition (modo_reconocer)
-            :tasks (
-                (add_the_current_action_to_plan typeI ?dur)
-                ;incrementar el current index para reconocer la siguiente accion de la secuencia)
-                (:inline
-                    ()
-                    (increase (current_index_action) 1)
+        (!
+            (:method modo_generar
+                :precondition (modo_generar)
+                :tasks (
+                    (:inline
+                        (bind ?dur
+                            (calcula_duracion_E ?d))
+                        ()
+                    )
+                    (I_p ?d ?dur)
+                )
+            )
+            (:method modo_reconocer
+                :precondition (modo_reconocer)
+                :tasks (
+                    (add_the_current_action_to_plan typeI ?dur)
+                    ;incrementar el current index para reconocer la siguiente accion de la secuencia)
+                    (:inline
+                        ()
+                        (increase (current_index_action) 1)
+                    )
                 )
             )
         )
@@ -1335,8 +1343,7 @@
     ; =========================================================================
 
     (:derived
-        ; ?K y ?sa se pasan "POR REFERENCIA" (en HPDL se puede), ES DECIR, se calculan dentro
-        (currentindex_is_typeD ?k ?sa)	
+        (currentindex_is_typeD ?k ?sa)	; ?K y ?sa se pasan "POR REFERENCIA" (en HPDL se puede, en OTROS PDDL lenguajes no), ES DECIR, se calculan dentro
         (and (bind ?k
                 (current_index_action))	; CAPTURO EL INDICE ACTUAL DE SECUENCIA DE ACCIONES
             (index_action ?sa ?k)		; CAPTURO EL SIMBOLO DE LA ACCIONES(K)
@@ -1387,44 +1394,19 @@
                         (duration_action ?sa ?dur))
                     ()
                 )
-
-                ; Set legal context
-                (:inline ()
-                    (when (is_activity_illegal) 
-                        (and
-                            (not (legal-context yes))
-                            (legal-context no)
-                        )
-                    )
-                )
-
                 ;captura el contexto
                 (:inline
-                    (and 
-                        (legal-context ?legalctxt)
-                        (token-context ?tkctxt)
+                    (and (token-context ?tkctxt)
                         (breakType-context ?drivctxt)
                         (sequence-context ?seqctxt)
                         (dayType-context ?dayctxt)
-                        (bind ?weekcount (week-counter))
-                        (bind ?daycount (day-counter))
-                    )
+                        (weekly-context ?weectxt)
+                        (monthly-context ?monctxt))
                     ()
                 )
-                
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-                    (D_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
-                )
-
-                ; Set legal context
-                (:inline ()
-                    (when (is_activity_illegal) 
-                        (and
-                            (not (legal-context no))
-                            (legal-context yes)
-                        )
-                    )
+                    (D_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
                 )
             )
         )
@@ -1439,44 +1421,19 @@
                         (duration_action ?sa ?dur))
                     ()
                 )
-
-                ; Set legal context
-                (:inline ()
-                    (when (is_activity_illegal) 
-                        (and
-                            (not (legal-context yes))
-                            (legal-context no)
-                        )
-                    )
-                )
-
                 ;captura el contexto
                 (:inline
-                    (and 
-                        (legal-context ?legalctxt)
-                        (token-context ?tkctxt)
+                    (and (token-context ?tkctxt)
                         (breakType-context ?drivctxt)
                         (sequence-context ?seqctxt)
                         (dayType-context ?dayctxt)
-                        (bind ?weekcount (week-counter))
-                        (bind ?daycount (day-counter))
-                    )
+                        (weekly-context ?weectxt)
+                        (monthly-context ?monctxt))
                     ()
                 )
-
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-                    (O_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
-                )
-
-                ; Set legal context
-                (:inline ()
-                    (when (is_activity_illegal) 
-                        (and
-                            (not (legal-context no))
-                            (legal-context yes)
-                        )
-                    )
+                    (O_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
                 )
             )
         )
@@ -1491,44 +1448,19 @@
                         (duration_action ?sa ?dur))
                     ()
                 )
-
-                ; Set legal context
-                (:inline ()
-                    (when (is_activity_illegal) 
-                        (and
-                            (not (legal-context yes))
-                            (legal-context no)
-                        )
-                    )
-                )
-
                 ;captura el contexto
                 (:inline
-                    (and 
-                        (legal-context ?legalctxt)
-                        (token-context ?tkctxt)
+                    (and (token-context ?tkctxt)
                         (breakType-context ?drivctxt)
                         (sequence-context ?seqctxt)
                         (dayType-context ?dayctxt)
-                        (bind ?weekcount (week-counter))
-                        (bind ?daycount (day-counter))
-                    )
+                        (weekly-context ?weectxt)
+                        (monthly-context ?monctxt))
                     ()
                 )
-
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-                    (B_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
-                )
-
-                ; Set legal context
-                (:inline ()
-                    (when (is_activity_illegal) 
-                        (and
-                            (not (legal-context no))
-                            (legal-context yes)
-                        )
-                    )
+                    (B_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
                 )
             )
         )
@@ -1537,55 +1469,48 @@
             :precondition (and (currentindex_is_typeI ?k ?sa) (= ?tact typeI)); captura el indice actual de la secuencia de acciones y el simbolo de accion asociado
             :tasks (
                 (:inline
-                    (and
-                        (parameters_typeI ?sa ?driver)
+                    (and (parameters_typeI ?sa ?driver)
                         (start_action ?sa ?inicio)
                         (end_action ?sa ?final)
                         (duration_action ?sa ?dur))
                     ()
                 )
-
-                ; Set legal context
-                (:inline ()
-                    (when (is_activity_illegal) 
-                        (and
-                            (not (legal-context yes))
-                            (legal-context no)
-                        )
-                    )
-                )
-
                 ;captura el contexto
                 (:inline
-                    (and 
-                        (legal-context ?legalctxt)
-                        (token-context ?tkctxt)
+                    (and (token-context ?tkctxt)
                         (breakType-context ?drivctxt)
                         (sequence-context ?seqctxt)
                         (dayType-context ?dayctxt)
-                        (bind ?weekcount (week-counter))
-                        (bind ?daycount (day-counter))
-                    )
+                        (weekly-context ?weectxt)
+                        (monthly-context ?monctxt))
                     ()
                 )
-
                 (
                     (and (= ?start ?inicio) (= ?end ?final) (= ?duration ?dur))
-                    (I_p ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
-                )
-
-                ; Set legal context
-                (:inline ()
-                    (when (is_activity_illegal) 
-                        (and
-                            (not (legal-context no))
-                            (legal-context yes)
-                        )
-                    )
+                    (I_p2 ?driver ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt)
                 )
             )
-        )) ; Two ")" due to the !
+        )
+        )
     )
+
+    ; (:durative-action b_token 
+    ; 	:parameters (?ctxt - context)
+    ; 	:meta( 
+    ; 		(:tag prettyprint "");BEGIN TOKEN ?ctxt")
+    ; 		)
+    ; 	:duration (= ?duration 0)
+    ; 	:condition (token-context ?current)
+    ; 	:effect (and (token-context ?ctxt) (not (token-context ?current))))
+
+    ; (:durative-action e_token 
+    ; 	:parameters (?ctxt - context)
+    ; 	:meta( 
+    ; 		(:tag prettyprint "");END TOKEN ?ctxt")
+    ; 		)
+    ; 	:duration (= ?duration 0)
+    ; 	:condition()
+    ; 	:effect (and (not (token-context ?ctxt)) (token-context none)))
 
     ; -------------------------------------------------------------------------
     ; Contexts
@@ -1622,7 +1547,8 @@
         (:method unico
             :precondition ()
             :tasks (
-                :inline (breakType-context ?current)
+                :inline
+                (breakType-context ?current)
                 (and (breakType-context ?ctxt) (not (breakType-context ?current)))
             )
         )
@@ -1633,7 +1559,8 @@
         (:method unico
             :precondition ()
             :tasks (
-                :inline ()
+                :inline
+                ()
                 (and (not (breakType-context ?ctxt)) (breakType-context none))
             )
 
@@ -1659,7 +1586,8 @@
         (:method unico
             :precondition ()
             :tasks (
-                :inline ()
+                :inline
+                ()
                 (and (not (sequence-context ?ctxt)) (sequence-context none))
             )
 
@@ -1685,7 +1613,8 @@
         (:method unico
             :precondition ()
             :tasks (
-                :inline ()
+                :inline
+                ()
                 (and (not (dayType-context ?ctxt)) (dayType-context none))
             )
 
@@ -1697,72 +1626,104 @@
     ; -------------------------------------------------------------------------
     ; DRIVING
 
-    (:durative-action D_p
-        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+    (:durative-action D_p ;_p es sufijo de primitiva
+        :parameters (?d - Driver ?dur - number)
         :duration (= ?duration ?dur)
-        :condition()
-        :effect ()
+        :condition ()
+        :effect (increase (tiempo_conduccion ?d) ?dur)
+    )
+
+    (:durative-action D_p2 ;_p es sufijo de primitiva; 2 is because action as contexts in parameters
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
+        :meta (
+            (:tag prettyprint "?d	?start	?end	?duration	Driving	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
+            :duration (= ?duration ?dur)
+            :condition()
+            ; :condition (and
+            ; 	(:print "Recognized [DRIVING] task for driver ")
+            ; 	(:print ?d)
+            ; 	(:print " of ")
+            ; 	(:print ?dur)
+            ; 	(:print "minutes\n")
+            ; )
+            :effect (increase (tiempo_conduccion ?d) ?dur)
     )
 
     ; -------------------------------------------------------------------------
     ; OTHER WORK
 
     (:durative-action O_p
-        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Other	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :parameters (?d - Driver ?dur - number)
         :duration (= ?duration ?dur)
-        :condition()
-        :effect ()
+        :condition ()
+        :effect (increase (tiempo_otros ?d) ?dur)
+    )
+
+    (:durative-action O_p2
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
+        :meta (
+            (:tag prettyprint "?d	?start	?end	?duration	Other	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
+            :duration (= ?duration ?dur)
+            :condition()
+            ; :condition (and
+            ; 	(:print "Recognized [OTHER] task for driver ")
+            ; 	(:print ?d)
+            ; 	(:print " of ")
+            ; 	(:print ?dur)
+            ; 	(:print "minutes\n")
+            ; )
+            :effect (increase (tiempo_otros ?d) ?dur)
     )
 
     ; -------------------------------------------------------------------------
     ; BREAK
 
     (:durative-action B_p
-        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Break	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :parameters (?d - Driver ?dur - number)
         :duration (= ?duration ?dur)
-        :condition()
-        :effect ()
+        :condition ()
+        :effect (increase (tiempo_parada ?d) ?dur)
+    )
+
+    (:durative-action B_p2
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
+        :meta (
+            (:tag prettyprint "?d	?start	?end	?duration	Break	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
+            :duration (= ?duration ?dur)
+            :condition()
+            ; :condition (and
+            ; 	(:print "Recognized [BREAK] task for driver ")
+            ; 	(:print ?d)
+            ; 	(:print " of ")
+            ; 	(:print ?dur)
+            ; 	(:print "minutes\n")
+            ; )
+            :effect (increase (tiempo_parada ?d) ?dur)
     )
 
     ; -------------------------------------------------------------------------
     ; IDLE
 
     (:durative-action I_p
-        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Idle	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :parameters (?d - Driver ?dur - number)
         :duration (= ?duration ?dur)
-        :condition()
-        :effect ()
+        :condition ()
+        :effect (increase (tiempo_espera ?d) ?dur)
     )
 
-    ; =========================================================================
-    ; Debug
-    ; =========================================================================
-
-    (:durative-action print_new_day
-	    :parameters ()
-	    :meta (
-            (:tag prettyprint "#-----------------------
-# NEW DAY
-#-----------------------
-#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal"))
-            :duration ()
-            :condition (:print "> One Driving Day processed\n")
-            :effect ()
-    )
-
-    (:durative-action print_new_week
-	    :parameters ()
-	    :meta (
-            (:tag prettyprint "#=======================================
-# NEW WEEK
-#=======================================
-#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal"))
-            :duration ()
-            :condition (:print ">> One Week processed\n")
-            :effect ()
+    (:durative-action I_p2
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weectxt ?monctxt - context)
+        :meta (
+            (:tag prettyprint "?d	?start	?end	?duration	Idle	?dayctxt	?seqctxt	?drivctxt	?tkctxt"))
+            :duration (= ?duration ?dur)
+            :condition()
+            ; :condition (and
+            ; 	(:print "Recognized [IDLE] task for driver ")
+            ; 	(:print ?d)
+            ; 	(:print " of ")
+            ; 	(:print ?dur)
+            ; 	(:print "minutes\n")
+            ; )
+            :effect (increase (tiempo_espera ?d) ?dur)
     )
 )

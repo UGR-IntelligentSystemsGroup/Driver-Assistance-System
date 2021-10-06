@@ -27,8 +27,6 @@
 		(sequence-context none)
 		(breakType-context none)
 		(dayType-context none)
-		; (weekly-context none)
-		; (monthly-context none)
 
 		; Initialize functions
 		(= (hours_in_mins) 60)

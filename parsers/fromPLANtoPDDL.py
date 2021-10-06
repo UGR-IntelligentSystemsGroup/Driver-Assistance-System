@@ -110,7 +110,7 @@ def getProblemInit(eventsFile):
 
 \t\t; Initialize functions
 \t\t(= (hours_in_mins) 60)
-
+\t\t(= (dt_previous_wd) 0)
 \t\t(= (edds_in_week) 0)
 
 """

@@ -24,7 +24,7 @@ Integrating Machine Learning with Automated Planning
 
 - El tiempo de otros trabajos no cuenta para nada, no? Me resulta raro pero no viene explícitamente dicho en ningún lado.
 
-- Token de salida split, ¿con o sin número?
+- Contexto de salida split, ¿con o sin número?
 
 - Intervalos de los Breaks ampliados para no ser estrictos. Si lo que queremos es reconocer patrones nos interesa, si lo que queremos es que los conductores se ajusten a la regulación no deberían ampliarse.
 
@@ -32,27 +32,7 @@ Integrating Machine Learning with Automated Planning
 
 - Puede que haya datos de conducción en equipo que no se tengan en cuenta (en menos de dos semanas dos conductores por misma matrícula)
 
----
-
-- **IMPORTANTE** Las horas de Other no se deberían contar? Sino estamos contando jornadas de >9h como NDD si conduce poco (probablemente sea un repartidor que pasa más tiempo entregando cosas)
-
-- (modo_generar) bucle infinito? Qué hace? se añade directamente la primitiva al plan (y si no se pueden cumplir las restricciones/condiciones pues fallará?
-  - Para generar acciones deberíamos saber localización y recursos, no?
-
-  - Lo que sí se podría hacer (con lo que hay) es indicar que tiene que hacer actividades y sus descansos.
-
 - Habrá que modelar también el Team Daily Driving?
-
-- Acción 115: Dos conductores? Va desde 11 17pm a 12 3am, siguiendo sin pausa grande hasta 12 6am -> O eso o es una jornada de 13h, capaz
-
-- Ejemplo_Dataset_Anonimizado: Datos erróneos.
-  - El encabezado está mal. Hay que cambiar 2ª latitud de inicio por latitud_final.
-
-  - En las pausas cambian las coordenadas. El cuentakilómetros en cambio no.
-
-  - Coordenadas incoherentes. En pausas pasa de ~400.000 a ~40.000.000
-
-  - En sí los valores no tienen sentido, deberían ser +-90 o +-180. Probablemente estén usando decimales sin haberlos marcados, pero de cuánta precisión?
 
 ## Commands
 
@@ -63,6 +43,8 @@ Integrating Machine Learning with Automated Planning
 ## Notes
 
 - **IMPORTANTE** La regulación HOS cambió en junio de 2020: https://www.fmcsa.dot.gov/regulations/hours-of-service
+
+- Las coordenadas del dataset usan precisión decimal de 6 dígitos pero falta el signo, por lo que no las podemos usar tal cuál. La longitud de fin está mal de todas maneras. También en las pausas cambian las coordenadas, mientras que el cuentakilómetros no.
 
 - Los metatags son una extensión del lenguaje que actualmente está en fase experimental, por lo que puede cambiar en futuras versiones. El concepto subyacente a los metatags es poder incluir información extra en el dominio, que aunque no sea directamente utilizable por el planificador, pueda ser utilizada por otros módulos, o en un análisis posterior del plan resultante.
 
@@ -140,31 +122,25 @@ The regulation constrains the total accumulated driving time during any two cons
 
 - Por qué no hay O_p2 ni E_p2? Los he cambiado para que haya alternativa con contexto
 
-- Output:
-  - DayType (ndd/edd), BreakType (split/uninterrupted/none), Sequence (start/end/unique), Token (A, B_T0...)
-  - unique: No splits, Activities ending with a RD
-  - breakType none: No breaks that are not RD
+---
 
+Domain-strict:
+
+- Simplificado el dominio
+
+- Ajustado estrictamente a la regulación (los intervalos)
+
+- Output:
   - Week: Week number
   - Day: Day number
 
-  - DayType: Normal (9h) or Extended(10h)
+  - DayType: Normal (ndd, 9h) or Extended (edd, 10h)
   - Sequence: First sequence (<4.5h), second or third (only if EDD)
   - BreakType: Split, uninterrupted or unique (if ending in RD)
   - Split: First or second
   - Token: Specific activity
 
-- Simplificado el dominio
-
-- Intervalos de los Breaks ampliados para no ser estrictos. Si lo que queremos es reconocer patrones nos interesa, si lo que queremos es que los conductores se ajusten a la regulación no deberían ampliarse.
-
----
-
-Domain-strict:
-
-- Ajustado estrictamente a la regulación
-
-- Nuevo contexto: legal. Indica si se ha cometido una ilegalidad (no se ha reconocido algún patrón). Técnicamente si es __no__ -> Algún otro contexto es __none__
+  - Legal: Indica si se ha cometido una ilegalidad (no se ha reconocido algún patrón). Técnicamente si es __no__ -> Algún otro contexto es __none__
 
 - Las 00:00 las paso al día siguiente en el dataset (algunas veces estaba de una forma y algunas de otra)
 
