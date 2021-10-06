@@ -59,7 +59,7 @@ def getProblemHeader():
 \t(:customization
 \t\t(= :time-format "%d/%m/%Y %H:%M")
 \t\t(= :time-horizon-relative 86400) ;; que son los minutos que tienen 2 meses
-\t\t(= :time-start "02/01/2017 00:00")
+\t\t(= :time-start "01/01/2017 00:00")
 \t\t(= :time-unit :minutes)
 \t)
 """
