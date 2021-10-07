@@ -143,6 +143,56 @@
         ; Timestamps
         (last_dr) ; Last timestamp a Daily Rest was detected
         (last_wr) ; Last timestamp a Weekly Rest was detected
+
+
+
+        ;***********************************
+        ; Generate mode
+        ;***********************************
+        ; 4.5 - dt_activity
+        ; 9 - dt_dd      si dt_dd < 9
+        ; 10 - dt_dd    si dt_dd > 9 < 10
+        ; TODO: Can't surpass (<= (dt_wd) (* 56.0 (hours_in_mins)))
+        (calculate_duration_D ?d ?dt_dd ?dt_activity ) {
+            dur = -1
+
+            # Deciding between NDD or EDD
+            max_hours = 10 if (?dt_dd > (9*60)) else 9
+
+            # If dt_dd already bigger than 10, returning negative value
+            dur = (max_hours * 60) - ?dt_dd
+
+            # Do not surpass CDD time limit
+            cdd_remaining = (4.5*60) - ?dt_activity
+
+            # Return the smallest
+            dur = dur if (dur < cdd_remaining) else cdd_remaining
+
+            # Bigger than 0
+            dur = dur if (dur > 0) else -1
+
+            return dur
+        }
+        
+
+        ; If dt_dd > 4.5 -> DR o WR
+        ; Else B_T1 = 45m
+                ; #if ((?actual_timestamp + 45) > (24*60 + ?last_dr))
+        (calculate_duration_B ?d ?dt_dd ?dt_activity ?actual_timestamp ?last_dr ?last_wr) {
+            dur = -1
+
+            # If end of CDD -> DR o WR
+            if (?dt_dd >= (4.5*60)):
+                # A WR is needed
+                if ((?actual_timestamp + 45) > (6*24*60 + ?last_wr)):
+                    dur = 45 * 60
+                else:
+                    dur = 11 * 60
+            else:
+                dur = 45    # B_T1
+
+            return dur
+        }
     )
 
     ; =========================================================================
@@ -1220,6 +1270,18 @@
                 (A ?d)
             )
         ) 
+
+        (:method generate
+            :precondition (modo_generar)
+            :tasks (
+                (Process_A ?d)
+
+                (:inline
+                    ()
+                    (increase (dt_activity) (current_dt))
+                );calculates driving time of current subsequence
+            )
+        )
         
         ;aquí viene porque se encontró un B con una duración mayor de 15 mins
         (:method PAUSE_CONSIDERED_BREAK
@@ -1229,9 +1291,16 @@
         
         ; aquí se acabó la secuencia de acciones, cuando sale por aquí se le ha acabado la secuencia y CORRECTO Y DEBE TERMINAR
         (:method fin_secuencia_entrada
-            :precondition (fin_secuencia_entrada)
+            :precondition (and (fin_secuencia_entrada) (modo_reconocer))
             :tasks (
-                EndOfSequece
+                (:inline ()
+                    (and
+                        (not (modo_reconocer))
+                        (modo_generar)
+                    )
+                )
+
+                (A ?d)
             )
         ) 
         
@@ -1330,7 +1399,38 @@
     ; ****************************
 
     (:task D
-        :parameters (?d - Driver ?dur - number) 
+        :parameters (?d - Driver ?dur - number) (!
+        (:method modo_generar
+            :precondition (modo_generar)
+            :tasks (
+                ;captura el contexto
+                (:inline
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
+                    )
+                    ()
+                )
+
+                ; Get duration
+                (:inline
+                    (and
+
+                        (bind ?dt_dd (dt_dd))
+                        (bind ?dt_activity (dt_activity))
+                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+                    )
+                    ()
+                )
+
+                (D_suggested ?d ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+            )
+        )
         (:method modo_reconocer
             :precondition (modo_reconocer)
             :tasks (
@@ -1340,11 +1440,11 @@
                 (:inline () (increase (current_index_action) 1))
             )
 
-        )
+        ))
     )
 
     (:task O
-        :parameters (?d - Driver ?dur - number) 
+        :parameters (?d - Driver ?dur - number)
         (:method modo_reconocer
             :precondition (modo_reconocer)
             :tasks (
@@ -1357,7 +1457,45 @@
     )
 
     (:task B
-        :parameters (?d - Driver ?dur - number) 
+        :parameters (?d - Driver ?dur - number) (!
+        (:method modo_generar
+            :precondition (modo_generar)
+            :tasks (
+                ;captura el contexto
+                (:inline
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
+                    )
+                    ()
+                )
+
+                ; Get duration
+                (:inline
+                    (and
+                        ; Get actual timestamp
+                        (bind ?k (- (current_index_action) 1))
+                        (index_action ?sa ?k)
+                        (start_action ?sa ?final)
+                        (bind ?start (+ ?final (dt_dd)))
+
+                        ; Get duration
+                        (bind ?dt_dd (dt_dd))
+                        (bind ?dt_activity (dt_activity))
+                        (bind ?last_dr (last_dr))
+                        (bind ?last_wr (last_wr))
+                        (bind ?dur (calculate_duration_B ?d ?dt_dd ?dt_activity ?start ?last_dr ?last_wr))
+                    )
+                    ()
+                )
+                (B_suggested ?d ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+            )
+        )
         (:method modo_reconocer
             :precondition (modo_reconocer)
             :tasks (
@@ -1366,11 +1504,11 @@
                 ;incrementar el current index para reconocer la siguiente accion de la secuencia)
                 (:inline () (increase (current_index_action) 1))				
             )
-        )
+        ))
     )
 
     (:task I
-        :parameters (?d - Driver ?dur - number) 
+        :parameters (?d - Driver ?dur - number)
         (:method modo_reconocer
             :precondition (modo_reconocer)
             :tasks (
@@ -1707,22 +1845,6 @@
     ; Actions
     ; =========================================================================
 
-    (:action EndOfDay
-        :parameters ()
-        :precondition ()
-        :effect ()
-    )
-
-    ; -------------------------------------------------------------------------
-
-    (:action EndOfSequece
-        :parameters ()
-        :precondition ()
-        :effect ()
-    )
-
-    ; -------------------------------------------------------------------------
-
     ; DRIVING
     (:durative-action D_p
         :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
@@ -1762,6 +1884,29 @@
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Idle	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
         :duration (= ?duration ?dur)
         :condition()
+        :effect ()
+    )
+
+    ; -------------------------------------------------------------------------
+    ; Generating mode
+    ; -------------------------------------------------------------------------
+
+    ; Could be OtherWork too
+    (:durative-action D_suggested
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :duration (= ?duration ?dur)
+        :condition ()
+        :effect ()
+    )
+
+    ; -------------------------------------------------------------------------
+
+    (:durative-action B_suggested
+        :parameters (?d - Driver ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Break	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :duration (= ?duration ?dur)
+        :condition ()
         :effect ()
     )
 

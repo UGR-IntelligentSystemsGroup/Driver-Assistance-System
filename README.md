@@ -107,6 +107,8 @@ Domain-strict:
 
 - Las 00:00 las paso al día siguiente en el dataset (algunas veces estaba de una forma y algunas de otra)
 
+- Ahora sugiera conducción y descansos, teniendo en cuenta la secuencia actual y si debe acabar en WR o DR. Sug-Driving se debe considerar como cualquier actividad (Idle y OtherWork también). La duración es la máxima recomendada, pero se podría reducir.
+
 ### Notation
 
 | Símbolo | Actividad        | Tipo Acción | Índice Registro |
