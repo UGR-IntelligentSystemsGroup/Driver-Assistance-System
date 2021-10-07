@@ -95,7 +95,7 @@ def getProblemObjects(symbolFile, drivers):
 
 def getProblemInit(eventsFile):
     problemInit = """\t(:init
-\t\t; Problem task: Recognize or Genererate
+\t\t; Problem task: Recognize or Generate
 \t\t; (modo_generar)
 \t\t(modo_reconocer)
 

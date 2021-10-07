@@ -881,11 +881,25 @@
         )
 
 
-        ; TODO: Indicate illegality in output
         (:method illegal_daily
             :precondition ()
             :tasks (
+                ; Indicate illegality
+                (:inline ()
+                    (and
+                        (not (legal-context yes))
+                        (legal-context no)
+                    )
+                )
+
                 (DR ?d)
+
+                (:inline ()
+                    (and
+                        (not (legal-context no))
+                        (legal-context yes)
+                    )
+                )
 
                 ; A daily rest is not bigger than 24h
                 (:inline
@@ -907,7 +921,22 @@
         (:method illegal_weekly
             :precondition ()
             :tasks (
+                ; Indicate illegality
+                (:inline ()
+                    (and
+                        (not (legal-context yes))
+                        (legal-context no)
+                    )
+                )
+
                 (WR ?d)
+
+                (:inline ()
+                    (and
+                        (not (legal-context no))
+                        (legal-context yes)
+                    )
+                )
 
                 (:inline
                     ()
@@ -1306,11 +1335,9 @@
             :precondition (modo_reconocer)
             :tasks (
                 (add_the_current_action_to_plan typeD ?dur)
+                
                 ;incrementar el current index para reconocer la siguiente accion de la secuencia)
-                (:inline
-                    ()
-                    (increase (current_index_action) 1)
-                )
+                (:inline () (increase (current_index_action) 1))
             )
 
         )
@@ -1322,11 +1349,9 @@
             :precondition (modo_reconocer)
             :tasks (
                 (add_the_current_action_to_plan typeO ?dur)
+                
                 ;incrementar el current index para reconocer la siguiente accion de la secuencia)
-                (:inline
-                    ()
-                    (increase (current_index_action) 1)
-                )
+                (:inline () (increase (current_index_action) 1))
             )
         )
     )
@@ -1337,11 +1362,9 @@
             :precondition (modo_reconocer)
             :tasks (
                 (add_the_current_action_to_plan typeB ?dur)
+
                 ;incrementar el current index para reconocer la siguiente accion de la secuencia)
-                (:inline
-                    ()
-                    (increase (current_index_action) 1)
-                )				
+                (:inline () (increase (current_index_action) 1))				
             )
         )
     )
@@ -1352,11 +1375,9 @@
             :precondition (modo_reconocer)
             :tasks (
                 (add_the_current_action_to_plan typeI ?dur)
+
                 ;incrementar el current index para reconocer la siguiente accion de la secuencia)
-                (:inline
-                    ()
-                    (increase (current_index_action) 1)
-                )
+                (:inline () (increase (current_index_action) 1))
             )
         )
     )

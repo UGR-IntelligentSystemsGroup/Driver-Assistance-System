@@ -18,7 +18,7 @@ Integrating Machine Learning with Automated Planning
 
 ## Doubts
 
-- **IMPORTANTE** SIADEX está mal: Si se llama/recorre una acción/inline que hace cierto un predicado ya cierto, si hace backtracking lo elimina (debería comprobar el estado anterior del predicado y restaurarlo, verdadero o cierto). Para solventarlo hay que poner en las precondiciones que ese predicado no es cierto
+- **IMPORTANTE** SIADEX puede estar mal: Si se llama/recorre una acción/inline que hace cierto un predicado ya cierto, si hace backtracking lo elimina (debería comprobar el estado anterior del predicado y restaurarlo, verdadero o cierto). Para solventarlo hay que poner en las precondiciones que ese predicado no es cierto. Puedo entender que si la acción se llama dos veces ocurra (puesto que los efectos solo deberían modelar lo que cambia), pero solo por recorrerla no parece intuitivo.
 
 - Contextos semanales y bisemanales? Números, o decir que es normal?
 
