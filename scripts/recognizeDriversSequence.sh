@@ -1,6 +1,7 @@
 #!/bin/bash
 # Perform planning search to recognize driver activity
 
+cd ..
 for filename in `ls hpdl/problems/problem-driver*.pddl | sort -V | tail -n +1`; do
     echo "Recognizing driver activity for file $filename..."
 
