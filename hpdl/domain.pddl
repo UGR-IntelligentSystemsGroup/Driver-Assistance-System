@@ -107,7 +107,7 @@
         ; Zenotravel
         (at ?o - object ?c - city)
         (in ?b - box ?d - Driver)
-        (destiny ?b - box ?c - city)
+        (destination ?b - box ?c - city)
         (enough-fuel ?d - Driver ?c1 ?c2 - city)
     )
 
@@ -203,6 +203,8 @@
 
             return dur
         }
+
+        (next_break_is_rest)
 
         ; Zenotravel
         (total-fuel-used ?d - Driver)
@@ -436,6 +438,23 @@
             )
         )
 
+        ; (:method transport
+        ;     :precondition (destination ?b - box ?c - city)
+        ;     :tasks (
+        ;         (DD ?d)
+
+        ;         (:inline
+        ;             (and
+        ;                 (<= (edds_in_week) 2)
+        ;                 (<= (dt_wd) (* 56.0 (hours_in_mins)))
+        ;             )
+        ;             ()
+        ;         )
+
+        ;         (WD ?d)
+        ;     )
+        ; )
+
         (:method END
             :precondition ()
             :tasks (
@@ -536,6 +555,17 @@
         ; --------------------------------------------------------------
 
         ; Empty input
+        ; (:method generate
+        ;     :precondition (destination ?b - box ?c - city)
+        ;     :tasks (
+        ;                         (:inline (:print "Transport\n") ())
+        ;         (transport)
+        ;                             (:inline (:print "Finished\n") ())
+
+        ;         (DD ?d)
+        ;     )
+        ; )
+        
         (:method END
             :precondition ()
             :tasks (
@@ -580,13 +610,8 @@
                     (and
                         (assign (dt_dd) (dt_cdd))
                         (assign (bt_dd) (bt_cdd))
+                        (next_break_is_rest)
                     )
-                )
-
-                ; To ensure no RD after first CDD
-                (:inline
-                    (<= (current_bt) (* 3.0 (hours_in_mins)))
-                    ()
                 )
 
                 ; -------------------------------------------
@@ -609,12 +634,6 @@
                     (<= (dt_dd) (* 9.0 (hours_in_mins)))
                     ()
                 )
-
-                ; To ensure RD after second CDD
-                (:inline
-                    (>= (current_bt) (* 3.0 (hours_in_mins)))
-                    ()
-                )
             )
         )
 
@@ -622,6 +641,12 @@
         (:method unique
         	:precondition()
         	:tasks (
+                ; To ensure RD after CDD
+                (:inline
+                    ()
+                    (next_break_is_rest)
+                )
+
                 (b_sequence unique)
                 (CDD ?d)
                 (e_sequence unique)
@@ -632,12 +657,6 @@
                         (assign (dt_dd) (dt_cdd))
                         (assign (bt_dd) (bt_cdd))
                     )
-                )
-
-                ; To ensure RD after CDD
-                (:inline
-                    (>= (current_bt) (* 3.0 (hours_in_mins)))
-                    ()
                 )
             )
         )
@@ -663,12 +682,6 @@
                     )
                 )
 
-                ; To ensure no RD after first CDD
-                (:inline
-                    (<= (current_bt) (* 3.0 (hours_in_mins)))
-                    ()
-                )
-
                 ; -------------------------------------------
 
                 (b_sequence second)
@@ -680,13 +693,8 @@
                     (and
                         (increase (dt_dd) (dt_cdd))
                         (increase (bt_dd) (bt_cdd))
+                        (next_break_is_rest)
                     )
-                )
-
-                ; To ensure no RD after first CDD
-                (:inline
-                    (<= (current_bt) (* 3.0 (hours_in_mins)))
-                    ()
                 )
 
                 ; -------------------------------------------
@@ -708,12 +716,6 @@
                 ; Because NDD is placed before in the tree: (9,10]h
                 (:inline
                     (<= (dt_dd) (* 10.0 (hours_in_mins)))
-                    ()
-                )
-
-                ; To ensure RD after CDD
-                (:inline
-                    (>= (current_bt) (* 3.0 (hours_in_mins)))
                     ()
                 )
             )
@@ -773,34 +775,12 @@
     ; Uninterrupted. Ending in RD or B_T1
     (:task CDD_Unint
         :parameters (?d - Driver) 
-        (:method B_T1
-            :precondition()
-            :tasks (
-                (A ?d)
-
-                (:inline
-                    (<= (dt_activity) (* 4.5 (hours_in_mins)))
-                    ()
-                )
-
-                (:inline
-                    ()
-                    (assign (dt_cdd_unint) (dt_activity))
-                )
-
-                (B_T1 ?d)
-
-                (:inline
-                    ()
-                    (assign (bt_cdd_unint) (current_bt))
-                )
-            )
-        )
-
         (:method REST
-            :precondition()
+            :precondition (next_break_is_rest)
             :tasks (
+                                (:inline (:print "Yo\n") ())
                 (A ?d)
+                                (:inline (:print "Yeeeeee\n") ())
 
                 (:inline
                     (<= (dt_activity) (* 4.5 (hours_in_mins)))
@@ -813,6 +793,35 @@
                 )
 
                 (REST ?d)
+
+                (:inline
+                    ()
+                    (and
+                        (assign (bt_cdd_unint) (current_bt))
+                        (not (next_break_is_rest))
+                    )
+                )
+            )
+        )
+
+        (:method B_T1
+            :precondition (not (next_break_is_rest))
+            :tasks (
+                (A ?d)
+
+                (:inline
+                    (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                    ()
+                )
+
+                (:inline
+                    ()
+                    (assign (dt_cdd_unint) (dt_activity))
+                )
+
+                                                (:inline (:print "AAAAAAAAAAAAAAAAAAAAAA\n") ())
+                (B_T1 ?d)
+                                                (:inline (:print "XXXXXXXXXXXXXXXXXXXXXXXXXXX\n") ())
 
                 (:inline
                     ()
@@ -852,27 +861,8 @@
     ; Second split of a CDD. Ending in B_T3 or RD
     (:task CDD_SPLIT_2
         :parameters (?d - Driver)
-        (:method B_T3
-            :precondition()
-            :tasks (
-                (A ?d)
-
-                (:inline
-                    ()
-                    (assign (dt_cdd_split2) (dt_activity))
-                )
-
-                (B_T3 ?d)
-
-                (:inline
-                    ()
-                    (assign (bt_cdd_split2) (current_bt))
-                )
-            )
-        ) 
-
         (:method RD
-            :precondition()
+            :precondition (next_break_is_rest)
             :tasks (
                 (A ?d)
 
@@ -882,6 +872,28 @@
                 )
 
                 (REST ?d)
+
+                (:inline
+                    ()
+                    (and
+                        (assign (bt_cdd_split2) (current_bt))
+                        (not (next_break_is_rest))
+                    )
+                )
+            )
+        )
+
+        (:method B_T3
+            :precondition (not (next_break_is_rest))
+            :tasks (
+                (A ?d)
+
+                (:inline
+                    ()
+                    (assign (dt_cdd_split2) (dt_activity))
+                )
+
+                (B_T3 ?d)
 
                 (:inline
                     ()
@@ -1194,6 +1206,7 @@
         (:method B_T1
             :precondition ()
             :tasks (
+                                                (:inline (:print "HEy\n") ())
                 (b_token B_T1)		
                 (B ?d ?dur)
                 (:inline
@@ -1294,11 +1307,31 @@
             )
         ) 
 
+        ; (:method generate2
+        ;     :precondition (modo_generar)
+        ;     :tasks (
+        ;         (Process_A ?d)
+
+        ;         (:inline
+        ;             ()
+        ;             (increase (dt_activity) (current_dt))
+        ;         );calculates driving time of current subsequence
+        ;     )
+        ; )
+
         (:method generate
-            :precondition (modo_generar)
+            :precondition (and (modo_generar) (destination ?b ?c))
             :tasks (
-                (Process_A ?d)
-                ; (transport)
+                (:inline (:print "Generate\n") ())
+                (transport)
+
+                (:inline
+                    ()
+                    (and
+                        (assign (current_bt) 0)
+                        (assign (current_dt) 5)
+                    )
+                )
 
                 (:inline
                     ()
@@ -1324,7 +1357,7 @@
                     )
                 )
 
-                (A ?d)
+                ; (A ?d)
             )
         ) 
         
@@ -1516,6 +1549,7 @@
                     )
                     ()
                 )
+                                                (:inline (:print ?dur) ())
                 (B_suggested ?d ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
             )
         )
@@ -1969,7 +2003,7 @@
     (:task transport
         :parameters ()
         (:method delivery
-            :precondition (destiny ?b - box ?c - city)
+            :precondition (destination ?b - box ?c - city)
             :tasks (
                 (transport-box ?b ?c)
                 (transport)
@@ -1977,7 +2011,7 @@
         )
 
         (:method finished
-            :precondition (not (destiny ?b - box ?c - city))
+            :precondition (not (destination ?b - box ?c - city))
             :tasks ()
         )
     )
@@ -1987,8 +2021,8 @@
     (:task transport-box
         :parameters (?b - box ?c_final - city)
         (:method Case1 ; si la persona está en la ciudad no se hace nada
-            :precondition (not (destiny ?b ?c_final))
-            :tasks ()
+            :precondition (at ?b ?c_final)
+            :tasks (:inline () (not (destination ?b ?c)))
         )
         
         
@@ -2032,7 +2066,7 @@
             :precondition (and
                 (at ?b - box ?c1)
                 (at ?d ?c1)
-                (destiny ?b - box ?c2)
+                (destination ?b - box ?c2)
             )
             :tasks (
                 (board ?b ?d ?c1)
@@ -2052,7 +2086,7 @@
             :precondition (and
                 (in ?b - box ?d)
                 (at ?d ?c)
-                (destiny ?b - box ?c)
+                (destination ?b - box ?c)
             )
             :tasks (
                 (debark ?b ?d ?c)
@@ -2233,7 +2267,7 @@
 
     (:durative-action load_p
         :parameters (?d - Driver ?b - box ?c - city)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Load	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt	?b"))
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Load	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?b"))
         :duration (= ?duration 15)
         :condition ()
         :effect (and  
@@ -2245,23 +2279,23 @@
     
     (:durative-action unload_p
         :parameters (?d - Driver ?b - box ?c - city)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Unload	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt	?b"))
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Unload	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?b"))
         :duration (= ?duration 15)
         :condition ()
         :effect (and  
             (at ?b ?c)
             (not (in ?b ?d))
-            (not (destiny ?b ?c))
+            (not (destination ?b ?c))
             (decrease (load ?d) (weight ?b))
         )
     )
 
     (:durative-action drive
         :parameters (?d - Driver ?c1 ?c2 - city)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Drive	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt	?c1 ?c2"))
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Drive	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?c1 ?c2"))
         :duration (= ?duration (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
         ; :duration (= ?duration 10)
-        :condition ()
+        :condition (:print "DELIVEREDDDDDDDDDDDDDDDDDDDDD\n")
         :effect (and 
             (not (at ?d ?c1))
             (at ?d ?c2)
@@ -2269,12 +2303,13 @@
                         (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
             (decrease (actual-fuel ?d)
                         (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+            (increase (current_dt) ?duration)
         )
     )
 
     (:durative-action refuel
         :parameters (?d - Driver)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Refuel	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Refuel	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt"))
         :duration (= ?duration 10)
         :condition ()
         :effect (assign (actual-fuel ?d) (fuel-limit ?d))

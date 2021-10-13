@@ -1419,7 +1419,7 @@
 		(= (total-fuel-used driver1) 0)
 		(= (fuel-consumption-rate driver1) 20)
 		(= (fuel-limit driver1) 1500)
-		(= (speed driver1) 80)
+		(= (speed driver1) 900)
 
 		(at driver1 sevilla)
 		(at box1 sevilla)
@@ -1428,8 +1428,8 @@
 		(= (load driver1) 0)
 		(= (max-load driver1) 5)
 
-		(destiny box1 malaga)
-		(destiny box2 cadiz)
+		(destination box1 malaga)
+		; (destination box2 cadiz)
 		(= (weight box1) 2)
 		(= (weight box2) 3)
 	)
@@ -1437,7 +1437,7 @@
 		:tasks (
 			(WD driver1)
 			
-			(transport)
+			; (transport)
 			; (transport-box box1 malaga)
 			; (transport-box box2 cadiz)
 
