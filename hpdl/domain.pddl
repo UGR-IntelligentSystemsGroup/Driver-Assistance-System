@@ -9,7 +9,11 @@
         TaskInstanceSymbol
         TipoAccion
         Driver
-        context 
+        context
+
+        ; Zenotravel
+        box
+        city
             - object
     )
 
@@ -99,6 +103,12 @@
         (next_dr_is_t4) ; If a DR_T3 is found, next DR must be DR_T4
 
         (is_activity_illegal) ; To set legal context ("no" if some other context is none)
+
+        ; Zenotravel
+        (at ?o - object ?c - city)
+        (in ?b - box ?d - Driver)
+        (destiny ?b - box ?c - city)
+        (enough-fuel ?d - Driver ?c1 ?c2 - city)
     )
 
     ; =========================================================================
@@ -193,6 +203,19 @@
 
             return dur
         }
+
+        ; Zenotravel
+        (total-fuel-used ?d - Driver)
+        (actual-fuel ?d - Driver)
+		(fuel-consumption-rate ?d - Driver)
+		(fuel-limit ?d - Driver)
+        (speed ?d - Driver)
+
+        (max-load ?d - Driver)
+        (load ?d - Driver)
+        (weight ?b - box)
+
+        (distance ?c1 ?c2 - city)
     )
 
     ; =========================================================================
@@ -1275,6 +1298,7 @@
             :precondition (modo_generar)
             :tasks (
                 (Process_A ?d)
+                ; (transport)
 
                 (:inline
                     ()
@@ -1420,7 +1444,6 @@
                 ; Get duration
                 (:inline
                     (and
-
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
                         (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
@@ -1936,5 +1959,324 @@
             :duration ()
             :condition (:print ">> One Week processed\n")
             :effect ()
+    )
+
+
+    ; =========================================================================
+    ; Zenotravel
+    ; =========================================================================
+
+    (:task transport
+        :parameters ()
+        (:method delivery
+            :precondition (destiny ?b - box ?c - city)
+            :tasks (
+                (transport-box ?b ?c)
+                (transport)
+            )
+        )
+
+        (:method finished
+            :precondition (not (destiny ?b - box ?c - city))
+            :tasks ()
+        )
+    )
+
+    ; ---------------------------------------------------------------------------
+
+    (:task transport-box
+        :parameters (?b - box ?c_final - city)
+        (:method Case1 ; si la persona está en la ciudad no se hace nada
+            :precondition (not (destiny ?b ?c_final))
+            :tasks ()
+        )
+        
+        
+        (:method Case2 ; si no está en la ciudad destino, pero avion y persona están en la misma ciudad
+            :precondition (and  
+                (at ?b - box ?c1 - city)
+                (at ?d - driver ?c1 - city)
+            )
+                
+            :tasks ( 
+                (load ?d ?c1 ?c_final)              
+                (drive ?d ?c1 ?c_final)
+                (unload ?d ?c_final)
+            )
+        )
+
+        (:method Case3 ; Si el avión no está en la misma ciudad, traerlo primero
+            :precondition (and 
+                (at ?b - box ?c1 - city)
+                (at ?d - driver ?c2 - city)
+                (not (= ?c1 ?c2))
+            )
+            :tasks (
+                (load ?d ?c2 ?c1)                
+                (drive ?d ?c2 ?c1)
+                (unload ?d ?c1)
+                
+                (load ?d ?c1 ?c_final)
+                (drive ?d ?c1 ?c_final)
+                (unload ?d ?c_final)
+            )
+        )
+    )
+
+
+    ; ---------------------------------------------------------------------------
+
+    (:task load ; Embarca a todos los pasajeros en ?c1 con destino ?c2
+        :parameters (?d - driver ?c1 - city ?c2 - city)
+        (:method Case1
+            :precondition (and
+                (at ?b - box ?c1)
+                (at ?d ?c1)
+                (destiny ?b - box ?c2)
+            )
+            :tasks (
+                (board ?b ?d ?c1)
+                (load ?d ?c1 ?c2)
+            )
+        )
+
+        (:method Case2 ; Si no hay nadie no hace nada
+            :precondition ()
+            :tasks ()
+        )
+    )
+
+    (:task unload ; Desembarca a todos los pasajeros con destino ?c
+        :parameters (?d - driver ?c - city)
+        (:method Case1
+            :precondition (and
+                (in ?b - box ?d)
+                (at ?d ?c)
+                (destiny ?b - box ?c)
+            )
+            :tasks (
+                (debark ?b ?d ?c)
+                (unload ?d ?c)
+            )
+        )
+
+        (:method Case2 ; Si no hay nadie no hace nada
+            :precondition ()
+            :tasks ()
+        )
+    )
+
+    ; ---------------------------------------------------------------------------
+
+    (:task board
+        :parameters (?b - box ?d - Driver ?c - city)
+        (:method unique
+            :precondition (and
+                (at ?b ?c)
+                (at ?d ?c)
+                (> (max-load ?d) (load ?d))
+            )
+            :tasks (
+                ; Aquí se debería calcular la duración
+                ; Este O debería hacerse con modo generar y que devolviera una salida diferente
+                ; (O ?d 15)
+                (load_p ?d ?b ?c)
+            )
+        )
+    )
+
+    (:task debark
+        :parameters (?b - box ?d - Driver ?c - city)
+        (:method unique
+            :precondition (and
+                (in ?b ?d)
+                (at ?d ?c)
+            )
+            :tasks (
+                ; Aquí se debería calcular la duración
+                ; Este O debería hacerse con modo generar y que devolviera una salida diferente
+                ; (O ?d 15)
+                (unload_p ?d ?b ?c)
+            )
+        )
+    )
+
+    ; ---------------------------------------------------------------------------
+
+    ; Para comprobar si hay suficiente fuel
+    (:derived   
+        (enough-fuel ?d - Driver ?c1 - city ?c2 - city)
+        (>= (actual-fuel ?d) (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)) )
+    )
+
+    (:task drive
+        :parameters (?d - Driver ?c1 - city ?c2 - city)
+        (:method no-refuel ; Al estar primero priorizamos el volar deprisa
+            :precondition (enough-fuel ?d ?c1 ?c2) ; Hay fuel para el vuelo
+            :tasks (
+                ; Aquí se debería calcular la duración
+                ; Debería poder hacer descansos
+                ; (D ?d 1)
+                (drive ?d ?c1 ?c2)
+
+                (:inline
+                    ()
+                    (and 
+                        (not (at ?d ?c1))
+                        (at ?d ?c2)
+                        (increase (total-fuel-used ?d)
+                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+                        (decrease (actual-fuel ?d)
+                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+                    )
+                )
+            )
+        )
+
+        (:method refuel ; Probamos repostando
+            :precondition (not (enough-fuel ?d ?c1 ?c2))
+            :tasks (
+                ; Aquí se debería calcular la duración
+                ; Este O debería hacerse con modo generar y que devolviera una salida diferente
+                ; (refuel ?d ?c1)
+                ; (O ?d 10)
+                (refuel ?d)
+
+                ; Aquí se debería calcular la duración
+                ; Debería poder hacer descansos
+                (drive ?d ?c1 ?c2)
+                ; (D ?d 1)
+
+                (:inline
+                    ()
+                    (and 
+                        (not (at ?d ?c1))
+                        (at ?d ?c2)
+                        (increase (total-fuel-used ?d)
+                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+                        (decrease (actual-fuel ?d)
+                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+                    )
+                )
+            )
+        )
+
+        ; NOTE: Quizás merezca dejarlo para reducir consumo
+        (:method layover ; No puede con ninguno, probar otra ciudad
+            :precondition (and 
+                (> (distance ?c1 ?c3 - city) 0)
+                ; (es-ciudad ?c3 - city)
+                (not (= ?c2 ?c3))
+                (not (= ?c1 ?c3))
+            )
+            :tasks (
+                (layover ?d ?c1 ?c3)
+                (drive ?d ?c3 ?c2)
+            )
+        )
+    )
+
+    (:task layover
+        :parameters (?d - Driver ?c1 - city ?c2 - city)
+        (:method no-refuel ; Al estar primero priorizamos el volar deprisa
+            :precondition (enough-fuel ?d ?c1 ?c2) ; Hay fuel para el vuelo
+            :tasks (
+                ; Aquí se debería calcular la duración
+                ; Debería poder hacer descansos
+                ; (D ?d 1)
+                (drive ?d ?c1 ?c2)
+
+                (:inline
+                    ()
+                    (and 
+                        (not (at ?d ?c1))
+                        (at ?d ?c2)
+                        (increase (total-fuel-used ?d)
+                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+                        (decrease (actual-fuel ?d)
+                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+                    )
+                )
+            )
+        )
+
+        (:method refuel ; Probamos repostando
+            :precondition (not (enough-fuel ?d ?c1 ?c2))
+            :tasks (
+                ; Aquí se debería calcular la duración
+                ; Este O debería hacerse con modo generar y que devolviera una salida diferente
+                ; (refuel ?d ?c1)
+                ; (O ?d 10)
+                (refuel ?d)
+
+                ; Aquí se debería calcular la duración
+                ; Debería poder hacer descansos
+                (drive ?d ?c1 ?c2)
+                ; (D ?d 1)
+
+                (:inline
+                    ()
+                    (and 
+                        (not (at ?d ?c1))
+                        (at ?d ?c2)
+                        (increase (total-fuel-used ?d)
+                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+                        (decrease (actual-fuel ?d)
+                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+                    )
+                )
+            )
+        )
+    )
+
+    ; ---------------------------------------------------------------------------
+
+    (:durative-action load_p
+        :parameters (?d - Driver ?b - box ?c - city)
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Load	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt	?b"))
+        :duration (= ?duration 15)
+        :condition ()
+        :effect (and  
+            (not (at ?b ?c))
+            (in ?b ?d)
+            (increase (load ?d) (weight ?b))
+        )
+    )
+    
+    (:durative-action unload_p
+        :parameters (?d - Driver ?b - box ?c - city)
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Unload	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt	?b"))
+        :duration (= ?duration 15)
+        :condition ()
+        :effect (and  
+            (at ?b ?c)
+            (not (in ?b ?d))
+            (not (destiny ?b ?c))
+            (decrease (load ?d) (weight ?b))
+        )
+    )
+
+    (:durative-action drive
+        :parameters (?d - Driver ?c1 ?c2 - city)
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Drive	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt	?c1 ?c2"))
+        :duration (= ?duration (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
+        ; :duration (= ?duration 10)
+        :condition ()
+        :effect (and 
+            (not (at ?d ?c1))
+            (at ?d ?c2)
+            (increase (total-fuel-used ?d)
+                        (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+            (decrease (actual-fuel ?d)
+                        (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+        )
+    )
+
+    (:durative-action refuel
+        :parameters (?d - Driver)
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Refuel	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
+        :duration (= ?duration 10)
+        :condition ()
+        :effect (assign (actual-fuel ?d) (fuel-limit ?d))
     )
 )
