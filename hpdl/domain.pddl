@@ -441,6 +441,7 @@
             )
         )
 
+        ; Finished activity recognition a WD, start with Zenotravel actions
         (:method transport
             :precondition (destination ?b - box ?c - city)
             :tasks (
@@ -474,17 +475,27 @@
     (:task DD
         :parameters (?d - Driver)
         ; Empty input
-        (:method generate
-            :precondition (> (remaining_transport_dt) 0)
-            :tasks (
-                                (:inline (:print "Transport\n") ())
-                ; (transport)
-                (CDD ?d)
-                                    (:inline (:print "Finished\n") ())
+        ; (:method generate
+        ;     :precondition (> (remaining_transport_dt) 0)
+        ;     :tasks (
+        ;                         (:inline (:print "Transport\n") ())
+        ;         ; (transport)
+        ;         (CDD ?d)
+        ;                             (:inline (:print "Finished\n") ())
 
-                (DD ?d)
-            )
-        )
+        ;         (:inline
+        ;             ; TODO: Arreglar esto
+        ;             ; (> (dt_cdd) 0)
+        ;             ()
+        ;             (and
+        ;                 (increase (dt_dd) (dt_cdd))
+        ;                 (increase (bt_dd) (bt_cdd))
+        ;             )
+        ;         )
+
+        ;         (DD ?d)
+        ;     )
+        ; )
 
         (:method ndd
             :precondition () ;(secuencia_entrada_no_vacia)
@@ -625,6 +636,8 @@
                 (e_sequence second)
 
                 (:inline
+                    ; TODO: Arreglar esto
+                    ; (> (dt_cdd) 0)
                     ()
                     (and
                         (increase (dt_dd) (dt_cdd))
@@ -737,7 +750,6 @@
         (:method uninterrupted
             :precondition()
             :tasks (
-                (:inline (:print "cdd1\n") ())
                 (b_breakType uninterrupted)
                 (CDD_UNINT ?d)
                 (e_breakType uninterrupted)
@@ -749,7 +761,6 @@
                         (assign (bt_cdd) (bt_cdd_unint))
                     )
                 )
-                (:inline (:print "cdd2\n") ())
             )
         )
 
@@ -1259,7 +1270,7 @@
 
     (:task B_T3
         :parameters (?d - Driver) 
-        (:method B_t3 
+        (:method B_T3 
             :precondition ()
             :tasks (
                 (b_token B_T3)
@@ -1311,7 +1322,6 @@
         (:method generate
             :precondition (and (modo_generar) (destination ?b - box ?c - city))
             :tasks (
-                (:inline (:print "generate\n") ())
                 (:inline ()
                     (assign (current_dt) 0)
                 )
@@ -1322,11 +1332,6 @@
                     ()
                     (increase (dt_activity) (current_dt))
                 );calculates driving time of current subsequence
-
-                (:inline (bind ?x (dt_activity))())
-                (:inline (:print "Hey") ())
-                (:inline (:print ?x) ())
-                (:inline (:print " you\n") ())
             )
         )
         
@@ -1346,8 +1351,6 @@
                         (modo_generar)
                     )
                 )
-
-                ; (A ?d)
             )
         ) 
         
@@ -1522,6 +1525,10 @@
                 )
 
                 ; Get duration
+                ; If activiy is 0 (a bug) and next break is a rest it can't continue
+                (:inline ()
+                    (when (next_break_is_rest) (assign (dt_dd) (* 4.5 (hours_in_mins))))
+                )
                 (:inline
                     (and
                         ; Get actual timestamp
@@ -2018,7 +2025,6 @@
         (:method Unload
             :precondition (and (at ?d - driver ?c_final) (in ?b ?d))
             :tasks (
-                (:inline (:print "CUcu\n") ())
                 (unload ?d ?c_final)
             )
         )
@@ -2032,7 +2038,6 @@
             :tasks (
                 (load ?d ?c1 ?c_final)              
                 (drive ?d ?c1 ?c_final)
-                ; (unload ?d ?c_final)
             )
         )
         
@@ -2041,10 +2046,8 @@
                 (> (remaining_transport_dt) 0)
                 (in ?b - box ?d - driver)
                 (at ?d - driver ?c1 - city)
-            )
-                
+            )                
             :tasks (
-                (:inline (:print "Continuing\n") ())
                 (:inline
                     (and
                         (bind ?dt_dd (dt_dd))
@@ -2056,30 +2059,26 @@
                     )
                     ()
                 )
-                (:inline (:print "Continuing2\n") ())
 
                 (drive ?d ?c1 ?c_final)
-                (:inline (:print "Continuing3\n") ())
-                ; (unload ?d ?c_final)
             )
         )
 
-        ; (:method Case3 ; Si el avión no está en la misma ciudad, traerlo primero
-        ;     :precondition (and 
-        ;         (at ?b - box ?c1 - city)
-        ;         (at ?d - driver ?c2 - city)
-        ;         (not (= ?c1 ?c2))
-        ;     )
-        ;     :tasks (
-        ;         (load ?d ?c2 ?c1)                
-        ;         (drive ?d ?c2 ?c1)
-        ;         (unload ?d ?c1)
+        (:method Case3 ; Si el avión no está en la misma ciudad, traerlo primero
+            :precondition (and 
+                (at ?b - box ?c1 - city)
+                (at ?d - driver ?c2 - city)
+                (not (= ?c1 ?c2))
+            )
+            :tasks (
+                (load ?d ?c2 ?c1)                
+                (drive ?d ?c2 ?c1)
+                (unload ?d ?c1)
                 
-        ;         (load ?d ?c1 ?c_final)
-        ;         (drive ?d ?c1 ?c_final)
-        ;         (unload ?d ?c_final)
-        ;     )
-        ; )
+                (load ?d ?c1 ?c_final)
+                (drive ?d ?c1 ?c_final)
+            )
+        )
     )
 
 
@@ -2195,15 +2194,6 @@
         (:method break2
             :precondition (> (remaining_transport_dt) 0)
             :tasks (
-                (:inline
-                    (and
-                        (:print "Break2\n")
-                        (bind ?hola (remaining_transport_dt))
-                        (:print ?hola)
-                        (:print "Hola3\n")
-                    )
-                    ()
-                )
                 ; Get duration before break
                 (:inline
                     (and
@@ -2219,29 +2209,10 @@
                         )
                     )
                 )
+
+                ; If duration is less than full DD (4.5), indicate the correct value
                 (:inline
-                    (and
-                        (:print "--------------------------------\n")
-                        (bind ?hola (next_transport_dt))
-                        (:print ?hola)
-                        (:print "Hola3\n")
-                    )
-                    ()
-                )
-                (:inline
-                    (bind ?dur2 (next_transport_dt))
-                    ; Poniendo la duración corta falla (con la duración máxima no)
-                    ; (bind ?dur (next_transport_dt))
-                    ()
-                )
-                (:inline
-                    (and
-                        (:print "--------------------------------\n")
-                        (:print ?dur2)
-                    )
-                    ()
-                )
-                (:inline ()
+                    (bind ?dur (next_transport_dt))
                     (and
                         (decrease (remaining_transport_dt) ?dur)
                     )
@@ -2305,16 +2276,13 @@
                 ; Get duration before break
                 (:inline
                     (and
-                        (:print "Break1\n")
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
                         (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
                     )
-                    ; Get total duration
-                    (assign (remaining_transport_dt) (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
-                )
-                (:inline ()
                     (and
+                        ; Get total duration
+                        (assign (remaining_transport_dt) (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
                         (decrease (remaining_transport_dt) ?dur)
                     )
                 )
@@ -2334,16 +2302,6 @@
                 )
 
                 (drive_p_fixed_duration ?d ?c1 ?c2 ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
-
-                (:inline
-                    (and
-                        (:print "Hola ")
-                        (bind ?hola (remaining_transport_dt))
-                        (:print ?hola)
-                        (:print "Hola3\n")
-                    )
-                    ()
-                )
             )
         )
     )
@@ -2351,7 +2309,8 @@
     (:task drive
         :parameters (?d - Driver ?c1 - city ?c2 - city)
         (:method no-refuel ; Al estar primero priorizamos el volar deprisa
-            :precondition (enough-fuel ?d ?c1 ?c2) ; Hay fuel para el vuelo
+            ; TODO: QUE CONSIDERE SI ES SPLIT
+            :precondition (enough-fuel ?d ?c1 ?c2)
             :tasks (
                 ;captura el contexto
                 (:inline
@@ -2479,7 +2438,7 @@
         :parameters (?d - Driver ?b - box ?c - city ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Unload	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?b"))
         :duration (= ?duration 15)
-        :condition ()
+        :condition (:print "- Package delivered\n")
         :effect (and  
             (at ?b ?c)
             (not (in ?b ?d))
@@ -2508,7 +2467,7 @@
         :parameters (?d - Driver ?c1 ?c2 - city ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?c1 ?c2"))
         :duration (= ?duration ?dur)
-        :condition (:print ?dur)
+        :condition ()
         :effect (and
             (when (<= (remaining_transport_dt) 0)
                 (and
@@ -2516,6 +2475,7 @@
                     (at ?d ?c2)
                 )
             )
+            ; TODO: Que baje el fuel correctamente
             ; (increase (total-fuel-used ?d)
             ;             (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
             ; (decrease (actual-fuel ?d)
