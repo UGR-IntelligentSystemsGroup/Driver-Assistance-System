@@ -218,6 +218,9 @@
         (weight ?b - box)
 
         (distance ?c1 ?c2 - city)
+
+        (remaining_transport_dt)
+        (next_transport_dt)
     )
 
     ; =========================================================================
@@ -438,22 +441,22 @@
             )
         )
 
-        ; (:method transport
-        ;     :precondition (destination ?b - box ?c - city)
-        ;     :tasks (
-        ;         (DD ?d)
+        (:method transport
+            :precondition (destination ?b - box ?c - city)
+            :tasks (
+                (DD ?d)
 
-        ;         (:inline
-        ;             (and
-        ;                 (<= (edds_in_week) 2)
-        ;                 (<= (dt_wd) (* 56.0 (hours_in_mins)))
-        ;             )
-        ;             ()
-        ;         )
+                (:inline
+                    (and
+                        (<= (edds_in_week) 2)
+                        (<= (dt_wd) (* 56.0 (hours_in_mins)))
+                    )
+                    ()
+                )
 
-        ;         (WD ?d)
-        ;     )
-        ; )
+                (WD ?d)
+            )
+        )
 
         (:method END
             :precondition ()
@@ -470,8 +473,21 @@
     ; Daily Driving
     (:task DD
         :parameters (?d - Driver)
+        ; Empty input
+        (:method generate
+            :precondition (> (remaining_transport_dt) 0)
+            :tasks (
+                                (:inline (:print "Transport\n") ())
+                ; (transport)
+                (CDD ?d)
+                                    (:inline (:print "Finished\n") ())
+
+                (DD ?d)
+            )
+        )
+
         (:method ndd
-            :precondition (secuencia_entrada_no_vacia)
+            :precondition () ;(secuencia_entrada_no_vacia)
             :tasks (
                 (reset_counters)
 
@@ -494,7 +510,7 @@
         (:method edd
             :precondition (and
                 (<= (edds_in_week) 2)
-                (secuencia_entrada_no_vacia)
+                ; (secuencia_entrada_no_vacia)
             )
             :tasks (
                 (reset_counters)
@@ -522,7 +538,7 @@
 
         ; Don't tag a type of day, but try at least find the sequence
         (:method cdd
-            :precondition (secuencia_entrada_no_vacia)
+            :precondition () ;(secuencia_entrada_no_vacia)
             :tasks (
                 (reset_counters)
                 (CDD ?d)
@@ -531,7 +547,7 @@
 
         ; RD in non-recognized sequence
         (:method rest_day
-            :precondition (secuencia_entrada_no_vacia)
+            :precondition () ;(secuencia_entrada_no_vacia)
             :tasks (
                 (REST ?d)
                 (:inline
@@ -553,18 +569,6 @@
         )
 
         ; --------------------------------------------------------------
-
-        ; Empty input
-        ; (:method generate
-        ;     :precondition (destination ?b - box ?c - city)
-        ;     :tasks (
-        ;                         (:inline (:print "Transport\n") ())
-        ;         (transport)
-        ;                             (:inline (:print "Finished\n") ())
-
-        ;         (DD ?d)
-        ;     )
-        ; )
         
         (:method END
             :precondition ()
@@ -733,6 +737,7 @@
         (:method uninterrupted
             :precondition()
             :tasks (
+                (:inline (:print "cdd1\n") ())
                 (b_breakType uninterrupted)
                 (CDD_UNINT ?d)
                 (e_breakType uninterrupted)
@@ -744,6 +749,7 @@
                         (assign (bt_cdd) (bt_cdd_unint))
                     )
                 )
+                (:inline (:print "cdd2\n") ())
             )
         )
 
@@ -778,9 +784,7 @@
         (:method REST
             :precondition (next_break_is_rest)
             :tasks (
-                                (:inline (:print "Yo\n") ())
                 (A ?d)
-                                (:inline (:print "Yeeeeee\n") ())
 
                 (:inline
                     (<= (dt_activity) (* 4.5 (hours_in_mins)))
@@ -819,9 +823,7 @@
                     (assign (dt_cdd_unint) (dt_activity))
                 )
 
-                                                (:inline (:print "AAAAAAAAAAAAAAAAAAAAAA\n") ())
                 (B_T1 ?d)
-                                                (:inline (:print "XXXXXXXXXXXXXXXXXXXXXXXXXXX\n") ())
 
                 (:inline
                     ()
@@ -1206,7 +1208,6 @@
         (:method B_T1
             :precondition ()
             :tasks (
-                                                (:inline (:print "HEy\n") ())
                 (b_token B_T1)		
                 (B ?d ?dur)
                 (:inline
@@ -1307,36 +1308,25 @@
             )
         ) 
 
-        ; (:method generate2
-        ;     :precondition (modo_generar)
-        ;     :tasks (
-        ;         (Process_A ?d)
-
-        ;         (:inline
-        ;             ()
-        ;             (increase (dt_activity) (current_dt))
-        ;         );calculates driving time of current subsequence
-        ;     )
-        ; )
-
         (:method generate
-            :precondition (and (modo_generar) (destination ?b ?c))
+            :precondition (and (modo_generar) (destination ?b - box ?c - city))
             :tasks (
-                (:inline (:print "Generate\n") ())
-                (transport)
-
-                (:inline
-                    ()
-                    (and
-                        (assign (current_bt) 0)
-                        (assign (current_dt) 5)
-                    )
+                (:inline (:print "generate\n") ())
+                (:inline ()
+                    (assign (current_dt) 0)
                 )
+
+                (transport)
 
                 (:inline
                     ()
                     (increase (dt_activity) (current_dt))
                 );calculates driving time of current subsequence
+
+                (:inline (bind ?x (dt_activity))())
+                (:inline (:print "Hey") ())
+                (:inline (:print ?x) ())
+                (:inline (:print " you\n") ())
             )
         )
         
@@ -1549,7 +1539,7 @@
                     )
                     ()
                 )
-                                                (:inline (:print ?dur) ())
+
                 (B_suggested ?d ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
             )
         )
@@ -2011,7 +2001,7 @@
         )
 
         (:method finished
-            :precondition (not (destination ?b - box ?c - city))
+            :precondition ()
             :tasks ()
         )
     )
@@ -2024,7 +2014,14 @@
             :precondition (at ?b ?c_final)
             :tasks (:inline () (not (destination ?b ?c)))
         )
-        
+
+        (:method Unload
+            :precondition (and (at ?d - driver ?c_final) (in ?b ?d))
+            :tasks (
+                (:inline (:print "CUcu\n") ())
+                (unload ?d ?c_final)
+            )
+        )
         
         (:method Case2 ; si no está en la ciudad destino, pero avion y persona están en la misma ciudad
             :precondition (and  
@@ -2032,29 +2029,57 @@
                 (at ?d - driver ?c1 - city)
             )
                 
-            :tasks ( 
+            :tasks (
                 (load ?d ?c1 ?c_final)              
                 (drive ?d ?c1 ?c_final)
-                (unload ?d ?c_final)
+                ; (unload ?d ?c_final)
+            )
+        )
+        
+        (:method ContinuingSplitDriving
+            :precondition (and
+                (> (remaining_transport_dt) 0)
+                (in ?b - box ?d - driver)
+                (at ?d - driver ?c1 - city)
+            )
+                
+            :tasks (
+                (:inline (:print "Continuing\n") ())
+                (:inline
+                    (and
+                        (bind ?dt_dd (dt_dd))
+                        (bind ?dt_activity (dt_activity))
+                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+                        
+                        ; See if enough time to complete transport
+                        (>= ?dur (* (hours_in_mins) (/ (distance ?c1 ?c_final) (speed ?d))))
+                    )
+                    ()
+                )
+                (:inline (:print "Continuing2\n") ())
+
+                (drive ?d ?c1 ?c_final)
+                (:inline (:print "Continuing3\n") ())
+                ; (unload ?d ?c_final)
             )
         )
 
-        (:method Case3 ; Si el avión no está en la misma ciudad, traerlo primero
-            :precondition (and 
-                (at ?b - box ?c1 - city)
-                (at ?d - driver ?c2 - city)
-                (not (= ?c1 ?c2))
-            )
-            :tasks (
-                (load ?d ?c2 ?c1)                
-                (drive ?d ?c2 ?c1)
-                (unload ?d ?c1)
+        ; (:method Case3 ; Si el avión no está en la misma ciudad, traerlo primero
+        ;     :precondition (and 
+        ;         (at ?b - box ?c1 - city)
+        ;         (at ?d - driver ?c2 - city)
+        ;         (not (= ?c1 ?c2))
+        ;     )
+        ;     :tasks (
+        ;         (load ?d ?c2 ?c1)                
+        ;         (drive ?d ?c2 ?c1)
+        ;         (unload ?d ?c1)
                 
-                (load ?d ?c1 ?c_final)
-                (drive ?d ?c1 ?c_final)
-                (unload ?d ?c_final)
-            )
-        )
+        ;         (load ?d ?c1 ?c_final)
+        ;         (drive ?d ?c1 ?c_final)
+        ;         (unload ?d ?c_final)
+        ;     )
+        ; )
     )
 
 
@@ -2111,10 +2136,21 @@
                 (> (max-load ?d) (load ?d))
             )
             :tasks (
-                ; Aquí se debería calcular la duración
-                ; Este O debería hacerse con modo generar y que devolviera una salida diferente
-                ; (O ?d 15)
-                (load_p ?d ?b ?c)
+                ;captura el contexto
+                (:inline
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
+                    )
+                    ()
+                )
+
+                (load_p ?d ?b ?c ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
             )
         )
     )
@@ -2127,10 +2163,21 @@
                 (at ?d ?c)
             )
             :tasks (
-                ; Aquí se debería calcular la duración
-                ; Este O debería hacerse con modo generar y que devolviera una salida diferente
-                ; (O ?d 15)
-                (unload_p ?d ?b ?c)
+                ;captura el contexto
+                (:inline
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
+                    )
+                    ()
+                )
+
+                (unload_p ?d ?b ?c ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
             )
         )
     )
@@ -2143,130 +2190,281 @@
         (>= (actual-fuel ?d) (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)) )
     )
 
+    (:task drive2
+        :parameters (?d - Driver ?c1 ?c2 - city)        
+        (:method break2
+            :precondition (> (remaining_transport_dt) 0)
+            :tasks (
+                (:inline
+                    (and
+                        (:print "Break2\n")
+                        (bind ?hola (remaining_transport_dt))
+                        (:print ?hola)
+                        (:print "Hola3\n")
+                    )
+                    ()
+                )
+                ; Get duration before break
+                (:inline
+                    (and
+                        (bind ?dt_dd (dt_dd))
+                        (bind ?dt_activity (dt_activity))
+                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+                    )
+                    ; See if enough time to complete transport
+                    (and
+                        (assign (next_transport_dt) ?dur)
+                        (when (<= (remaining_transport_dt) ?dur)
+                            (assign (next_transport_dt) (remaining_transport_dt))
+                        )
+                    )
+                )
+                (:inline
+                    (and
+                        (:print "--------------------------------\n")
+                        (bind ?hola (next_transport_dt))
+                        (:print ?hola)
+                        (:print "Hola3\n")
+                    )
+                    ()
+                )
+                (:inline
+                    (bind ?dur2 (next_transport_dt))
+                    ; Poniendo la duración corta falla (con la duración máxima no)
+                    ; (bind ?dur (next_transport_dt))
+                    ()
+                )
+                (:inline
+                    (and
+                        (:print "--------------------------------\n")
+                        (:print ?dur2)
+                    )
+                    ()
+                )
+                (:inline ()
+                    (and
+                        (decrease (remaining_transport_dt) ?dur)
+                    )
+                )
+
+                ;captura el contexto
+                (:inline
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
+                    )
+                    ()
+                )
+
+                (drive_p_fixed_duration ?d ?c1 ?c2 ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+            )
+        )
+
+        (:method no_break
+            :precondition ()
+            :tasks (
+                ; Get max duration before break
+                (:inline
+                    (and
+                        (bind ?dt_dd (dt_dd))
+                        (bind ?dt_activity (dt_activity))
+                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+                        
+                        ; See if enough time to complete transport
+                        (>= ?dur (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
+                    )
+                    ()
+                )
+
+                ;captura el contexto
+                (:inline
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
+                    )
+                    ()
+                )
+
+                (drive_p ?d ?c1 ?c2 ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+            )
+        )
+
+        (:method break
+            :precondition ()
+            :tasks (
+                ; Get duration before break
+                (:inline
+                    (and
+                        (:print "Break1\n")
+                        (bind ?dt_dd (dt_dd))
+                        (bind ?dt_activity (dt_activity))
+                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+                    )
+                    ; Get total duration
+                    (assign (remaining_transport_dt) (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
+                )
+                (:inline ()
+                    (and
+                        (decrease (remaining_transport_dt) ?dur)
+                    )
+                )
+
+                ;captura el contexto
+                (:inline
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
+                    )
+                    ()
+                )
+
+                (drive_p_fixed_duration ?d ?c1 ?c2 ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+
+                (:inline
+                    (and
+                        (:print "Hola ")
+                        (bind ?hola (remaining_transport_dt))
+                        (:print ?hola)
+                        (:print "Hola3\n")
+                    )
+                    ()
+                )
+            )
+        )
+    )
+
     (:task drive
         :parameters (?d - Driver ?c1 - city ?c2 - city)
         (:method no-refuel ; Al estar primero priorizamos el volar deprisa
             :precondition (enough-fuel ?d ?c1 ?c2) ; Hay fuel para el vuelo
             :tasks (
-                ; Aquí se debería calcular la duración
-                ; Debería poder hacer descansos
-                ; (D ?d 1)
-                (drive ?d ?c1 ?c2)
-
+                ;captura el contexto
                 (:inline
-                    ()
                     (and 
-                        (not (at ?d ?c1))
-                        (at ?d ?c2)
-                        (increase (total-fuel-used ?d)
-                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-                        (decrease (actual-fuel ?d)
-                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
                     )
+                    ()
                 )
+
+                (drive2 ?d ?c1 ?c2)
             )
         )
 
         (:method refuel ; Probamos repostando
             :precondition (not (enough-fuel ?d ?c1 ?c2))
             :tasks (
-                ; Aquí se debería calcular la duración
-                ; Este O debería hacerse con modo generar y que devolviera una salida diferente
-                ; (refuel ?d ?c1)
-                ; (O ?d 10)
-                (refuel ?d)
-
-                ; Aquí se debería calcular la duración
-                ; Debería poder hacer descansos
-                (drive ?d ?c1 ?c2)
-                ; (D ?d 1)
-
+                ;captura el contexto
                 (:inline
-                    ()
                     (and 
-                        (not (at ?d ?c1))
-                        (at ?d ?c2)
-                        (increase (total-fuel-used ?d)
-                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-                        (decrease (actual-fuel ?d)
-                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
                     )
+                    ()
                 )
+
+                (refuel ?d ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+                (drive2 ?d ?c1 ?c2)
             )
         )
 
         ; NOTE: Quizás merezca dejarlo para reducir consumo
-        (:method layover ; No puede con ninguno, probar otra ciudad
-            :precondition (and 
-                (> (distance ?c1 ?c3 - city) 0)
-                ; (es-ciudad ?c3 - city)
-                (not (= ?c2 ?c3))
-                (not (= ?c1 ?c3))
-            )
-            :tasks (
-                (layover ?d ?c1 ?c3)
-                (drive ?d ?c3 ?c2)
-            )
-        )
+        ; (:method layover ; No puede con ninguno, probar otra ciudad
+        ;     :precondition (and 
+        ;         (> (distance ?c1 ?c3 - city) 0)
+        ;         ; (es-ciudad ?c3 - city)
+        ;         (not (= ?c2 ?c3))
+        ;         (not (= ?c1 ?c3))
+        ;     )
+        ;     :tasks (
+        ;         (layover ?d ?c1 ?c3)
+        ;         (drive ?d ?c3 ?c2)
+        ;     )
+        ; )
     )
 
-    (:task layover
-        :parameters (?d - Driver ?c1 - city ?c2 - city)
-        (:method no-refuel ; Al estar primero priorizamos el volar deprisa
-            :precondition (enough-fuel ?d ?c1 ?c2) ; Hay fuel para el vuelo
-            :tasks (
-                ; Aquí se debería calcular la duración
-                ; Debería poder hacer descansos
-                ; (D ?d 1)
-                (drive ?d ?c1 ?c2)
+    ; (:task layover
+    ;     :parameters (?d - Driver ?c1 - city ?c2 - city)
+    ;     (:method no-refuel ; Al estar primero priorizamos el volar deprisa
+    ;         :precondition (enough-fuel ?d ?c1 ?c2) ; Hay fuel para el vuelo
+    ;         :tasks (
+    ;             ; Aquí se debería calcular la duración
+    ;             ; Debería poder hacer descansos
+    ;             ; (D ?d 1)
+    ;             (drive ?d ?c1 ?c2)
 
-                (:inline
-                    ()
-                    (and 
-                        (not (at ?d ?c1))
-                        (at ?d ?c2)
-                        (increase (total-fuel-used ?d)
-                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-                        (decrease (actual-fuel ?d)
-                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-                    )
-                )
-            )
-        )
+    ;             (:inline
+    ;                 ()
+    ;                 (and 
+    ;                     (not (at ?d ?c1))
+    ;                     (at ?d ?c2)
+    ;                     (increase (total-fuel-used ?d)
+    ;                                 (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+    ;                     (decrease (actual-fuel ?d)
+    ;                                 (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+    ;                 )
+    ;             )
+    ;         )
+    ;     )
 
-        (:method refuel ; Probamos repostando
-            :precondition (not (enough-fuel ?d ?c1 ?c2))
-            :tasks (
-                ; Aquí se debería calcular la duración
-                ; Este O debería hacerse con modo generar y que devolviera una salida diferente
-                ; (refuel ?d ?c1)
-                ; (O ?d 10)
-                (refuel ?d)
+    ;     (:method refuel ; Probamos repostando
+    ;         :precondition (not (enough-fuel ?d ?c1 ?c2))
+    ;         :tasks (
+    ;             ; Aquí se debería calcular la duración
+    ;             ; Este O debería hacerse con modo generar y que devolviera una salida diferente
+    ;             ; (refuel ?d ?c1)
+    ;             ; (O ?d 10)
+    ;             (refuel ?d)
 
-                ; Aquí se debería calcular la duración
-                ; Debería poder hacer descansos
-                (drive ?d ?c1 ?c2)
-                ; (D ?d 1)
+    ;             ; Aquí se debería calcular la duración
+    ;             ; Debería poder hacer descansos
+    ;             (drive ?d ?c1 ?c2)
+    ;             ; (D ?d 1)
 
-                (:inline
-                    ()
-                    (and 
-                        (not (at ?d ?c1))
-                        (at ?d ?c2)
-                        (increase (total-fuel-used ?d)
-                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-                        (decrease (actual-fuel ?d)
-                                    (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-                    )
-                )
-            )
-        )
-    )
+    ;             (:inline
+    ;                 ()
+    ;                 (and 
+    ;                     (not (at ?d ?c1))
+    ;                     (at ?d ?c2)
+    ;                     (increase (total-fuel-used ?d)
+    ;                                 (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+    ;                     (decrease (actual-fuel ?d)
+    ;                                 (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+    ;                 )
+    ;             )
+    ;         )
+    ;     )
+    ; )
 
     ; ---------------------------------------------------------------------------
 
     (:durative-action load_p
-        :parameters (?d - Driver ?b - box ?c - city)
+        :parameters (?d - Driver ?b - box ?c - city ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Load	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?b"))
         :duration (= ?duration 15)
         :condition ()
@@ -2278,7 +2476,7 @@
     )
     
     (:durative-action unload_p
-        :parameters (?d - Driver ?b - box ?c - city)
+        :parameters (?d - Driver ?b - box ?c - city ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Unload	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?b"))
         :duration (= ?duration 15)
         :condition ()
@@ -2290,12 +2488,11 @@
         )
     )
 
-    (:durative-action drive
-        :parameters (?d - Driver ?c1 ?c2 - city)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Drive	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?c1 ?c2"))
+    (:durative-action drive_p
+        :parameters (?d - Driver ?c1 ?c2 - city ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?c1 ?c2"))
         :duration (= ?duration (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
-        ; :duration (= ?duration 10)
-        :condition (:print "DELIVEREDDDDDDDDDDDDDDDDDDDDD\n")
+        :condition ()
         :effect (and 
             (not (at ?d ?c1))
             (at ?d ?c2)
@@ -2303,12 +2500,32 @@
                         (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
             (decrease (actual-fuel ?d)
                         (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-            (increase (current_dt) ?duration)
+            (assign (current_dt) (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
+        )
+    )
+
+    (:durative-action drive_p_fixed_duration
+        :parameters (?d - Driver ?c1 ?c2 - city ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?c1 ?c2"))
+        :duration (= ?duration ?dur)
+        :condition (:print ?dur)
+        :effect (and
+            (when (<= (remaining_transport_dt) 0)
+                (and
+                    (not (at ?d ?c1))
+                    (at ?d ?c2)
+                )
+            )
+            ; (increase (total-fuel-used ?d)
+            ;             (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+            ; (decrease (actual-fuel ?d)
+            ;             (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
+            (assign (current_dt) ?dur)
         )
     )
 
     (:durative-action refuel
-        :parameters (?d - Driver)
+        :parameters (?d - Driver ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Refuel	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt"))
         :duration (= ?duration 10)
         :condition ()

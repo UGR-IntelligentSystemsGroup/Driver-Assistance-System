@@ -1419,7 +1419,9 @@
 		(= (total-fuel-used driver1) 0)
 		(= (fuel-consumption-rate driver1) 20)
 		(= (fuel-limit driver1) 1500)
-		(= (speed driver1) 900)
+		(= (speed driver1) 109)
+
+		(= (remaining_transport_dt) 0)
 
 		(at driver1 sevilla)
 		(at box1 sevilla)
@@ -1436,12 +1438,6 @@
 	(:tasks-goal
 		:tasks (
 			(WD driver1)
-			
-			; (transport)
-			; (transport-box box1 malaga)
-			; (transport-box box2 cadiz)
-
-			; (load driver1 sevilla malaga)
 		)
 	)
 )
