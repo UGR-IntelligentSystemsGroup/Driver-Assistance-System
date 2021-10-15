@@ -109,6 +109,9 @@
         (in ?b - box ?d - Driver)
         (destination ?b - box ?c - city)
         (enough-fuel ?d - Driver ?c1 ?c2 - city)
+        (enough-transport-time ?d - Driver ?b - box)
+        (leave-transport)
+        (less_remaining_dt_than_limit ?dur - number)
     )
 
     ; =========================================================================
@@ -163,7 +166,7 @@
         ; 9 - dt_dd      si dt_dd < 9
         ; 10 - dt_dd    si dt_dd > 9 < 10
         ; TODO: Can't surpass (<= (dt_wd) (* 56.0 (hours_in_mins)))
-        (calculate_duration_D ?d ?dt_dd ?dt_activity ) {
+        (calculate_duration_D ?d ?dt_dd ?dt_activity) {
             dur = -1
 
             # Deciding between NDD or EDD
@@ -445,6 +448,7 @@
         (:method transport
             :precondition (destination ?b - box ?c - city)
             :tasks (
+                                ; (:inline (:print "hola\n")())
                 (DD ?d)
 
                 (:inline
@@ -455,7 +459,7 @@
                     ()
                 )
 
-                (WD ?d)
+                ; (WD ?d)
             )
         )
 
@@ -474,19 +478,20 @@
     ; Daily Driving
     (:task DD
         :parameters (?d - Driver)
-        ; Empty input
+        ; Para cuando comienza el día con un transporte a la mitad
         ; (:method generate
-        ;     :precondition (> (remaining_transport_dt) 0)
+        ;     :precondition (modo_generar) ;(> (remaining_transport_dt) 0)
         ;     :tasks (
-        ;                         (:inline (:print "Transport\n") ())
+        ;                         (:inline (:print "Transport------------------------------\n") ())
+        ;                         (reset_counters)
         ;         ; (transport)
         ;         (CDD ?d)
         ;                             (:inline (:print "Finished\n") ())
 
         ;         (:inline
         ;             ; TODO: Arreglar esto
-        ;             ; (> (dt_cdd) 0)
-        ;             ()
+        ;             (> (dt_cdd) 0)
+        ;             ; ()
         ;             (and
         ;                 (increase (dt_dd) (dt_cdd))
         ;                 (increase (bt_dd) (bt_cdd))
@@ -514,7 +519,9 @@
                         (increase (day-counter) 1)
                     )
                 )
+                ; (:inline (:print "hola\n")())
                 (print_new_day)
+                ; (:inline (:print "hola\n")())
             )
         )
         
@@ -539,7 +546,9 @@
                         (increase (day-counter) 1)
                     )
                 )
+                ; (:inline (:print "hola2\n")())
                 (print_new_day)
+                ; (:inline (:print "hola2\n")())
             )
         )
 
@@ -548,9 +557,11 @@
         ; --------------------------------------------------------------
 
         ; Don't tag a type of day, but try at least find the sequence
+        ; Should also work in (modo_generar)
         (:method cdd
             :precondition () ;(secuencia_entrada_no_vacia)
             :tasks (
+                (:inline (:print "CDD---------------------------------\n")())
                 (reset_counters)
                 (CDD ?d)
             )
@@ -558,14 +569,16 @@
 
         ; RD in non-recognized sequence
         (:method rest_day
-            :precondition () ;(secuencia_entrada_no_vacia)
+            :precondition (secuencia_entrada_no_vacia)
             :tasks (
                 (REST ?d)
                 (:inline
                     ()
                     (increase (day-counter) 1)
                 )
+                ; (:inline (:print "hola\n")())
                 (print_new_day)
+                ; (:inline (:print "hola\n")())
             )
         )
         
@@ -798,7 +811,10 @@
                 (A ?d)
 
                 (:inline
-                    (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                    (and
+                        (> (dt_activity) 0)
+                        (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                    )
                     ()
                 )
 
@@ -825,7 +841,10 @@
                 (A ?d)
 
                 (:inline
-                    (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                    (and
+                        (> (dt_activity) 0)
+                        (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                    )
                     ()
                 )
 
@@ -855,7 +874,10 @@
                 (A ?d)
 
                 (:inline
-                    ()
+                    (and
+                        (> (dt_activity) 0)
+                        (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                    )
                     (assign (dt_cdd_split1) (dt_activity))
                 )
 
@@ -880,7 +902,10 @@
                 (A ?d)
 
                 (:inline
-                    ()
+                    (and
+                        (> (dt_activity) 0)
+                        (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                    )
                     (assign (dt_cdd_split2) (dt_activity))
                 )
 
@@ -902,7 +927,10 @@
                 (A ?d)
 
                 (:inline
-                    ()
+                    (and
+                        (> (dt_activity) 0)
+                        (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                    )
                     (assign (dt_cdd_split2) (dt_activity))
                 )
 
@@ -1322,16 +1350,26 @@
         (:method generate
             :precondition (and (modo_generar) (destination ?b - box ?c - city))
             :tasks (
-                (:inline ()
-                    (assign (current_dt) 0)
-                )
+                (:inline (:print "A\n")())
+                ; (:inline ()
+                ;     (assign (dt_activity) 0)
+                ; )
+                ; (:inline (bind ?dur (dt_activity)) ())
+                ; (:inline (:print ?dur) ())
+                ; (:inline (:print " Activity\n") ())
 
-                (transport)
+                (transport ?d)
 
-                (:inline
-                    ()
-                    (increase (dt_activity) (current_dt))
-                );calculates driving time of current subsequence
+
+                ; (:inline
+                ;     ()
+                ;     (increase (dt_activity) (current_dt))
+                ; );calculates driving time of current subsequence
+                (:inline (:print "A-end\n")())
+
+                (:inline (bind ?dur (dt_activity)) ())
+                (:inline (:print ?dur) ())
+                (:inline (:print " Activity\n") ())
             )
         )
         
@@ -1546,8 +1584,11 @@
                     )
                     ()
                 )
+                (:inline (:print ?dur) ())
 
                 (B_suggested ?d ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+
+                (:inline (:print " Break out\n") ())
             )
         )
         (:method modo_reconocer
@@ -1997,19 +2038,43 @@
     ; Zenotravel
     ; =========================================================================
 
+    (:derived (enough-transport-time ?d - Driver ?b - box)
+        (and
+            (at ?b - box ?c1 - city)
+            (destination ?b - box ?c2 - city)
+            (bind ?dt_dd (dt_dd))
+            (bind ?dt_activity (dt_activity))
+            (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+            
+            ; See if enough time to complete transport
+            (>= ?dur (+ (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))) 5)) ; +5 min
+        )
+    )
+
     (:task transport
-        :parameters ()
+        :parameters (?d - Driver)
         (:method delivery
-            :precondition (destination ?b - box ?c - city)
+            :precondition (and 
+                (destination ?b - box ?c - city) 
+                (not (leave-transport))
+                ; (enough-transport-time ?d ?b)
+            )
             :tasks (
+                (:inline (:print "\nentro\n")())
                 (transport-box ?b ?c)
-                (transport)
+                (transport ?d)
             )
         )
 
         (:method finished
             :precondition ()
-            :tasks ()
+            :tasks (
+                (:inline (:print "salgo\n")())
+                (:inline
+                    ()
+                    (not (leave-transport))
+                )
+            )
         )
     )
 
@@ -2048,19 +2113,21 @@
                 (at ?d - driver ?c1 - city)
             )                
             :tasks (
-                (:inline
-                    (and
-                        (bind ?dt_dd (dt_dd))
-                        (bind ?dt_activity (dt_activity))
-                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+                (:inline (:print "continuing\n")())
+                ; (:inline
+                ;     (and
+                ;         (bind ?dt_dd (dt_dd))
+                ;         (bind ?dt_activity (dt_activity))
+                ;         (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
                         
-                        ; See if enough time to complete transport
-                        (>= ?dur (* (hours_in_mins) (/ (distance ?c1 ?c_final) (speed ?d))))
-                    )
-                    ()
-                )
+                ;         ; See if enough time to complete transport
+                ;         (>= ?dur (* (hours_in_mins) (/ (distance ?c1 ?c_final) (speed ?d))))
+                ;     )
+                ;     ()
+                ; )
 
                 (drive ?d ?c1 ?c_final)
+                (:inline (:print "continuing-end\n")())
             )
         )
 
@@ -2189,11 +2256,18 @@
         (>= (actual-fuel ?d) (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)) )
     )
 
+    ; (:derived 
+    ;     (less_remaining_dt_than_limit ?dur - number)
+    ;     (< (remaining_transport_dt) ?dur)
+    ; )
+
     (:task drive2
         :parameters (?d - Driver ?c1 ?c2 - city)        
         (:method break2
             :precondition (> (remaining_transport_dt) 0)
             :tasks (
+                (:inline (:print "remaining\n") ())
+                ; (:inline () (assign (next_transport_dt) 0))
                 ; Get duration before break
                 (:inline
                     (and
@@ -2204,19 +2278,29 @@
                     ; See if enough time to complete transport
                     (and
                         (assign (next_transport_dt) ?dur)
-                        (when (<= (remaining_transport_dt) ?dur)
-                            (assign (next_transport_dt) (remaining_transport_dt))
-                        )
+                        ; (when (less_remaining_dt_than_limit ?dur) (assign (next_transport_dt) (remaining_transport_dt)))
+                        (when (< (remaining_transport_dt) ?dur) (assign (next_transport_dt) (remaining_transport_dt)))
+                    )
+                )
+(:inline (bind ?hola (next_transport_dt)) ())
+(:inline (:print "next_transport_dt is ")())
+(:inline (:print ?hola)())
+
+(:inline (bind ?hola2 (remaining_transport_dt)) ())
+(:inline (:print "\nremaining_transport_dt is ")())
+(:inline (:print ?hola2)())
+
+                ; If duration is less than full DD (4.5), indicate the correct value
+                ; dur2 will be <= dur 
+                (:inline
+                    (bind ?dur2 (next_transport_dt))
+                    (and
+                        (decrease (remaining_transport_dt) ?dur2)
                     )
                 )
 
-                ; If duration is less than full DD (4.5), indicate the correct value
-                (:inline
-                    (bind ?dur (next_transport_dt))
-                    (and
-                        (decrease (remaining_transport_dt) ?dur)
-                    )
-                )
+                (:inline (:print ?dur2)())
+(:inline (:print "<- dur2\n")())
 
                 ;captura el contexto
                 (:inline
@@ -2232,25 +2316,31 @@
                     ()
                 )
 
-                (drive_p_fixed_duration ?d ?c1 ?c2 ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+                (drive_p_fixed_duration ?d ?c1 ?c2 ?dur2 ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
             )
         )
 
         (:method no_break
             :precondition ()
             :tasks (
+                (:inline (:print "no-break\n")())
                 ; Get max duration before break
                 (:inline
                     (and
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
                         (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+
+                        (:print ?dur)
+                        (:print ?dt_dd)
+                        (:print ?dt_activity)
                         
                         ; See if enough time to complete transport
                         (>= ?dur (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
                     )
                     ()
                 )
+                (:inline (:print "no-break-end\n")())
 
                 ;captura el contexto
                 (:inline
@@ -2273,6 +2363,7 @@
         (:method break
             :precondition ()
             :tasks (
+                (:inline (:print "break\n")())
                 ; Get duration before break
                 (:inline
                     (and
@@ -2302,6 +2393,12 @@
                 )
 
                 (drive_p_fixed_duration ?d ?c1 ?c2 ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+                (:inline (:print "break-end\n")())
+
+                (:inline
+                    ()
+                    (leave-transport)
+                )
             )
         )
     )
@@ -2309,7 +2406,7 @@
     (:task drive
         :parameters (?d - Driver ?c1 - city ?c2 - city)
         (:method no-refuel ; Al estar primero priorizamos el volar deprisa
-            ; TODO: QUE CONSIDERE SI ES SPLIT
+            ; TODO: QUE CONSIDERE el refuel SI ES SPLIT
             :precondition (enough-fuel ?d ?c1 ?c2)
             :tasks (
                 ;captura el contexto
@@ -2451,7 +2548,10 @@
         :parameters (?d - Driver ?c1 ?c2 - city ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?c1 ?c2"))
         :duration (= ?duration (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
-        :condition ()
+        :condition (and
+            (bind ?dur (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
+            (:print ?dur)
+        )
         :effect (and 
             (not (at ?d ?c1))
             (at ?d ?c2)
@@ -2459,7 +2559,10 @@
                         (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
             (decrease (actual-fuel ?d)
                         (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-            (assign (current_dt) (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
+
+            ; (assign (current_dt) (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
+            ; (assign (current_dt) ?dur)
+            (increase (dt_activity) ?dur)
         )
     )
 
@@ -2467,7 +2570,7 @@
         :parameters (?d - Driver ?c1 ?c2 - city ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?c1 ?c2"))
         :duration (= ?duration ?dur)
-        :condition ()
+        :condition (:print ?dur)
         :effect (and
             (when (<= (remaining_transport_dt) 0)
                 (and
@@ -2480,7 +2583,9 @@
             ;             (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
             ; (decrease (actual-fuel ?d)
             ;             (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-            (assign (current_dt) ?dur)
+            
+            ; (assign (current_dt) ?dur)
+            (increase (dt_activity) ?dur)
         )
     )
 

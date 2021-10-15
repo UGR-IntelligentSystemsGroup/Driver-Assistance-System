@@ -1413,13 +1413,14 @@
 		(= (distance sevilla huelva) 95)
 		(= (distance sevilla jaen) 246)
 		(= (distance sevilla madrid) 534)
-		(= (distance sevilla malaga) 209)
+		(= (distance sevilla malaga) 209) ;km
 		
 		(= (actual-fuel driver1) 3000)
 		(= (total-fuel-used driver1) 0)
 		(= (fuel-consumption-rate driver1) 10)
 		(= (fuel-limit driver1) 3000)
-		(= (speed driver1) 40)
+		; (= (speed driver1) 120) ; km/h
+		(= (speed driver1) 40) ; km/h
 
 		(= (remaining_transport_dt) 0)
 
