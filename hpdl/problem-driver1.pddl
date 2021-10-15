@@ -1419,8 +1419,8 @@
 		(= (total-fuel-used driver1) 0)
 		(= (fuel-consumption-rate driver1) 10)
 		(= (fuel-limit driver1) 3000)
-		; (= (speed driver1) 120) ; km/h
-		(= (speed driver1) 40) ; km/h
+		(= (speed driver1) 120) ; km/h
+		; (= (speed driver1) 40) ; km/h
 
 		(= (remaining_transport_dt) 0)
 
@@ -1432,7 +1432,7 @@
 		(= (max-load driver1) 5)
 
 		(destination box1 malaga)
-		; (destination box2 cadiz)
+		(destination box2 cadiz)
 		(= (weight box1) 2)
 		(= (weight box2) 2)
 	)
