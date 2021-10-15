@@ -2293,7 +2293,9 @@
                     )
                     (and
                         ; Get total duration
-                        (assign (remaining_transport_dt) (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
+                        (when (<= (remaining_transport_dt) 0)
+                            (assign (remaining_transport_dt) (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
+                        )
                         (decrease (remaining_transport_dt) ?dur)
                     )
                 )
@@ -2320,12 +2322,11 @@
     (:task drive
         :parameters (?d - Driver ?c1 - city ?c2 - city)
         (:method no-refuel ; Al estar primero priorizamos el volar deprisa
-            ; TODO: QUE CONSIDERE el refuel SI ES SPLIT
-            :precondition (enough-fuel ?d ?c1 ?c2)
-            :tasks (
+            :precondition ()
+            :tasks (        
                 ;captura el contexto
                 (:inline
-                    (and 
+                    (and
                         (legal-context ?legalctxt)
                         (token-context ?tkctxt)
                         (breakType-context ?drivctxt)
@@ -2338,11 +2339,16 @@
                 )
 
                 (drive2 ?d ?c1 ?c2)
+
+                (:inline
+                    (>= (actual-fuel ?d) 0)
+                    ()
+                )
             )
         )
 
         (:method refuel ; Probamos repostando
-            :precondition (not (enough-fuel ?d ?c1 ?c2))
+            :precondition ()
             :tasks (
                 ;captura el contexto
                 (:inline
@@ -2360,76 +2366,49 @@
 
                 (refuel ?d ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
                 (drive2 ?d ?c1 ?c2)
+
+                (:inline
+                    (>= (actual-fuel ?d) 0)
+                    ()
+                )
             )
         )
 
         ; NOTE: Quizás merezca dejarlo para reducir consumo
-        ; (:method layover ; No puede con ninguno, probar otra ciudad
-        ;     :precondition (and 
-        ;         (> (distance ?c1 ?c3 - city) 0)
-        ;         ; (es-ciudad ?c3 - city)
-        ;         (not (= ?c2 ?c3))
-        ;         (not (= ?c1 ?c3))
-        ;     )
-        ;     :tasks (
-        ;         (layover ?d ?c1 ?c3)
-        ;         (drive ?d ?c3 ?c2)
-        ;     )
-        ; )
+        ; PROBABLEMENTE NO ENTRA PORQUE SE PUEDE HACER BREAKS
+        (:method layover ; No puede con ninguno, probar otra ciudad
+            :precondition (and 
+                (> (distance ?c1 ?c3 - city) 0)
+                (> (distance ?c1 ?c2 - city) (distance ?c1 ?c3))
+                (> (distance ?c1 ?c2 - city) (distance ?c3 ?c2))
+
+                (not (= ?c2 ?c3))
+                (not (= ?c1 ?c3))
+            )
+            :tasks (
+                (:inline
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
+                    )
+                    ()
+                )
+
+                (refuel ?d ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+                (drive2 ?d ?c1 ?c3)
+
+                (:inline
+                    (>= (actual-fuel ?d) 0)
+                    ()
+                )
+            )
+        )
     )
-
-    ; (:task layover
-    ;     :parameters (?d - Driver ?c1 - city ?c2 - city)
-    ;     (:method no-refuel ; Al estar primero priorizamos el volar deprisa
-    ;         :precondition (enough-fuel ?d ?c1 ?c2) ; Hay fuel para el vuelo
-    ;         :tasks (
-    ;             ; Aquí se debería calcular la duración
-    ;             ; Debería poder hacer descansos
-    ;             ; (D ?d 1)
-    ;             (drive ?d ?c1 ?c2)
-
-    ;             (:inline
-    ;                 ()
-    ;                 (and 
-    ;                     (not (at ?d ?c1))
-    ;                     (at ?d ?c2)
-    ;                     (increase (total-fuel-used ?d)
-    ;                                 (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-    ;                     (decrease (actual-fuel ?d)
-    ;                                 (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-    ;                 )
-    ;             )
-    ;         )
-    ;     )
-
-    ;     (:method refuel ; Probamos repostando
-    ;         :precondition (not (enough-fuel ?d ?c1 ?c2))
-    ;         :tasks (
-    ;             ; Aquí se debería calcular la duración
-    ;             ; Este O debería hacerse con modo generar y que devolviera una salida diferente
-    ;             ; (refuel ?d ?c1)
-    ;             ; (O ?d 10)
-    ;             (refuel ?d)
-
-    ;             ; Aquí se debería calcular la duración
-    ;             ; Debería poder hacer descansos
-    ;             (drive ?d ?c1 ?c2)
-    ;             ; (D ?d 1)
-
-    ;             (:inline
-    ;                 ()
-    ;                 (and 
-    ;                     (not (at ?d ?c1))
-    ;                     (at ?d ?c2)
-    ;                     (increase (total-fuel-used ?d)
-    ;                                 (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-    ;                     (decrease (actual-fuel ?d)
-    ;                                 (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-    ;                 )
-    ;             )
-    ;         )
-    ;     )
-    ; )
 
     ; ---------------------------------------------------------------------------
 
@@ -2487,13 +2466,14 @@
                     (at ?d ?c2)
                 )
             )
-            ; TODO: Que baje el fuel correctamente
-            ; (increase (total-fuel-used ?d)
-            ;             (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-            ; (decrease (actual-fuel ?d)
-            ;             (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
-            
+
             (increase (dt_activity) ?dur)
+            (assign (current_dt) ?dur)
+
+            (increase (total-fuel-used ?d) 
+                (* (/ (* (fuel-consumption-rate ?d) (speed ?d)) 60) ?dur))
+            (decrease (actual-fuel ?d)
+                (* (/ (* (fuel-consumption-rate ?d) (speed ?d)) 60) ?dur))
         )
     )
 

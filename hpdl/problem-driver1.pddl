@@ -1415,11 +1415,11 @@
 		(= (distance sevilla madrid) 534)
 		(= (distance sevilla malaga) 209) ;km
 		
-		(= (actual-fuel driver1) 3000)
-		(= (total-fuel-used driver1) 0)
-		(= (fuel-consumption-rate driver1) 10)
-		(= (fuel-limit driver1) 3000)
-		(= (speed driver1) 120) ; km/h
+		(= (actual-fuel driver1) 1500) ; l
+		(= (total-fuel-used driver1) 0) ; l
+		(= (fuel-consumption-rate driver1) 30) ; l/km
+		(= (fuel-limit driver1) 1500) ; l
+		(= (speed driver1) 100) ; km/h
 		; (= (speed driver1) 40) ; km/h
 
 		(= (remaining_transport_dt) 0)
@@ -1431,7 +1431,7 @@
 		(= (load driver1) 0)
 		(= (max-load driver1) 5)
 
-		(destination box1 malaga)
+		(destination box1 barcelona)
 		(destination box2 cadiz)
 		(= (weight box1) 2)
 		(= (weight box2) 2)
