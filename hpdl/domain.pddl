@@ -448,7 +448,6 @@
         (:method transport
             :precondition (destination ?b - box ?c - city)
             :tasks (
-                                ; (:inline (:print "hola\n")())
                 (DD ?d)
 
                 (:inline
@@ -459,7 +458,7 @@
                     ()
                 )
 
-                ; (WD ?d)
+                (WD ?d)
             )
         )
 
@@ -503,9 +502,14 @@
         ; )
 
         (:method ndd
-            :precondition () ;(secuencia_entrada_no_vacia)
+            :precondition (or
+                (secuencia_entrada_no_vacia)
+                (destination ?b - box ?c - city)
+            )
+
             :tasks (
                 (reset_counters)
+                (:inline (:print "NDD---------------------------------\n")())
 
                 (b_dayType NDD)
                 (NDD ?d)
@@ -528,10 +532,15 @@
         (:method edd
             :precondition (and
                 (<= (edds_in_week) 2)
-                ; (secuencia_entrada_no_vacia)
+                (or
+                    (secuencia_entrada_no_vacia)
+                    (destination ?b - box ?c - city)
+                )
             )
             :tasks (
                 (reset_counters)
+
+                (:inline (:print "EDD@@@@@@@@@@@@@@@@@@@@@@@@@@@\n")())
 
                 (b_dayType EDD)
                 (EDD ?d)
@@ -559,7 +568,10 @@
         ; Don't tag a type of day, but try at least find the sequence
         ; Should also work in (modo_generar)
         (:method cdd
-            :precondition () ;(secuencia_entrada_no_vacia)
+            :precondition (or
+                (secuencia_entrada_no_vacia)
+                (destination ?b - box ?c - city)
+            )
             :tasks (
                 (:inline (:print "CDD---------------------------------\n")())
                 (reset_counters)
@@ -644,9 +656,13 @@
 
                 ; -------------------------------------------
 
+                (:inline (:print "NDD-2###########\n")())
+
                 (b_sequence second)
                 (CDD ?d)
                 (e_sequence second)
+
+                (:inline (:print "NDD2-end###########\n")())
 
                 (:inline
                     ; TODO: Arreglar esto
@@ -761,7 +777,7 @@
         :parameters (?d - Driver) 
         ; Uninterrupted (normal, no splits)
         (:method uninterrupted
-            :precondition()
+            :precondition ()
             :tasks (
                 (b_breakType uninterrupted)
                 (CDD_UNINT ?d)
@@ -774,12 +790,13 @@
                         (assign (bt_cdd) (bt_cdd_unint))
                     )
                 )
+                (:inline (:print "cdd-end\n")())
             )
         )
 
         ; Type 2 (with a split)
         (:method split
-            :precondition()
+            :precondition ()
             :tasks (
                 (b_breakType split_1)
                 (CDD_SPLIT_1 ?d)
@@ -812,7 +829,7 @@
 
                 (:inline
                     (and
-                        (> (dt_activity) 0)
+                        ; (> (dt_activity) 0)
                         (<= (dt_activity) (* 4.5 (hours_in_mins)))
                     )
                     ()
@@ -842,7 +859,7 @@
 
                 (:inline
                     (and
-                        (> (dt_activity) 0)
+                        ; (> (dt_activity) 0)
                         (<= (dt_activity) (* 4.5 (hours_in_mins)))
                     )
                     ()
@@ -875,7 +892,7 @@
 
                 (:inline
                     (and
-                        (> (dt_activity) 0)
+                        ; (> (dt_activity) 0)
                         (<= (dt_activity) (* 4.5 (hours_in_mins)))
                     )
                     (assign (dt_cdd_split1) (dt_activity))
@@ -903,7 +920,7 @@
 
                 (:inline
                     (and
-                        (> (dt_activity) 0)
+                        ; (> (dt_activity) 0)
                         (<= (dt_activity) (* 4.5 (hours_in_mins)))
                     )
                     (assign (dt_cdd_split2) (dt_activity))
@@ -928,7 +945,7 @@
 
                 (:inline
                     (and
-                        (> (dt_activity) 0)
+                        ; (> (dt_activity) 0)
                         (<= (dt_activity) (* 4.5 (hours_in_mins)))
                     )
                     (assign (dt_cdd_split2) (dt_activity))
@@ -1395,7 +1412,7 @@
         ; AQUÍ HA HABIDO UN FALLO: SE DAN las condiciones de recursión, pero NO SE HA PODIDO PROCESAR si continua recursion y no ha entrado en ninguno de los metodos anteriores
         (:method fallar
             :precondition ()
-            :tasks ()
+            :tasks (:inline (:print "a-fallar\n")())
         )
     )
 
@@ -2056,7 +2073,7 @@
         (:method delivery
             :precondition (and 
                 (destination ?b - box ?c - city) 
-                (not (leave-transport))
+                ; (not (leave-transport))
                 ; (enough-transport-time ?d ?b)
             )
             :tasks (
@@ -2070,10 +2087,10 @@
             :precondition ()
             :tasks (
                 (:inline (:print "salgo\n")())
-                (:inline
-                    ()
-                    (not (leave-transport))
-                )
+                ; (:inline
+                ;     ()
+                ;     (not (leave-transport))
+                ; )
             )
         )
     )
@@ -2140,10 +2157,10 @@
             :tasks (
                 (load ?d ?c2 ?c1)                
                 (drive ?d ?c2 ?c1)
-                (unload ?d ?c1)
+                ; (unload ?d ?c1)
                 
-                (load ?d ?c1 ?c_final)
-                (drive ?d ?c1 ?c_final)
+                ; (load ?d ?c1 ?c_final)
+                ; (drive ?d ?c1 ?c_final)
             )
         )
     )
@@ -2274,6 +2291,7 @@
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
                         (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+                        (> ?dur 0)
                     )
                     ; See if enough time to complete transport
                     (and
@@ -2317,6 +2335,7 @@
                 )
 
                 (drive_p_fixed_duration ?d ?c1 ?c2 ?dur2 ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+                (:inline (:print "remaining-end\n") ())
             )
         )
 
@@ -2330,6 +2349,7 @@
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
                         (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+                        (> ?dur 0)
 
                         (:print ?dur)
                         (:print ?dt_dd)
@@ -2340,7 +2360,6 @@
                     )
                     ()
                 )
-                (:inline (:print "no-break-end\n")())
 
                 ;captura el contexto
                 (:inline
@@ -2357,6 +2376,7 @@
                 )
 
                 (drive_p ?d ?c1 ?c2 ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+                (:inline (:print "no-break-end\n")())
             )
         )
 
@@ -2370,6 +2390,7 @@
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
                         (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+                        (> ?dur 0)
                     )
                     (and
                         ; Get total duration
@@ -2394,11 +2415,6 @@
 
                 (drive_p_fixed_duration ?d ?c1 ?c2 ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
                 (:inline (:print "break-end\n")())
-
-                (:inline
-                    ()
-                    (leave-transport)
-                )
             )
         )
     )

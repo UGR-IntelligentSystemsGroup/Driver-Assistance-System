@@ -1432,7 +1432,7 @@
 		(= (max-load driver1) 5)
 
 		(destination box1 malaga)
-		(destination box2 cadiz)
+		; (destination box2 cadiz)
 		(= (weight box1) 2)
 		(= (weight box2) 2)
 	)
