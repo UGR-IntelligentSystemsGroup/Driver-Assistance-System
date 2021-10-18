@@ -155,7 +155,7 @@
         (last_dr) ; Last timestamp a Daily Rest was detected
         (last_wr) ; Last timestamp a Weekly Rest was detected
 
-
+        (actual-timestamp)
 
         ;***********************************
         ; Generate mode
@@ -195,7 +195,7 @@
             # If end of CDD -> DR o WR
             if (?dt_dd >= (4.5*60)):
                 # A WR is needed
-                if ((?actual_timestamp + 45) > (6*24*60 + ?last_wr)):
+                if ((?actual_timestamp + 11*60) > (6*24*60 + ?last_wr)):
                     dur = 45 * 60
                 else:
                     dur = 11 * 60
@@ -231,15 +231,23 @@
     ; To check a DR is taken each 24h
     (:derived (dr_in_less_than_24)
         (or
-            (modo_generar)
             (and
+                (modo_generar)
+                ; Compare with last WR
+                (< (+ (actual-timestamp) 660) ; 11h
+                    (+ (* 6 (* 24 (hours_in_mins))) (last_wr))
+                )
+            )
+            (and
+                (modo_reconocer)
                 ; Get actual stating timestamp
-                (bind ?k (current_index_action))
-                (index_action ?sa ?k)
-                (start_action ?sa ?final)
+                ; (bind ?k (current_index_action))
+                ; (index_action ?sa ?k)
+                ; (start_action ?sa ?final)
 
                 ; Compare with last DR
-                (<= ?final
+                ; (<= ?final
+                (<= (actual-timestamp)
                     (+ (* 24 (hours_in_mins)) (last_dr))
                 )
             )
@@ -248,15 +256,20 @@
 
     ; To check if a WR is taken each "week" (6 x 24h)
     (:derived (wr_in_less_than_6_24)
-        (and
-            ; Get actual starting timestamp
-            (bind ?k (current_index_action))
-            (index_action ?sa ?k)
-            (start_action ?sa ?final)
+        (or
+            (modo_generar)
+            (and
+                (modo_reconocer)
+                ; Get actual starting timestamp
+                ; (bind ?k (current_index_action))
+                ; (index_action ?sa ?k)
+                ; (start_action ?sa ?final)
 
-            ; Compare with last DR
-            (<= ?final
-                (+ (* 6 (* 24 (hours_in_mins))) (last_dr))
+                ; Compare with last DR
+                ; (<= ?final
+                (<= (actual-timestamp)
+                    (+ (* 6 (* 24 (hours_in_mins))) (last_dr))
+                )
             )
         )
     )
@@ -938,6 +951,19 @@
             ; Habría que tener en cuenta en equipo, por ahora los vamos a ignorar
             :precondition (dr_in_less_than_24)
             :tasks (
+                ; (:inline
+                ;     (and
+                ;         (bind ?hola (last_dr))
+                ;         (bind ?hola2 (last_wr))
+                ;         (bind ?hola3 (actual-timestamp))
+                ;         (:print ?hola)
+                ;         (:print ?hola2)
+                ;         (:print ?hola3)
+                ;     )
+                ;     ()
+                ; )
+                ; (:inline (:print "Daily-legal\n")())
+
                 (DR ?d)
 
                 ; A daily rest is not bigger than 24h
@@ -948,13 +974,18 @@
 
                 ; Save last DR timestamp
                 (:inline
-                    (and 
-                        (bind ?k (- (current_index_action) 1))
-                        (index_action ?sa ?k)
-                        (end_action ?sa ?final)
-                    )
-                    (assign (last_dr) ?final)
+                    ; (and 
+                    ;     (bind ?k (- (current_index_action) 1))
+                    ;     (index_action ?sa ?k)
+                    ;     (end_action ?sa ?final)
+                    ; )
+                    ()
+                    ; (assign (last_dr) ?final)
+                    ; (when (modo_generar)
+                        (assign (last_dr) (actual-timestamp))
+                    ; )
                 )
+                ; (:inline (:print "Daily-legal-end\n")())
             )
         )
 
@@ -962,6 +993,7 @@
             ; Comprobar que se ha realizado en menos de 6 períodos de 24h
             :precondition (wr_in_less_than_6_24)
             :tasks (
+                ; (:inline (:print "Weekly-legal\n")())
                 (WR ?d)
 
                 (:inline
@@ -975,17 +1007,21 @@
 
                 ; Save last WR timestamp
                 (:inline
-                    (and 
-                        (bind ?k (- (current_index_action) 1))
-                        (index_action ?sa ?k)
-                        (end_action ?sa ?final)
-                    )
+                    ; (and 
+                    ;     (bind ?k (- (current_index_action) 1))
+                    ;     (index_action ?sa ?k)
+                    ;     (end_action ?sa ?final)
+                    ; )
+                    ()
                     (and
                         (not (next_dr_is_t4))
-                        (assign (last_dr) ?final)
-                        (assign (last_wr) ?final)
+                        ; (assign (last_dr) ?final)
+                        (assign (last_dr) (actual-timestamp))
+                        ; (assign (last_wr) ?final)
+                        (assign (last_wr) (actual-timestamp))
                     )
                 )
+                ; (:inline (:print "Weekly-legal-end\n")())
             )
         )
 
@@ -993,6 +1029,7 @@
         (:method illegal_daily
             :precondition ()
             :tasks (
+                ; (:inline (:print "Daily-illegal\n")())
                 ; Indicate illegality
                 (:inline ()
                     (and
@@ -1017,19 +1054,23 @@
                 )
                 ; Save last DR timestamp
                 (:inline
-                    (and 
-                        (bind ?k (- (current_index_action) 1))
-                        (index_action ?sa ?k)
-                        (end_action ?sa ?final)
-                    )
-                    (assign (last_dr) ?final)
+                    ; (and 
+                    ;     (bind ?k (- (current_index_action) 1))
+                    ;     (index_action ?sa ?k)
+                    ;     (end_action ?sa ?final)
+                    ; )
+                    ()
+                    ; (assign (last_dr) ?final)
+                    (assign (last_dr) (actual-timestamp))
                 )
+                ; (:inline (:print "Daily-illegal-end\n")())
             )
         )
 
         (:method illegal_weekly
             :precondition ()
             :tasks (
+                ; (:inline (:print "WR-illegal\n")())
                 ; Indicate illegality
                 (:inline ()
                     (and
@@ -1058,17 +1099,21 @@
 
                 ; Save last WR timestamp
                 (:inline
-                    (and 
-                        (bind ?k (- (current_index_action) 1))
-                        (index_action ?sa ?k)
-                        (end_action ?sa ?final)
-                    )
+                    ; (and 
+                    ;     (bind ?k (- (current_index_action) 1))
+                    ;     (index_action ?sa ?k)
+                    ;     (end_action ?sa ?final)
+                    ; )
+                    ()
                     (and
                         (not (next_dr_is_t4))
-                        (assign (last_dr) ?final)
-                        (assign (last_wr) ?final)
+                        ; (assign (last_dr) ?final)
+                        (assign (last_dr) (actual-timestamp))
+                        ; (assign (last_wr) ?final)
+                        (assign (last_wr) (actual-timestamp))
                     )
                 )
+                ; (:inline (:print "WR-illegal-end\n")())
             )
         )
     )
@@ -1535,17 +1580,18 @@
                 (:inline
                     (and
                         ; Get actual timestamp
-                        (bind ?k (- (current_index_action) 1))
-                        (index_action ?sa ?k)
-                        (start_action ?sa ?final)
-                        (bind ?start (+ ?final (dt_dd)))
+                        ; (bind ?k (- (current_index_action) 1))
+                        ; (index_action ?sa ?k)
+                        ; (start_action ?sa ?final)
+                        ; (bind ?start (+ ?final (dt_dd)))
+                        (bind ?actual_timestamp (actual-timestamp))
 
                         ; Get duration
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
                         (bind ?last_dr (last_dr))
                         (bind ?last_wr (last_wr))
-                        (bind ?dur (calculate_duration_B ?d ?dt_dd ?dt_activity ?start ?last_dr ?last_wr))
+                        (bind ?dur (calculate_duration_B ?d ?dt_dd ?dt_activity ?actual_timestamp ?last_dr ?last_wr))
                     )
                     ()
                 )
@@ -1908,7 +1954,7 @@
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
         :duration (= ?duration ?dur)
         :condition()
-        :effect ()
+        :effect (increase (actual-timestamp) ?dur)
     )
 
     ; -------------------------------------------------------------------------
@@ -1919,7 +1965,7 @@
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Other	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
         :duration (= ?duration ?dur)
         :condition()
-        :effect ()
+        :effect (increase (actual-timestamp) ?dur)
     )
 
     ; -------------------------------------------------------------------------
@@ -1930,7 +1976,7 @@
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Break	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
         :duration (= ?duration ?dur)
         :condition()
-        :effect ()
+        :effect (increase (actual-timestamp) ?dur)
     )
 
     ; -------------------------------------------------------------------------
@@ -1941,7 +1987,7 @@
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Idle	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
         :duration (= ?duration ?dur)
         :condition()
-        :effect ()
+        :effect (increase (actual-timestamp) ?dur)
     )
 
     ; -------------------------------------------------------------------------
@@ -1954,7 +2000,7 @@
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
         :duration (= ?duration ?dur)
         :condition ()
-        :effect ()
+        :effect (increase (actual-timestamp) ?dur)
     )
 
     ; -------------------------------------------------------------------------
@@ -1964,7 +2010,7 @@
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Break	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	?tkctxt	?legalctxt"))
         :duration (= ?duration ?dur)
         :condition ()
-        :effect ()
+        :effect (increase (actual-timestamp) ?dur)
     )
 
     ; =========================================================================
@@ -2089,6 +2135,7 @@
             :tasks (
                 (load ?d ?c2 ?c1)   ; Bring all packages from other city        
                 (drive ?d ?c2 ?c1)
+                (load ?d ?c1 ?c_final)
             )
         )
     )
@@ -2424,25 +2471,29 @@
     (:durative-action load_p
         :parameters (?d - Driver ?b - box ?c - city ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Load	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?b"))
-        :duration (= ?duration 15)
+        :duration (= ?duration 3)
         :condition ()
         :effect (and  
             (not (at ?b ?c))
             (in ?b ?d)
             (increase (load ?d) (weight ?b))
+
+            (increase (actual-timestamp) 3)
         )
     )
     
     (:durative-action unload_p
         :parameters (?d - Driver ?b - box ?c - city ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Unload	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?b"))
-        :duration (= ?duration 15)
+        :duration (= ?duration 3)
         :condition (:print "- Package delivered\n")
         :effect (and  
             (at ?b ?c)
             (not (in ?b ?d))
             (not (destination ?b ?c))
             (decrease (load ?d) (weight ?b))
+
+            (increase (actual-timestamp) 3)
         )
     )
 
@@ -2460,6 +2511,8 @@
                         (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)))
 
             (increase (dt_activity) ?dur)
+
+            (increase (actual-timestamp) ?dur)
         )
     )
 
@@ -2483,6 +2536,8 @@
                 (* (/ (* (fuel-consumption-rate ?d) (speed ?d)) 60) ?dur))
             (decrease (actual-fuel ?d)
                 (* (/ (* (fuel-consumption-rate ?d) (speed ?d)) 60) ?dur))
+
+            (increase (actual-timestamp) ?dur)
         )
     )
 
@@ -2491,7 +2546,10 @@
         :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Refuel	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt"))
         :duration (= ?duration 10)
         :condition ()
-        :effect (assign (actual-fuel ?d) (fuel-limit ?d))
+        :effect (and
+            (assign (actual-fuel ?d) (fuel-limit ?d))
+            (increase (actual-timestamp) 10)
+        )
     )
 
     (:durative-action refuel-on-the-way
@@ -2501,6 +2559,7 @@
         :condition (bind ?times (/ (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)) (fuel-limit ?d)))
         :effect (and
             (assign (actual-fuel ?d) (* (fuel-limit ?d) ?times))
+            (increase (actual-timestamp) 10)
         )
     )
 )

@@ -126,6 +126,7 @@ def getProblemInit(eventsFile):
 
     problemInit += "\t\t(= (last_dr) \"" + timestamp + "\")\n"
     problemInit += "\t\t(= (last_wr) \"" + timestamp + "\")\n\n"
+    problemInit += "\t\t(= (actual_timestamp) \"" + timestamp + "\")\n\n"
 
     problemInit += "\t\t; Events\n"
 
