@@ -240,13 +240,7 @@
             )
             (and
                 (modo_reconocer)
-                ; Get actual stating timestamp
-                ; (bind ?k (current_index_action))
-                ; (index_action ?sa ?k)
-                ; (start_action ?sa ?final)
-
                 ; Compare with last DR
-                ; (<= ?final
                 (<= (actual-timestamp)
                     (+ (* 24 (hours_in_mins)) (last_dr))
                 )
@@ -260,13 +254,7 @@
             (modo_generar)
             (and
                 (modo_reconocer)
-                ; Get actual starting timestamp
-                ; (bind ?k (current_index_action))
-                ; (index_action ?sa ?k)
-                ; (start_action ?sa ?final)
-
                 ; Compare with last DR
-                ; (<= ?final
                 (<= (actual-timestamp)
                     (+ (* 6 (* 24 (hours_in_mins))) (last_dr))
                 )
@@ -951,19 +939,6 @@
             ; Habría que tener en cuenta en equipo, por ahora los vamos a ignorar
             :precondition (dr_in_less_than_24)
             :tasks (
-                ; (:inline
-                ;     (and
-                ;         (bind ?hola (last_dr))
-                ;         (bind ?hola2 (last_wr))
-                ;         (bind ?hola3 (actual-timestamp))
-                ;         (:print ?hola)
-                ;         (:print ?hola2)
-                ;         (:print ?hola3)
-                ;     )
-                ;     ()
-                ; )
-                ; (:inline (:print "Daily-legal\n")())
-
                 (DR ?d)
 
                 ; A daily rest is not bigger than 24h
@@ -973,19 +948,7 @@
                 )
 
                 ; Save last DR timestamp
-                (:inline
-                    ; (and 
-                    ;     (bind ?k (- (current_index_action) 1))
-                    ;     (index_action ?sa ?k)
-                    ;     (end_action ?sa ?final)
-                    ; )
-                    ()
-                    ; (assign (last_dr) ?final)
-                    ; (when (modo_generar)
-                        (assign (last_dr) (actual-timestamp))
-                    ; )
-                )
-                ; (:inline (:print "Daily-legal-end\n")())
+                (:inline () (assign (last_dr) (actual-timestamp)))
             )
         )
 
@@ -1006,22 +969,13 @@
                 )
 
                 ; Save last WR timestamp
-                (:inline
-                    ; (and 
-                    ;     (bind ?k (- (current_index_action) 1))
-                    ;     (index_action ?sa ?k)
-                    ;     (end_action ?sa ?final)
-                    ; )
-                    ()
+                (:inline ()
                     (and
                         (not (next_dr_is_t4))
-                        ; (assign (last_dr) ?final)
                         (assign (last_dr) (actual-timestamp))
-                        ; (assign (last_wr) ?final)
                         (assign (last_wr) (actual-timestamp))
                     )
                 )
-                ; (:inline (:print "Weekly-legal-end\n")())
             )
         )
 
@@ -1029,7 +983,6 @@
         (:method illegal_daily
             :precondition ()
             :tasks (
-                ; (:inline (:print "Daily-illegal\n")())
                 ; Indicate illegality
                 (:inline ()
                     (and
@@ -1053,24 +1006,13 @@
                     ()
                 )
                 ; Save last DR timestamp
-                (:inline
-                    ; (and 
-                    ;     (bind ?k (- (current_index_action) 1))
-                    ;     (index_action ?sa ?k)
-                    ;     (end_action ?sa ?final)
-                    ; )
-                    ()
-                    ; (assign (last_dr) ?final)
-                    (assign (last_dr) (actual-timestamp))
-                )
-                ; (:inline (:print "Daily-illegal-end\n")())
+                (:inline () (assign (last_dr) (actual-timestamp)))
             )
         )
 
         (:method illegal_weekly
             :precondition ()
             :tasks (
-                ; (:inline (:print "WR-illegal\n")())
                 ; Indicate illegality
                 (:inline ()
                     (and
@@ -1098,22 +1040,13 @@
                 )
 
                 ; Save last WR timestamp
-                (:inline
-                    ; (and 
-                    ;     (bind ?k (- (current_index_action) 1))
-                    ;     (index_action ?sa ?k)
-                    ;     (end_action ?sa ?final)
-                    ; )
-                    ()
+                (:inline ()
                     (and
                         (not (next_dr_is_t4))
-                        ; (assign (last_dr) ?final)
                         (assign (last_dr) (actual-timestamp))
-                        ; (assign (last_wr) ?final)
                         (assign (last_wr) (actual-timestamp))
                     )
                 )
-                ; (:inline (:print "WR-illegal-end\n")())
             )
         )
     )
@@ -2147,10 +2080,32 @@
     ; method to check if all packages should be loaded
     (:task load ; Load all packages in actual city
         :parameters (?d - driver ?c1 - city ?c2 - city)
-        (:method load
+        ; Priority to the ones with same destination
+        (:method same_destination
             :precondition (and
                 (at ?b - box ?c1)
                 (at ?d ?c1)
+                (destination ?b ?c2)
+                (>= (max-load ?d) (+ (load ?d) (weight ?b)))
+            )
+            :tasks (
+                (board ?b ?d ?c1)
+                (load ?d ?c1 ?c2)
+            )
+        )
+
+        ; If enough weight, load the rest
+        (:method any
+            :precondition (and
+                (at ?b - box ?c1)
+                (at ?d ?c1)
+                
+                ; Must have a destination, otherwise it has been already delivered
+                (destination ?b - box ?c3 - city)
+                (not (= ?c2 ?c3))
+                (not (= ?c1 ?c3))
+
+                (>= (max-load ?d) (+ (load ?d) (weight ?b)))
             )
             :tasks (
                 (board ?b ?d ?c1)
@@ -2188,11 +2143,10 @@
 
     (:task board
         :parameters (?b - box ?d - Driver ?c - city)
-        (:method unique
+        (:method normal
             :precondition (and
                 (at ?b ?c)
                 (at ?d ?c)
-                (> (max-load ?d) (load ?d))
             )
             :tasks (
                 ;captura el contexto
@@ -2210,6 +2164,27 @@
                 )
 
                 (load_p ?d ?b ?c ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+            )
+        )
+
+        (:method weight_surpassed   ; Drop a package here to return later
+            :precondition (and
+                (at ?b ?c)
+                (at ?d ?c)
+                
+                ; The box must be inside the trunk with another destination
+                (in ?b2 - box ?d)
+                (destination ?b2 - box ?c2 - city)
+                (not (= ?b ?b2))
+                (not (= ?c ?c2))
+            )
+            :tasks (
+                (debark ?b2 ?d ?c)
+
+                ; Restore destination                
+                (:inline () (destination ?b2 ?c2))
+
+                (board ?b ?d ?c)
             )
         )
     )
