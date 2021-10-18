@@ -1482,8 +1482,11 @@
 		(destination box20 cordoba)    
 		(destination box21 malaga)    
 		
-
-		(destination box25 huelva)    
+		(destination box10 sevilla)  
+		(destination box11 sevilla)  
+		(destination box12 sevilla)  
+		(destination box25 huelva)
+		(destination box22 cadiz)
 		(destination box23 gibraltar)    
 		(destination box18 gibraltar)  
 		(destination box17 gibraltar)    

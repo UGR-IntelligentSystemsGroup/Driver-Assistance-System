@@ -164,7 +164,7 @@
         ; 9 - dt_dd      si dt_dd < 9
         ; 10 - dt_dd    si dt_dd > 9 < 10
         ; TODO: Can't surpass (<= (dt_wd) (* 56.0 (hours_in_mins)))
-        (calculate_duration_D ?d ?dt_dd ?dt_activity) {
+        (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd) {
             dur = -1
 
             # Deciding between NDD or EDD
@@ -176,8 +176,12 @@
             # Do not surpass CDD time limit
             cdd_remaining = (4.5*60) - ?dt_activity
 
+            # Do not surpass DT_WD time limit
+            wd_remaining = (56*60) - ?dt_wd
+
             # Return the smallest
             dur = dur if (dur < cdd_remaining) else cdd_remaining
+            dur = dur if (dur < wd_remaining) else wd_remaining
 
             # Bigger than 0
             dur = dur if (dur > 0) else -1
@@ -1453,7 +1457,8 @@
                     (and
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
-                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+                        (bind ?dt_wd (dt_wd))
+                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd))
                     )
                     ()
                 )
@@ -1985,7 +1990,8 @@
             (destination ?b - box ?c2 - city)
             (bind ?dt_dd (dt_dd))
             (bind ?dt_activity (dt_activity))
-            (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+            (bind ?dt_wd (dt_wd))
+            (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd))
             
             ; See if enough time to complete transport
             (>= ?dur (+ (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))) 5)) ; +5 min margin
@@ -2330,7 +2336,8 @@
                     (and
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
-                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+                        (bind ?dt_wd (dt_wd))
+                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd))
                         (> ?dur 0)
                     )
                     ; See if enough time to complete transport
@@ -2375,7 +2382,8 @@
                     (and
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
-                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+                        (bind ?dt_wd (dt_wd))
+                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd))
                         (> ?dur 0)
                         
                         ; See if enough time to complete transport
@@ -2410,7 +2418,8 @@
                     (and
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
-                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
+                        (bind ?dt_wd (dt_wd))
+                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd))
                         (> ?dur 0)
                     )
                     (and
