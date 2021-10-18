@@ -2006,7 +2006,7 @@
             (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
             
             ; See if enough time to complete transport
-            (>= ?dur (+ (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))) 5)) ; +5 min
+            (>= ?dur (+ (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))) 5)) ; +5 min margin
         )
     )
 
@@ -2030,19 +2030,19 @@
 
     (:task transport-box
         :parameters (?b - box ?c_final - city)
-        (:method Case1 ; si la persona está en la ciudad no se hace nada
+        (:method BoxAtDestination
             :precondition (at ?b ?c_final)
             :tasks (:inline () (not (destination ?b ?c)))
         )
 
-        (:method Unload
+        (:method UnloadBox
             :precondition (and (at ?d - driver ?c_final) (in ?b ?d))
             :tasks (
                 (unload ?d ?c_final)
             )
         )
         
-        (:method Case2 ; si no está en la ciudad destino, pero avion y persona están en la misma ciudad
+        (:method BoxAndDriverAtCity ; si no está en la ciudad destino, pero avion y persona están en la misma ciudad
             :precondition (and  
                 (at ?b - box ?c1 - city)
                 (at ?d - driver ?c1 - city)
@@ -2061,23 +2061,11 @@
                 (at ?d - driver ?c1 - city)
             )                
             :tasks (
-                ; (:inline
-                ;     (and
-                ;         (bind ?dt_dd (dt_dd))
-                ;         (bind ?dt_activity (dt_activity))
-                ;         (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity))
-                        
-                ;         ; See if enough time to complete transport
-                ;         (>= ?dur (* (hours_in_mins) (/ (distance ?c1 ?c_final) (speed ?d))))
-                ;     )
-                ;     ()
-                ; )
-
                 (drive ?d ?c1 ?c_final)
             )
         )
 
-        (:method Case3 ; If driver in another city, bring him back
+        (:method DriverInOtherCity ; If driver in another city, bring him back
             :precondition (and 
                 (at ?b - box ?c1 - city)
                 (at ?d - driver ?c2 - city)
@@ -2190,6 +2178,102 @@
         )
     )
 
+    ; -------------------------------------------------------------------------
+
+    (:task drive
+        :parameters (?d - Driver ?c1 - city ?c2 - city)
+        (:method no-refuel ; Al estar primero priorizamos el volar deprisa
+            :precondition ()
+            :tasks (        
+                ;captura el contexto
+                (:inline
+                    (and
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
+                    )
+                    ()
+                )
+
+                (drive-sequence ?d ?c1 ?c2)
+
+                (:inline
+                    (>= (actual-fuel ?d) 0)
+                    ()
+                )
+            )
+        )
+
+        (:method refuel ; Probamos repostando
+            :precondition ()
+            :tasks (
+                ;captura el contexto
+                (:inline
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
+                    )
+                    ()
+                )
+
+                (refuel ?d ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+                (drive-sequence ?d ?c1 ?c2)
+
+                (:inline
+                    (>= (actual-fuel ?d) 0)
+                    ()
+                )
+            )
+        )
+
+        ; Needs to refuel mid-way (more than one time in total)
+        (:method refuel-mid-way
+            :precondition ()
+            :tasks (
+                (:inline
+                    (and 
+                        (legal-context ?legalctxt)
+                        (token-context ?tkctxt)
+                        (breakType-context ?drivctxt)
+                        (sequence-context ?seqctxt)
+                        (dayType-context ?dayctxt)
+                        (bind ?weekcount (week-counter))
+                        (bind ?daycount (day-counter))
+                    )
+                    ()
+                )
+
+                (refuel-on-the-way ?d ?c1 ?c2 ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+                (drive-sequence ?d ?c1 ?c2)
+
+                (:inline
+                    (>= (actual-fuel ?d) 0)
+                    ()
+                )
+            )
+        )
+
+        ; Layover don't needed thanks to the breaks
+        ; (:method layover
+            ; :precondition (and
+                ; (> (distance ?c1 ?c3 - city) 0)
+                ; (> (distance ?c1 ?c2 - city) (distance ?c1 ?c3))
+                ; (> (distance ?c1 ?c2 - city) (distance ?c3 ?c2))
+
+                ; (not (= ?c2 ?c3))
+                ; (not (= ?c1 ?c3))
+            ; )
+    )
+
     ; ---------------------------------------------------------------------------
 
     ; Para comprobar si hay suficiente fuel
@@ -2198,7 +2282,7 @@
         (>= (actual-fuel ?d) (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)) )
     )
 
-    (:task drive2
+    (:task drive-sequence
         :parameters (?d - Driver ?c1 ?c2 - city)        
         (:method break2
             :precondition (> (remaining_transport_dt) 0)
@@ -2319,97 +2403,6 @@
         )
     )
 
-    (:task drive
-        :parameters (?d - Driver ?c1 - city ?c2 - city)
-        (:method no-refuel ; Al estar primero priorizamos el volar deprisa
-            :precondition ()
-            :tasks (        
-                ;captura el contexto
-                (:inline
-                    (and
-                        (legal-context ?legalctxt)
-                        (token-context ?tkctxt)
-                        (breakType-context ?drivctxt)
-                        (sequence-context ?seqctxt)
-                        (dayType-context ?dayctxt)
-                        (bind ?weekcount (week-counter))
-                        (bind ?daycount (day-counter))
-                    )
-                    ()
-                )
-
-                (drive2 ?d ?c1 ?c2)
-
-                (:inline
-                    (>= (actual-fuel ?d) 0)
-                    ()
-                )
-            )
-        )
-
-        (:method refuel ; Probamos repostando
-            :precondition ()
-            :tasks (
-                ;captura el contexto
-                (:inline
-                    (and 
-                        (legal-context ?legalctxt)
-                        (token-context ?tkctxt)
-                        (breakType-context ?drivctxt)
-                        (sequence-context ?seqctxt)
-                        (dayType-context ?dayctxt)
-                        (bind ?weekcount (week-counter))
-                        (bind ?daycount (day-counter))
-                    )
-                    ()
-                )
-
-                (refuel ?d ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
-                (drive2 ?d ?c1 ?c2)
-
-                (:inline
-                    (>= (actual-fuel ?d) 0)
-                    ()
-                )
-            )
-        )
-
-        ; NOTE: Quizás merezca dejarlo para reducir consumo
-        ; PROBABLEMENTE NO ENTRA PORQUE SE PUEDE HACER BREAKS
-        (:method layover ; No puede con ninguno, probar otra ciudad
-            :precondition (and 
-                (> (distance ?c1 ?c3 - city) 0)
-                (> (distance ?c1 ?c2 - city) (distance ?c1 ?c3))
-                (> (distance ?c1 ?c2 - city) (distance ?c3 ?c2))
-
-                (not (= ?c2 ?c3))
-                (not (= ?c1 ?c3))
-            )
-            :tasks (
-                (:inline
-                    (and 
-                        (legal-context ?legalctxt)
-                        (token-context ?tkctxt)
-                        (breakType-context ?drivctxt)
-                        (sequence-context ?seqctxt)
-                        (dayType-context ?dayctxt)
-                        (bind ?weekcount (week-counter))
-                        (bind ?daycount (day-counter))
-                    )
-                    ()
-                )
-
-                (refuel ?d ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
-                (drive2 ?d ?c1 ?c3)
-
-                (:inline
-                    (>= (actual-fuel ?d) 0)
-                    ()
-                )
-            )
-        )
-    )
-
     ; ---------------------------------------------------------------------------
 
     (:durative-action load_p
@@ -2483,5 +2476,15 @@
         :duration (= ?duration 10)
         :condition ()
         :effect (assign (actual-fuel ?d) (fuel-limit ?d))
+    )
+
+    (:durative-action refuel-on-the-way
+        :parameters (?d - Driver ?c1 ?c2 - city ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Refuelx?times	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt"))
+        :duration (= ?duration 10)
+        :condition (bind ?times (/ (* (distance ?c1 ?c2) (fuel-consumption-rate ?d)) (fuel-limit ?d)))
+        :effect (and
+            (assign (actual-fuel ?d) (* (fuel-limit ?d) ?times))
+        )
     )
 )
