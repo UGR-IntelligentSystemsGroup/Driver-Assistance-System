@@ -230,15 +230,18 @@
 
     ; To check a DR is taken each 24h
     (:derived (dr_in_less_than_24)
-        (and
-            ; Get actual stating timestamp
-            (bind ?k (current_index_action))
-            (index_action ?sa ?k)
-            (start_action ?sa ?final)
+        (or
+            (modo_generar)
+            (and
+                ; Get actual stating timestamp
+                (bind ?k (current_index_action))
+                (index_action ?sa ?k)
+                (start_action ?sa ?final)
 
-            ; Compare with last DR
-            (<= ?final
-                (+ (* 24 (hours_in_mins)) (last_dr))
+                ; Compare with last DR
+                (<= ?final
+                    (+ (* 24 (hours_in_mins)) (last_dr))
+                )
             )
         )
     )
