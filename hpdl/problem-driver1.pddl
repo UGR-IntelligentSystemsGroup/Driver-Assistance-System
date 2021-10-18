@@ -1415,7 +1415,7 @@
 		(= (distance sevilla madrid) 534)
 		(= (distance sevilla malaga) 209) ;km
 		
-		(= (actual-fuel driver1) 1500) ; l
+		(= (actual-fuel driver1) 50) ; l
 		(= (total-fuel-used driver1) 0) ; l
 		(= (fuel-consumption-rate driver1) 0.35) ; l/km
 		(= (fuel-limit driver1) 1500) ; l
@@ -1432,9 +1432,9 @@
 		(= (load driver1) 0)
 		(= (max-load driver1) 15)
 
-		(destination box1 barcelona)
 		(destination box2 almeria)
-		(destination box2 bilbao)
+		(destination box1 barcelona)
+		(destination box3 bilbao)
 		(= (weight box1) 2)
 		(= (weight box2) 3)
 		(= (weight box2) 7)

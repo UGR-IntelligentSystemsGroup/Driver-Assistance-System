@@ -2042,14 +2042,14 @@
             )
         )
         
-        (:method BoxAndDriverAtCity ; si no está en la ciudad destino, pero avion y persona están en la misma ciudad
+        (:method BoxAndDriverAtCity ; If package and driver in the same city
             :precondition (and  
                 (at ?b - box ?c1 - city)
                 (at ?d - driver ?c1 - city)
             )
                 
             :tasks (
-                (load ?d ?c1 ?c_final)              
+                (load ?d ?c1 ?c_final)
                 (drive ?d ?c1 ?c_final)
             )
         )
@@ -2065,6 +2065,18 @@
             )
         )
 
+        (:method BoxAlreadyLoaded ; Package already loaded in the truck
+            :precondition (and
+                (at ?d - driver ?c1 - city)
+                (in ?b ?d)
+                (destination ?b ?c_final)
+            )
+            :tasks (
+                (load ?d ?c1 ?c_final)
+                (drive ?d ?c1 ?c_final)
+            )
+        )
+
         (:method DriverInOtherCity ; If driver in another city, bring him back
             :precondition (and 
                 (at ?b - box ?c1 - city)
@@ -2072,7 +2084,7 @@
                 (not (= ?c1 ?c2))
             )
             :tasks (
-                (load ?d ?c2 ?c1)                
+                (load ?d ?c2 ?c1)   ; Bring all packages from other city        
                 (drive ?d ?c2 ?c1)
             )
         )
@@ -2081,13 +2093,14 @@
 
     ; ---------------------------------------------------------------------------
 
-    (:task load ; Embarca a todos los pasajeros en ?c1 con destino ?c2
+    ; There should be an option to optimize total-fuel-used and an additional
+    ; method to check if all packages should be loaded
+    (:task load ; Load all packages in actual city
         :parameters (?d - driver ?c1 - city ?c2 - city)
-        (:method Case1
+        (:method load
             :precondition (and
                 (at ?b - box ?c1)
                 (at ?d ?c1)
-                (destination ?b - box ?c2)
             )
             :tasks (
                 (board ?b ?d ?c1)
@@ -2095,15 +2108,15 @@
             )
         )
 
-        (:method Case2 ; Si no hay nadie no hace nada
+        (:method end
             :precondition ()
             :tasks ()
         )
     )
 
-    (:task unload ; Desembarca a todos los pasajeros con destino ?c
+    (:task unload ; Unload all packages whose destination is actual city
         :parameters (?d - driver ?c - city)
-        (:method Case1
+        (:method unload
             :precondition (and
                 (in ?b - box ?d)
                 (at ?d ?c)
@@ -2115,7 +2128,7 @@
             )
         )
 
-        (:method Case2 ; Si no hay nadie no hace nada
+        (:method end
             :precondition ()
             :tasks ()
         )
