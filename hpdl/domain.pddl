@@ -550,7 +550,6 @@
                 (destination ?b - box ?c - city)
             )
             :tasks (
-                (:inline (:print "CDD---------------------------------\n")())
                 (reset_counters)
                 (CDD ?d)
             )
@@ -1961,7 +1960,7 @@
             (:tag prettyprint "#-----------------------
 # NEW DAY
 #-----------------------
-#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal"))
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo"))
             :duration ()
             :condition (:print "> One Driving Day processed\n")
             :effect ()
@@ -1973,7 +1972,7 @@
             (:tag prettyprint "#=======================================
 # NEW WEEK
 #=======================================
-#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal"))
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo"))
             :duration ()
             :condition (:print ">> One Week processed\n")
             :effect ()
@@ -2483,7 +2482,7 @@
 
     (:durative-action drive_p
         :parameters (?d - Driver ?c1 ?c2 - city ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?c1 ?c2"))
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?c1-?c2"))
         :duration (= ?duration (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
         :condition (bind ?dur (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))))
         :effect (and 
@@ -2502,7 +2501,7 @@
 
     (:durative-action drive_p_fixed_duration
         :parameters (?d - Driver ?c1 ?c2 - city ?dur - number ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt  - context)
-        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?c1 ?c2"))
+        :meta ((:tag prettyprint "?d	?start	?end	?duration	Sug-Driving	?weekcount	?daycount	?dayctxt	?seqctxt	?drivctxt	A	?legalctxt	?c1-?c2"))
         :duration (= ?duration ?dur)
         :condition ()
         :effect (and
