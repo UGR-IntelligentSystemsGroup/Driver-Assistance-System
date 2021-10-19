@@ -1,7 +1,6 @@
 #!/bin/bash
 # Join recognized logs into one single CSV
 
-cd ..
 output=out/log-recognized/combined-log.csv
 
 # Find header
