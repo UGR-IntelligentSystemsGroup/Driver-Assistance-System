@@ -6,9 +6,8 @@ doc/*
 
 # Data
 data/old
-out/logs
-hpdl/problems
-out/log-recognized
+out/logs*
+hpdl/problems*
 
 # Output
 out/old

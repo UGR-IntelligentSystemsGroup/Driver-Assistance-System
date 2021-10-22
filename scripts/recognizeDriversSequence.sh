@@ -1,4 +1,5 @@
 #!/bin/bash
+# Perform planning search to recognize driver activity
 
 for filename in `ls hpdl/problems/problem-driver*.pddl | sort -V | tail -n +1`; do
     echo "Recognizing driver activity for file $filename..."
@@ -7,7 +8,7 @@ for filename in `ls hpdl/problems/problem-driver*.pddl | sort -V | tail -n +1`; 
     tmp=${filename#*-}   # remove prefix ending in "_"
     driver=${tmp%.*}   # remove suffix starting with "_"
 
-    ./planner/planner -d hpdl/domain.pddl -p $filename -o out/log-recognized/log-$driver.csv
+    ./planner/planner -d hpdl/domain.pddl -p $filename -o out/logs-recognition/log-$driver.csv
 
     echo "$filename Completed!"
 done;

@@ -126,7 +126,8 @@ def getProblemInit(eventsFile):
     timestamp = timestamp.split("\"")[1]
 
     problemInit += "\t\t(= (last_dr) \"" + timestamp + "\")\n"
-    problemInit += "\t\t(= (last_wr) \"" + timestamp + "\")\n\n"
+    problemInit += "\t\t(= (last_wr) \"" + timestamp + "\")\n"
+    problemInit += "\t\t(= (actual-timestamp) \"" + timestamp + "\")\n\n"
 
     problemInit += "\t\t; Events\n"
 

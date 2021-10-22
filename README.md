@@ -24,7 +24,7 @@ Integrating Machine Learning with Automated Planning
 
 - He mirado un poco y parece que no, pero se puede forzar el prettyprint de flotantes a enteros?
 
-- El tiempo de otros trabajos no cuenta para nada, no? Me resulta raro pero no viene explícitamente dicho en ningún lado.
+- Otros trabajos no computan horas de conducción, pero sí jornada máxima. **IMPORTANTE**: El dominio aún no lo tiene en cuenta.
 
 - Contexto de salida split, ¿con o sin número?
 
@@ -106,6 +106,8 @@ Domain-strict:
   - Legal: Indica si se ha cometido una ilegalidad (no se ha reconocido algún patrón). Técnicamente si es __no__ -> Algún otro contexto es __none__
 
 - Las 00:00 las paso al día siguiente en el dataset (algunas veces estaba de una forma y algunas de otra)
+
+- Ahora sugiera conducción y descansos, teniendo en cuenta la secuencia actual y si debe acabar en WR o DR. Sug-Driving se debe considerar como cualquier actividad (Idle y OtherWork también). La duración es la máxima recomendada, pero se podría reducir.
 
 ### Notation
 
