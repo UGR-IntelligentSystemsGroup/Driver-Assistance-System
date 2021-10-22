@@ -36,7 +36,7 @@ A tagged log in TSV format will be outputted.
 
 Functionality not yet finished.
 
-## :clock: HOS Regulation
+## ⏲️ HOS Regulation
 
 This projects is based on the european **H**ours **O**f **S**ervice regulation No 561/2006, and you can find a copy of it [here](https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32006R0561). The most important elements to consider are reflected in the following images:
 
