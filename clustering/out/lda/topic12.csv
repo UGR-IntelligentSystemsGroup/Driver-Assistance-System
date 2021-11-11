@@ -1,0 +1,11 @@
+Activity	DayType	Sequence	BreakType	Token	Legal	Topic
+Driving	ndd	second	uninterrupted	A	1	12.0
+Other	ndd	second	uninterrupted	A	1	12.0
+Break	ndd	second	uninterrupted	B_T0	1	12.0
+Break	ndd	second	uninterrupted	DR_T4	1	12.0
+Idle	ndd	second	uninterrupted	I	1	12.0
+Break	ndd	second	uninterrupted	DR_T1	1	12.0
+Break	ndd	second	uninterrupted	DR_T3	1	12.0
+Break	ndd	first	uninterrupted	B_T1	1	12.0
+Break	ndd	second	uninterrupted	DR_T2	1	12.0
+Break	ndd	second	uninterrupted	WR_T2	1	12.0

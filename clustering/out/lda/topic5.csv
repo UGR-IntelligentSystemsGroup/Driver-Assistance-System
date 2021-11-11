@@ -1,0 +1,11 @@
+Activity	DayType	Sequence	BreakType	Token	Legal	Topic
+Driving	ndd	second	split_1	A	1	5.0
+Driving	ndd	second	split_2	A	1	5.0
+Other	ndd	second	split_1	A	1	5.0
+Other	ndd	second	split_2	A	1	5.0
+Break	ndd	second	split_1	B_T2	1	5.0
+Break	ndd	second	split_1	B_T0	1	5.0
+Break	ndd	second	split_2	B_T0	1	5.0
+Driving	ndd	first	split_1	A	1	5.0
+Driving	ndd	first	split_2	A	1	5.0
+Break	ndd	first	split_2	B_T3	1	5.0
