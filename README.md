@@ -8,9 +8,9 @@ A system to:
 
 ## :unlock: Requirements
 
-Just download this repo and compile the SIADEX planner. Easy as that!
-<!-- - Python3 -->
-<!-- - SIADEX HTN planner (get it [here](https://github.com/IgnacioVellido/VGDL-to-HTN-Parser/tree/master/planners/Siadex)) -->
+<!-- Just download this repo and compile the SIADEX planner. Easy as that! -->
+- Python3
+- SIADEX HTN planner (get it [here](https://github.com/IgnacioVellido/VGDL-to-HTN-Parser/tree/master/planners/Siadex), create a directory called ``planner`` and compile it in there)
 
 ## :computer: Usage
 
