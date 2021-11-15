@@ -6,7 +6,6 @@ doc/*
 
 # Data
 data/old
-hpdl/problems*
 
 # Output
 out/old
