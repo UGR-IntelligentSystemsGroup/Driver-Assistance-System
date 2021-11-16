@@ -17,19 +17,10 @@ from joblib import load
 import subprocess
 
 # Preprocessing
-# from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import normalize
-
-# BOW-TFIDF
-# from gensim.corpora.dictionary import Dictionary
-# from gensim.models.tfidfmodel import TfidfModel
-# from gensim.matutils import corpus2dense, corpus2csc
 
 # D2V
 from gensim.models.doc2vec import Doc2Vec
-
-# Clustering
-# from sklearn.cluster import KMeans
 
 # Visualization
 from sklearn.decomposition import PCA
@@ -96,6 +87,15 @@ def visualize_data(matrix, model_name, clusters=None, ax1=None, ax2=None):
 #########################################################################
 
 st.title('Driver activity recognition')
+
+#########################################################################
+
+
+
+#########################################################################
+# Clustering
+#########################################################################
+
 
 #########################################################################
 # Load data
@@ -230,11 +230,6 @@ def get_d2v(corpus_lists):
 
 # -----------------------------------------------------------------------------
 
-# data_load_state = st.text('Getting BOW...')
-# X_bow = get_bow(corpus_lists)
-# st.pyplot(visualize_data(X_bow, 'BOW'))
-# data_load_state.text("BOW: Done!")
-
 data_load_state = st.text('Getting D2V...')
 X_d2v = get_d2v(corpus_lists)
 X_d2v = normalize(X_d2v)
@@ -258,7 +253,6 @@ def get_predictions(X_d2v):
   kmeans = get_kmeans_model()
 
   clusters = kmeans.predict(X_d2v)
-  # centroids = kmeans.cluster_centers_
 
   # Get metrics
   # silhouette = silhouette_score(X, clusters)
@@ -311,3 +305,5 @@ centroid_num = st.number_input('Select centroid to show', 1, 25)
 centroid = decoded_centroids.loc[decoded_centroids['Cluster'] == centroid_num]
 
 st.write("Centroids", centroid)
+
+# TODO: CENTROIDS ARE NOT THE CORRECT ONES, RE-SAVE THEM
