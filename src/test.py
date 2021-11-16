@@ -89,8 +89,47 @@ def visualize_data(matrix, model_name, clusters=None, ax1=None, ax2=None):
 st.title('Driver activity recognition')
 
 #########################################################################
+# Recognition
+#########################################################################
 
+# -----------------------------------------------------------------------------
+# Get driver to predict
+driver = st.number_input('Select driver log', 1, 290)
 
+RAW_DATA_PATH = "./data/split/driver{}.csv".format(driver)
+PLAN_DATA_PATH = "./out/event_log_driver{}.plan".format(driver)
+
+data_load_state = st.text('Preprocessing raw data for recognition...')
+
+# -----------------------------------------------------------------------------
+# FROM CSV to PDDL
+try:
+  subprocess.run(['python', './src/parsers/fromCSVtoPLAN.py' , RAW_DATA_PATH])
+except subprocess.CalledProcessError as err:
+  print("Error while parsing CSV to PLAN: " + err.stderr)
+
+try:
+  subprocess.run(['python', './src/parsers/fromPLANtoPDDL.py' , PLAN_DATA_PATH])
+except subprocess.CalledProcessError as err:
+  print("Error while parsing PLAN to PDDL: " + err.stderr)
+
+data_load_state.text("Preprocessing raw data for recognition: Done!")
+
+# -----------------------------------------------------------------------------
+# Calling planner
+
+data_load_state = st.text('Recognizing driver log...')
+
+PROBLEM_PATH = "hpdl/problem-driver{}.pddl".format(driver)
+LOG_PATH = "out/log_tagged.csv"
+
+try:
+  # Domain - Problem - Output
+  subprocess.run(['bash', './src/runPlanner.sh', 'hpdl/domain.pddl', PROBLEM_PATH, LOG_PATH])
+except subprocess.CalledProcessError as err:
+  print("Error while planning: " + err.stderr)
+
+data_load_state.text("Recognizing driver log: Done!")
 
 #########################################################################
 # Clustering
@@ -99,7 +138,6 @@ st.title('Driver activity recognition')
 
 #########################################################################
 # Load data
-#########################################################################
 
 
 @st.cache
@@ -125,17 +163,16 @@ def load_data(DATA_PATH):
 
 # DATA_PATH = "./out/logs-recognition/combined-log.csv"
 
-# Get driver to predict
-driver = st.number_input('Select driver log', 1, 288)
-
-DATA_PATH = "./out/logs-recognition/log-driver{}.csv".format(driver)
+# LOG_PATH = "./out/logs-recognition/log-driver{}.csv".format(driver)
 
 # Clean log for driver
-subprocess.run(['bash', './src/formatCSV.sh' , DATA_PATH])
+subprocess.run(['bash', './src/formatCSV.sh' , LOG_PATH])
 
 data_load_state = st.text('Loading data...')
-df = load_data(DATA_PATH)
+df = load_data(LOG_PATH)
 data_load_state.text("Loading: Done!")
+
+# TODO: https://discuss.streamlit.io/t/simple-button-that-waits-for-input/3322/2
 
 if st.checkbox('Show raw data'):
     st.subheader('Raw data')
@@ -305,5 +342,7 @@ centroid_num = st.number_input('Select centroid to show', 1, 25)
 centroid = decoded_centroids.loc[decoded_centroids['Cluster'] == centroid_num]
 
 st.write("Centroids", centroid)
+
+# TODO: SAVE PREDICTIONS TO DISK
 
 # TODO: CENTROIDS ARE NOT THE CORRECT ONES, RE-SAVE THEM

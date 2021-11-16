@@ -173,7 +173,7 @@ def main(argv):
 
     # -------------------------------------------------------------------------
     # Write output
-    outputFile = "hpdl/problems/problem-{}.pddl".format(drivers[0])
+    outputFile = "hpdl/problem-{}.pddl".format(drivers[0])
     output = open(outputFile, 'w')
 
     output.write(pddlHeader)

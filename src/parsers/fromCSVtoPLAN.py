@@ -78,7 +78,7 @@ def writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol):
 time_format_input = "%d/%m/%y %H:%M"
 time_format_output = "%d/%m/%Y %H:%M"
 
-output_folder = "./out/logs/"
+output_folder = "./out/"
 
 def main(argv):
     path = argv[1]
