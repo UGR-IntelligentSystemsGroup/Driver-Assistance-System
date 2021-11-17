@@ -18,6 +18,10 @@ def durationToMinutes(duracion):
 def getDriverSymbol(currentDriver, previousDriver, driverCounter):
     """Dada la cadena currentDriver leida del fichero y la leida del anterior registro, y el contador actual de drivers devuelve el mismo contador si no hay cambio de driver o lo incrementa en caso contrario"""
     
+    # If currentDriver already renamed in the format "driverX", just return value
+    if "driver" in currentDriver:
+        return currentDriver, driverCounter
+
     if currentDriver != previousDriver:
         driverCounter += 1
 
