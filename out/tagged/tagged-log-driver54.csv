@@ -1,0 +1,223 @@
+driver54	02/01/2017 14:38	02/01/2017 16:02	84.000000	Driving	1.000000	1.000000	ndd	first	uninterrupted	A	yes
+driver54	02/01/2017 16:02	02/01/2017 16:04	2.000000	Idle	1.000000	1.000000	ndd	first	uninterrupted	I	yes
+driver54	02/01/2017 16:04	02/01/2017 16:36	32.000000	Other	1.000000	1.000000	ndd	first	uninterrupted	A	yes
+driver54	02/01/2017 16:36	02/01/2017 18:05	89.000000	Driving	1.000000	1.000000	ndd	first	uninterrupted	A	yes
+driver54	02/01/2017 18:05	02/01/2017 18:12	7.000000	Other	1.000000	1.000000	ndd	first	uninterrupted	A	yes
+driver54	02/01/2017 18:12	02/01/2017 18:41	29.000000	Driving	1.000000	1.000000	ndd	first	uninterrupted	A	yes
+driver54	02/01/2017 18:41	02/01/2017 18:42	1.000000	Break	1.000000	1.000000	ndd	first	uninterrupted	B_T0	yes
+driver54	02/01/2017 18:42	02/01/2017 18:47	5.000000	Other	1.000000	1.000000	ndd	first	uninterrupted	A	yes
+driver54	02/01/2017 18:47	02/01/2017 19:05	18.000000	Driving	1.000000	1.000000	ndd	first	uninterrupted	A	yes
+driver54	02/01/2017 19:05	02/01/2017 19:11	6.000000	Other	1.000000	1.000000	ndd	first	uninterrupted	A	yes
+driver54	02/01/2017 19:11	02/01/2017 19:51	40.000000	Driving	1.000000	1.000000	ndd	first	uninterrupted	A	yes
+driver54	02/01/2017 19:51	02/01/2017 19:58	7.000000	Other	1.000000	1.000000	ndd	first	uninterrupted	A	yes
+driver54	02/01/2017 19:58	02/01/2017 21:01	63.000000	Break	1.000000	1.000000	ndd	first	uninterrupted	B_T1	yes
+driver54	02/01/2017 21:01	02/01/2017 23:30	149.000000	Driving	1.000000	1.000000	ndd	second	uninterrupted	A	yes
+driver54	02/01/2017 23:30	02/01/2017 23:51	21.000000	Other	1.000000	1.000000	ndd	second	uninterrupted	A	yes
+driver54	02/01/2017 23:51	03/01/2017 01:43	112.000000	Driving	1.000000	1.000000	ndd	second	uninterrupted	A	yes
+driver54	03/01/2017 01:43	03/01/2017 01:51	8.000000	Other	1.000000	1.000000	ndd	second	uninterrupted	A	yes
+driver54	03/01/2017 01:51	03/01/2017 13:16	685.000000	Break	1.000000	1.000000	ndd	second	uninterrupted	DR_T1	yes
+#-----------------------
+# NEW DAY
+#-----------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo
+driver54	03/01/2017 13:16	03/01/2017 15:03	107.000000	Driving	1.000000	2.000000	edd	first	uninterrupted	A	yes
+driver54	03/01/2017 15:03	03/01/2017 15:13	10.000000	Other	1.000000	2.000000	edd	first	uninterrupted	A	yes
+driver54	03/01/2017 15:13	03/01/2017 15:55	42.000000	Driving	1.000000	2.000000	edd	first	uninterrupted	A	yes
+driver54	03/01/2017 15:55	03/01/2017 16:36	41.000000	Other	1.000000	2.000000	edd	first	uninterrupted	A	yes
+driver54	03/01/2017 16:36	03/01/2017 17:42	66.000000	Break	1.000000	2.000000	edd	first	uninterrupted	B_T1	yes
+driver54	03/01/2017 17:42	03/01/2017 19:26	104.000000	Driving	1.000000	2.000000	edd	second	split_1	A	yes
+driver54	03/01/2017 19:26	03/01/2017 19:28	2.000000	Other	1.000000	2.000000	edd	second	split_1	A	yes
+driver54	03/01/2017 19:28	03/01/2017 19:29	1.000000	Driving	1.000000	2.000000	edd	second	split_1	A	yes
+driver54	03/01/2017 19:29	03/01/2017 19:54	25.000000	Break	1.000000	2.000000	edd	second	split_1	B_T2	yes
+driver54	03/01/2017 19:54	03/01/2017 19:58	4.000000	Driving	1.000000	2.000000	edd	second	split_2	A	yes
+driver54	03/01/2017 19:58	03/01/2017 20:44	46.000000	Break	1.000000	2.000000	edd	second	split_2	B_T3	yes
+driver54	03/01/2017 20:44	03/01/2017 21:04	20.000000	Other	1.000000	2.000000	edd	third	uninterrupted	A	yes
+driver54	03/01/2017 21:04	03/01/2017 21:27	23.000000	Driving	1.000000	2.000000	edd	third	uninterrupted	A	yes
+driver54	03/01/2017 21:27	03/01/2017 21:45	18.000000	Other	1.000000	2.000000	edd	third	uninterrupted	A	yes
+driver54	03/01/2017 21:45	04/01/2017 09:44	719.000000	Break	1.000000	2.000000	edd	third	uninterrupted	DR_T1	yes
+#-----------------------
+# NEW DAY
+#-----------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo
+driver54	04/01/2017 09:44	04/01/2017 10:21	37.000000	Driving	1.000000	3.000000	ndd	first	uninterrupted	A	yes
+driver54	04/01/2017 10:21	04/01/2017 10:24	3.000000	Break	1.000000	3.000000	ndd	first	uninterrupted	B_T0	yes
+driver54	04/01/2017 10:24	04/01/2017 10:27	3.000000	Driving	1.000000	3.000000	ndd	first	uninterrupted	A	yes
+driver54	04/01/2017 10:27	04/01/2017 10:32	5.000000	Break	1.000000	3.000000	ndd	first	uninterrupted	B_T0	yes
+driver54	04/01/2017 10:32	04/01/2017 10:34	2.000000	Driving	1.000000	3.000000	ndd	first	uninterrupted	A	yes
+driver54	04/01/2017 10:34	04/01/2017 11:50	76.000000	Break	1.000000	3.000000	ndd	first	uninterrupted	B_T1	yes
+driver54	04/01/2017 11:50	04/01/2017 11:55	5.000000	Other	1.000000	3.000000	ndd	second	uninterrupted	A	yes
+driver54	04/01/2017 11:55	04/01/2017 12:37	42.000000	Driving	1.000000	3.000000	ndd	second	uninterrupted	A	yes
+driver54	04/01/2017 12:37	04/01/2017 12:46	9.000000	Break	1.000000	3.000000	ndd	second	uninterrupted	B_T0	yes
+driver54	04/01/2017 12:46	04/01/2017 12:47	1.000000	Driving	1.000000	3.000000	ndd	second	uninterrupted	A	yes
+driver54	04/01/2017 12:47	04/01/2017 12:54	7.000000	Break	1.000000	3.000000	ndd	second	uninterrupted	B_T0	yes
+driver54	04/01/2017 12:54	04/01/2017 13:01	7.000000	Driving	1.000000	3.000000	ndd	second	uninterrupted	A	yes
+driver54	04/01/2017 13:01	04/01/2017 13:08	7.000000	Other	1.000000	3.000000	ndd	second	uninterrupted	A	yes
+driver54	04/01/2017 13:08	04/01/2017 19:04	356.000000	Break	1.000000	3.000000	ndd	second	uninterrupted	DR_T3	yes
+#-----------------------
+# NEW DAY
+#-----------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo
+driver54	04/01/2017 19:04	04/01/2017 22:09	185.000000	Driving	1.000000	4.000000	ndd	unique	uninterrupted	A	yes
+driver54	04/01/2017 22:09	04/01/2017 22:12	3.000000	Other	1.000000	4.000000	ndd	unique	uninterrupted	A	yes
+driver54	04/01/2017 22:12	04/01/2017 23:37	85.000000	Driving	1.000000	4.000000	ndd	unique	uninterrupted	A	yes
+driver54	04/01/2017 23:37	04/01/2017 23:38	1.000000	Break	1.000000	4.000000	ndd	unique	uninterrupted	B_T0	yes
+driver54	04/01/2017 23:38	04/01/2017 23:44	6.000000	Other	1.000000	4.000000	ndd	unique	uninterrupted	A	yes
+driver54	04/01/2017 23:44	05/01/2017 09:47	603.000000	Break	1.000000	4.000000	ndd	unique	uninterrupted	DR_T4	yes
+#-----------------------
+# NEW DAY
+#-----------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo
+driver54	05/01/2017 09:47	05/01/2017 09:59	12.000000	Other	1.000000	5.000000	ndd	first	uninterrupted	A	yes
+driver54	05/01/2017 09:59	05/01/2017 12:09	130.000000	Driving	1.000000	5.000000	ndd	first	uninterrupted	A	yes
+driver54	05/01/2017 12:09	05/01/2017 12:25	16.000000	Other	1.000000	5.000000	ndd	first	uninterrupted	A	yes
+driver54	05/01/2017 12:25	05/01/2017 14:34	129.000000	Driving	1.000000	5.000000	ndd	first	uninterrupted	A	yes
+driver54	05/01/2017 14:34	05/01/2017 14:47	13.000000	Other	1.000000	5.000000	ndd	first	uninterrupted	A	yes
+driver54	05/01/2017 14:47	05/01/2017 15:45	58.000000	Break	1.000000	5.000000	ndd	first	uninterrupted	B_T1	yes
+driver54	05/01/2017 15:45	05/01/2017 15:56	11.000000	Other	1.000000	5.000000	ndd	second	uninterrupted	A	yes
+driver54	05/01/2017 15:56	05/01/2017 17:03	67.000000	Driving	1.000000	5.000000	ndd	second	uninterrupted	A	yes
+driver54	05/01/2017 17:03	05/01/2017 17:07	4.000000	Other	1.000000	5.000000	ndd	second	uninterrupted	A	yes
+driver54	05/01/2017 17:07	05/01/2017 18:07	60.000000	Driving	1.000000	5.000000	ndd	second	uninterrupted	A	yes
+driver54	05/01/2017 18:07	05/01/2017 18:09	2.000000	Break	1.000000	5.000000	ndd	second	uninterrupted	B_T0	yes
+driver54	05/01/2017 18:09	05/01/2017 18:47	38.000000	Other	1.000000	5.000000	ndd	second	uninterrupted	A	yes
+driver54	05/01/2017 18:47	05/01/2017 20:24	97.000000	Driving	1.000000	5.000000	ndd	second	uninterrupted	A	yes
+driver54	05/01/2017 20:24	05/01/2017 20:41	17.000000	Other	1.000000	5.000000	ndd	second	uninterrupted	A	yes
+driver54	05/01/2017 20:41	06/01/2017 09:15	754.000000	Break	1.000000	5.000000	ndd	second	uninterrupted	DR_T1	yes
+#-----------------------
+# NEW DAY
+#-----------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo
+driver54	06/01/2017 09:15	06/01/2017 09:40	25.000000	Other	1.000000	6.000000	none	none	split_1	A	no
+driver54	06/01/2017 09:40	06/01/2017 11:18	98.000000	Driving	1.000000	6.000000	none	none	split_1	A	no
+driver54	06/01/2017 11:18	06/01/2017 11:19	1.000000	Break	1.000000	6.000000	none	none	split_1	B_T0	no
+driver54	07/01/2017 10:50	07/01/2017 10:56	6.000000	Driving	1.000000	6.000000	none	none	split_1	A	no
+driver54	07/01/2017 10:56	07/01/2017 10:59	3.000000	Break	1.000000	6.000000	none	none	split_1	B_T0	no
+driver54	07/01/2017 10:59	07/01/2017 11:03	4.000000	Driving	1.000000	6.000000	none	none	split_1	A	no
+driver54	07/01/2017 11:03	07/01/2017 11:12	9.000000	Other	1.000000	6.000000	none	none	split_1	A	no
+driver54	07/01/2017 11:12	07/01/2017 11:42	30.000000	Break	1.000000	6.000000	none	none	split_1	B_T2	no
+driver54	07/01/2017 11:42	07/01/2017 11:53	11.000000	Driving	1.000000	6.000000	none	none	split_2	A	no
+driver54	07/01/2017 11:53	07/01/2017 11:54	1.000000	Break	1.000000	6.000000	none	none	split_2	B_T0	no
+driver54	10/01/2017 11:39	10/01/2017 12:10	31.000000	Break	1.000000	6.000000	none	none	split_2	B_T3	no
+driver54	10/01/2017 12:10	10/01/2017 12:11	1.000000	Driving	1.000000	6.000000	none	none	split_1	A	no
+driver54	10/01/2017 12:11	10/01/2017 12:15	4.000000	Other	1.000000	6.000000	none	none	split_1	A	no
+driver54	10/01/2017 12:15	10/01/2017 12:27	12.000000	Driving	1.000000	6.000000	none	none	split_1	A	no
+driver54	10/01/2017 12:27	10/01/2017 12:30	3.000000	Other	1.000000	6.000000	none	none	split_1	A	no
+driver54	10/01/2017 12:30	10/01/2017 12:31	1.000000	Driving	1.000000	6.000000	none	none	split_1	A	no
+driver54	10/01/2017 12:31	10/01/2017 12:36	5.000000	Other	1.000000	6.000000	none	none	split_1	A	no
+driver54	10/01/2017 12:36	10/01/2017 12:43	7.000000	Driving	1.000000	6.000000	none	none	split_1	A	no
+driver54	10/01/2017 12:43	10/01/2017 13:18	35.000000	Break	1.000000	6.000000	none	none	split_1	B_T2	no
+driver54	10/01/2017 13:18	10/01/2017 13:20	2.000000	Driving	1.000000	6.000000	none	none	split_2	A	no
+driver54	10/01/2017 13:20	10/01/2017 13:28	8.000000	Other	1.000000	6.000000	none	none	split_2	A	no
+driver54	10/01/2017 13:28	10/01/2017 13:29	1.000000	Driving	1.000000	6.000000	none	none	split_2	A	no
+driver54	10/01/2017 13:29	10/01/2017 13:32	3.000000	Other	1.000000	6.000000	none	none	split_2	A	no
+driver54	10/01/2017 13:32	10/01/2017 14:04	32.000000	Break	1.000000	6.000000	none	none	split_2	B_T3	no
+driver54	10/01/2017 14:04	10/01/2017 14:09	5.000000	Other	1.000000	6.000000	none	none	uninterrupted	A	no
+driver54	10/01/2017 14:09	10/01/2017 14:18	9.000000	Driving	1.000000	6.000000	none	none	uninterrupted	A	no
+driver54	10/01/2017 14:18	10/01/2017 16:44	146.000000	Break	1.000000	6.000000	none	none	uninterrupted	B_T1	no
+driver54	10/01/2017 16:44	10/01/2017 16:56	12.000000	Driving	1.000000	6.000000	none	none	none	A	no
+driver54	10/01/2017 16:56	10/01/2017 17:03	7.000000	Other	1.000000	6.000000	none	none	none	A	no
+driver54	10/01/2017 17:03	10/01/2017 17:19	16.000000	Break	1.000000	6.000000	none	none	none	none	no
+driver54	10/01/2017 17:19	10/01/2017 17:37	18.000000	Other	1.000000	6.000000	ndd	first	split_1	A	yes
+driver54	10/01/2017 17:37	10/01/2017 17:55	18.000000	Break	1.000000	6.000000	ndd	first	split_1	B_T2	yes
+driver54	10/01/2017 17:55	10/01/2017 18:02	7.000000	Other	1.000000	6.000000	ndd	first	split_2	A	yes
+driver54	10/01/2017 18:02	10/01/2017 19:46	104.000000	Driving	1.000000	6.000000	ndd	first	split_2	A	yes
+driver54	10/01/2017 19:46	10/01/2017 20:08	22.000000	Other	1.000000	6.000000	ndd	first	split_2	A	yes
+driver54	10/01/2017 20:08	10/01/2017 22:26	138.000000	Driving	1.000000	6.000000	ndd	first	split_2	A	yes
+driver54	10/01/2017 22:26	10/01/2017 23:38	72.000000	Break	1.000000	6.000000	ndd	first	split_2	B_T3	yes
+driver54	10/01/2017 23:38	11/01/2017 02:43	185.000000	Driving	1.000000	6.000000	ndd	second	uninterrupted	A	yes
+driver54	11/01/2017 02:43	11/01/2017 12:02	559.000000	Break	1.000000	6.000000	ndd	second	uninterrupted	DR_T2	yes
+#-----------------------
+# NEW DAY
+#-----------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo
+driver54	11/01/2017 12:02	11/01/2017 16:02	240.000000	Driving	1.000000	7.000000	edd	first	uninterrupted	A	yes
+driver54	11/01/2017 16:02	11/01/2017 16:09	7.000000	Other	1.000000	7.000000	edd	first	uninterrupted	A	yes
+driver54	11/01/2017 16:09	11/01/2017 16:34	25.000000	Driving	1.000000	7.000000	edd	first	uninterrupted	A	yes
+driver54	11/01/2017 16:34	11/01/2017 16:39	5.000000	Other	1.000000	7.000000	edd	first	uninterrupted	A	yes
+driver54	11/01/2017 16:39	11/01/2017 17:39	60.000000	Break	1.000000	7.000000	edd	first	uninterrupted	B_T1	yes
+driver54	11/01/2017 17:39	11/01/2017 20:14	155.000000	Driving	1.000000	7.000000	edd	second	split_1	A	yes
+driver54	11/01/2017 20:14	11/01/2017 20:25	11.000000	Other	1.000000	7.000000	edd	second	split_1	A	yes
+driver54	11/01/2017 20:25	11/01/2017 20:52	27.000000	Break	1.000000	7.000000	edd	second	split_1	B_T2	yes
+driver54	11/01/2017 20:52	11/01/2017 20:53	1.000000	Other	1.000000	7.000000	edd	second	split_2	A	yes
+driver54	11/01/2017 20:53	11/01/2017 22:35	102.000000	Driving	1.000000	7.000000	edd	second	split_2	A	yes
+driver54	11/01/2017 22:35	11/01/2017 22:36	1.000000	Other	1.000000	7.000000	edd	second	split_2	A	yes
+driver54	11/01/2017 22:36	11/01/2017 23:09	33.000000	Break	1.000000	7.000000	edd	second	split_2	B_T3	yes
+driver54	11/01/2017 23:09	11/01/2017 23:10	1.000000	Driving	1.000000	7.000000	edd	third	split_1	A	yes
+driver54	11/01/2017 23:10	11/01/2017 23:20	10.000000	Other	1.000000	7.000000	edd	third	split_1	A	yes
+driver54	11/01/2017 23:20	11/01/2017 23:22	2.000000	Driving	1.000000	7.000000	edd	third	split_1	A	yes
+driver54	11/01/2017 23:22	11/01/2017 23:48	26.000000	Break	1.000000	7.000000	edd	third	split_1	B_T2	yes
+driver54	11/01/2017 23:48	11/01/2017 23:53	5.000000	Other	1.000000	7.000000	edd	third	split_2	A	yes
+driver54	11/01/2017 23:53	11/01/2017 23:57	4.000000	Driving	1.000000	7.000000	edd	third	split_2	A	yes
+driver54	11/01/2017 23:57	11/01/2017 23:59	2.000000	Other	1.000000	7.000000	edd	third	split_2	A	yes
+driver54	11/01/2017 23:59	12/01/2017 00:03	4.000000	Driving	1.000000	7.000000	edd	third	split_2	A	yes
+driver54	12/01/2017 00:03	12/01/2017 09:43	580.000000	Break	1.000000	7.000000	edd	third	split_2	DR_T2	yes
+#-----------------------
+# NEW DAY
+#-----------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo
+driver54	12/01/2017 09:43	12/01/2017 10:40	57.000000	Driving	1.000000	8.000000	ndd	unique	split_1	A	yes
+driver54	12/01/2017 10:40	12/01/2017 10:45	5.000000	Other	1.000000	8.000000	ndd	unique	split_1	A	yes
+driver54	12/01/2017 10:45	12/01/2017 11:00	15.000000	Break	1.000000	8.000000	ndd	unique	split_1	B_T2	yes
+driver54	12/01/2017 11:00	12/01/2017 11:52	52.000000	Driving	1.000000	8.000000	ndd	unique	split_2	A	yes
+driver54	12/01/2017 11:52	12/01/2017 12:03	11.000000	Other	1.000000	8.000000	ndd	unique	split_2	A	yes
+driver54	12/01/2017 12:03	13/01/2017 09:01	1258.000000	Break	1.000000	8.000000	ndd	unique	split_2	DR_T1	yes
+#-----------------------
+# NEW DAY
+#-----------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo
+driver54	13/01/2017 09:01	13/01/2017 09:06	5.000000	Driving	1.000000	9.000000	none	none	uninterrupted	A	no
+driver54	13/01/2017 09:06	13/01/2017 09:52	46.000000	Break	1.000000	9.000000	none	none	uninterrupted	B_T1	no
+driver54	13/01/2017 09:52	13/01/2017 09:54	2.000000	Driving	1.000000	9.000000	none	none	split_1	A	no
+driver54	13/01/2017 09:54	13/01/2017 10:19	25.000000	Break	1.000000	9.000000	none	none	split_1	B_T2	no
+driver54	13/01/2017 10:19	13/01/2017 10:22	3.000000	Driving	1.000000	9.000000	none	none	split_2	A	no
+driver54	13/01/2017 10:22	13/01/2017 10:56	34.000000	Break	1.000000	9.000000	none	none	split_2	B_T3	no
+driver54	13/01/2017 10:56	13/01/2017 10:57	1.000000	Driving	1.000000	9.000000	none	none	none	A	no
+driver54	13/01/2017 10:57	13/01/2017 11:16	19.000000	Break	1.000000	9.000000	none	none	none	none	no
+driver54	13/01/2017 11:16	13/01/2017 11:18	2.000000	Driving	1.000000	9.000000	ndd	first	split_1	A	yes
+driver54	13/01/2017 11:18	13/01/2017 11:23	5.000000	Other	1.000000	9.000000	ndd	first	split_1	A	yes
+driver54	13/01/2017 11:23	13/01/2017 11:50	27.000000	Break	1.000000	9.000000	ndd	first	split_1	B_T2	yes
+driver54	13/01/2017 11:50	13/01/2017 12:37	47.000000	Driving	1.000000	9.000000	ndd	first	split_2	A	yes
+driver54	13/01/2017 12:37	13/01/2017 12:39	2.000000	Other	1.000000	9.000000	ndd	first	split_2	A	yes
+driver54	13/01/2017 12:39	13/01/2017 12:46	7.000000	Driving	1.000000	9.000000	ndd	first	split_2	A	yes
+driver54	13/01/2017 12:46	13/01/2017 12:57	11.000000	Break	1.000000	9.000000	ndd	first	split_2	B_T0	yes
+driver54	13/01/2017 12:57	13/01/2017 12:59	2.000000	Driving	1.000000	9.000000	ndd	first	split_2	A	yes
+driver54	13/01/2017 12:59	13/01/2017 13:39	40.000000	Break	1.000000	9.000000	ndd	first	split_2	B_T3	yes
+driver54	13/01/2017 13:39	13/01/2017 14:21	42.000000	Driving	1.000000	9.000000	ndd	second	uninterrupted	A	yes
+driver54	13/01/2017 14:21	13/01/2017 14:26	5.000000	Other	1.000000	9.000000	ndd	second	uninterrupted	A	yes
+driver54	13/01/2017 14:26	13/01/2017 14:30	4.000000	Driving	1.000000	9.000000	ndd	second	uninterrupted	A	yes
+driver54	13/01/2017 14:30	14/01/2017 16:12	1542.000000	Break	1.000000	9.000000	ndd	second	uninterrupted	WR_T2	yes
+#-----------------------
+# NEW DAY
+#-----------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo
+#=======================================
+# NEW WEEK
+#=======================================
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo
+driver54	14/01/2017 16:12	14/01/2017 17:09	57.000000	Driving	2.000000	10.000000	ndd	unique	uninterrupted	A	yes
+driver54	14/01/2017 17:09	14/01/2017 17:18	9.000000	Other	2.000000	10.000000	ndd	unique	uninterrupted	A	yes
+driver54	14/01/2017 17:18	14/01/2017 19:04	106.000000	Driving	2.000000	10.000000	ndd	unique	uninterrupted	A	yes
+driver54	14/01/2017 19:04	14/01/2017 19:30	26.000000	Other	2.000000	10.000000	ndd	unique	uninterrupted	A	yes
+driver54	14/01/2017 19:30	14/01/2017 20:22	52.000000	Driving	2.000000	10.000000	ndd	unique	uninterrupted	A	yes
+driver54	14/01/2017 20:22	14/01/2017 20:41	19.000000	Other	2.000000	10.000000	ndd	unique	uninterrupted	A	yes
+driver54	14/01/2017 20:41	14/01/2017 20:42	1.000000	Driving	2.000000	10.000000	ndd	unique	uninterrupted	A	yes
+driver54	14/01/2017 20:42	14/01/2017 20:45	3.000000	Other	2.000000	10.000000	ndd	unique	uninterrupted	A	yes
+driver54	14/01/2017 20:45	15/01/2017 10:01	796.000000	Break	2.000000	10.000000	ndd	unique	uninterrupted	DR_T1	yes
+#-----------------------
+# NEW DAY
+#-----------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo
+driver54	15/01/2017 10:01	15/01/2017 14:33	272.000000	Driving	2.000000	11.000000	none	none	none	A	no
+driver54	15/01/2017 14:33	15/01/2017 14:46	13.000000	Other	2.000000	11.000000	ndd	first	uninterrupted	A	yes
+driver54	15/01/2017 14:46	15/01/2017 15:47	61.000000	Break	2.000000	11.000000	ndd	first	uninterrupted	B_T1	yes
+driver54	15/01/2017 15:47	15/01/2017 17:51	124.000000	Driving	2.000000	11.000000	ndd	second	split_1	A	yes
+driver54	15/01/2017 17:51	15/01/2017 17:59	8.000000	Other	2.000000	11.000000	ndd	second	split_1	A	yes
+driver54	15/01/2017 17:59	15/01/2017 18:56	57.000000	Break	2.000000	11.000000	ndd	second	split_1	B_T2	yes
+driver54	15/01/2017 18:56	15/01/2017 21:15	139.000000	Driving	2.000000	11.000000	ndd	second	split_2	A	yes
+driver54	15/01/2017 21:15	15/01/2017 21:19	4.000000	Other	2.000000	11.000000	ndd	second	split_2	A	yes
+driver54	15/01/2017 21:19	15/01/2017 21:31	12.000000	Driving	2.000000	11.000000	ndd	second	split_2	A	yes
+driver54	15/01/2017 21:31	15/01/2017 21:35	4.000000	Other	2.000000	11.000000	ndd	second	split_2	A	yes
+driver54	15/01/2017 21:35	16/01/2017 07:24	589.000000	Break	2.000000	11.000000	ndd	second	split_2	DR_T2	yes
+#-----------------------
+# NEW DAY
+#-----------------------
+#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo
