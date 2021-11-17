@@ -7,7 +7,7 @@
 
 #########################################################################
 
-import os.path
+import os
 import subprocess
 import pandas as pd
 import streamlit as st
@@ -24,7 +24,23 @@ from gensim.models.doc2vec import Doc2Vec
 
 #########################################################################
 
-st.title('Driver activity recognition')
+st.title('Driver Activity Recognition')
+
+# Create output directories that doesn't exists
+if os.path.isdir("./out"):
+  os.mkdir("./out")
+
+if os.path.isdir("./out/clean"):
+  os.mkdir("./out/clean")
+
+if os.path.isdir("./out/clustering"):
+  os.mkdir("./out/clustering")
+
+if os.path.isdir("./out/pan"):
+  os.mkdir("./out/plan")
+
+if os.path.isdir("./out/tagged"):
+  os.mkdir("./out/tagged")
 
 #########################################################################
 # Recognition
@@ -65,8 +81,6 @@ if not redo_file:
 # -----------------------------------------------------------------------------
 # Calling planner
 
-
-# TODO: Create directory if not exists
 
 LOG_PATH = "out/tagged/tagged-log-driver{}.csv".format(driver)
 
