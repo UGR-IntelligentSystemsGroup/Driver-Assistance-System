@@ -8,82 +8,19 @@
 #########################################################################
 
 import os.path
-import numpy as np
+import subprocess
 import pandas as pd
 import streamlit as st
-import matplotlib.pyplot as plt
-
 from joblib import load
 
-import subprocess
+# Visualization
+from plot_utils import *
 
 # Preprocessing
 from sklearn.preprocessing import normalize
 
 # D2V
 from gensim.models.doc2vec import Doc2Vec
-
-# Visualization
-from sklearn.decomposition import PCA
-from sklearn.manifold import TSNE
-
-#########################################################################
-# Visualize embeddings
-#########################################################################
-
-def plot_tsne(matrix, clusters=None, ax=None):
-  ax = ax or plt.gca()
-
-  # TSNE
-  tsne = TSNE(n_components=2, random_state=12345)
-  X_tsne = tsne.fit_transform(matrix)
-  df_tsne = pd.DataFrame(X_tsne, columns=['x', 'y'])
-
-  ax.scatter(df_tsne['x'], df_tsne['y'], alpha=0.8, c=clusters, edgecolors='b', cmap="gist_rainbow")
-  ax.set_title('TSNE')
-
-# -------------------------------------------------------------------------
-
-def plot_pca(matrix, clusters=None, ax=None):
-  ax = ax or plt.gca()
-
-  # PCA
-  pca = PCA(n_components=2)
-  X_pca = pca.fit_transform(matrix)
-  df_pca = pd.DataFrame(X_pca, columns=['x', 'y'])
-
-  ax.scatter(df_pca['x'], df_pca['y'], alpha=0.8, c=clusters, edgecolors='b', cmap="gist_rainbow")
-  ax.set_title('2D PCA')
-  
-# -------------------------------------------------------------------------
-
-def plot_3d_pca(matrix, clusters=None, ax=None):
-  ax = ax or plt.gca()
-
-  # PCA
-  pca = PCA(n_components=3)
-  X_pca = pca.fit_transform(matrix)
-  df_pca = pd.DataFrame(X_pca, columns=['x', 'y', 'z'])
-
-  ax.scatter3D(df_pca['x'], df_pca['y'], df_pca['z'], alpha=0.8, c=clusters, edgecolors='b', cmap="gist_rainbow")
-  ax.set_title('3D PCA')
-
-# -------------------------------------------------------------------------
-
-# Call the three functions above in a horizontal view
-def visualize_data(matrix, model_name, clusters=None, ax1=None, ax2=None):
-  fig = plt.figure(figsize=(27,6))
-  fig.suptitle('{} document plots'.format(model_name))
-
-  ax1 = fig.add_subplot(131)
-  ax2 = fig.add_subplot(132)
-  ax3 = fig.add_subplot(133, projection='3d')
-
-  plot_tsne(matrix, ax=ax1, clusters=clusters)
-  plot_pca(matrix, ax=ax2, clusters=clusters)
-  plot_3d_pca(matrix, ax=ax3, clusters=clusters)
-
-  return fig
 
 #########################################################################
 
@@ -101,8 +38,6 @@ RAW_DATA_PATH = "./data/split/driver{}.csv".format(driver)
 PLAN_DATA_PATH = "./out/plan/event-log-driver{}.plan".format(driver)
 PROBLEM_PATH = "hpdl/problems/problem-driver{}.pddl".format(driver)
 
-data_load_state = st.text('Preprocessing raw data for recognition...')
-
 # Don't call again if PDDL already defined
 redo_file = os.path.isfile(PROBLEM_PATH)
 
@@ -114,24 +49,22 @@ if redo_file:
     button.empty()
 
 if not redo_file:
-  # -----------------------------------------------------------------------------
-  # FROM CSV to PDDL
-  try:
-    subprocess.run(['python', './src/parsers/fromCSVtoPLAN.py' , RAW_DATA_PATH])
-  except subprocess.CalledProcessError as err:
-    print("Error while parsing CSV to PLAN: " + err.stderr)
+  with st.spinner("Preprocessing raw data for recognition..."):
+    # -----------------------------------------------------------------------------
+    # FROM CSV to PDDL
+    try:
+      subprocess.run(['python', './src/parsers/fromCSVtoPLAN.py' , RAW_DATA_PATH])
+    except subprocess.CalledProcessError as err:
+      print("Error while parsing CSV to PLAN: " + err.stderr)
 
-  try:
-    subprocess.run(['python', './src/parsers/fromPLANtoPDDL.py' , PLAN_DATA_PATH])
-  except subprocess.CalledProcessError as err:
-    print("Error while parsing PLAN to PDDL: " + err.stderr)
-
-data_load_state.text("Preprocessing raw data for recognition: Done!")
+    try:
+      subprocess.run(['python', './src/parsers/fromPLANtoPDDL.py' , PLAN_DATA_PATH])
+    except subprocess.CalledProcessError as err:
+      print("Error while parsing PLAN to PDDL: " + err.stderr)
 
 # -----------------------------------------------------------------------------
 # Calling planner
 
-data_load_state = st.text('Recognizing driver log...')
 
 # TODO: Create directory if not exists
 
@@ -147,13 +80,12 @@ if redo_file:
     button.empty()
 
 if not redo_file:
-  try:
-    # Domain - Problem - Output
-    subprocess.run(['bash', './src/runPlanner.sh', 'hpdl/domain.pddl', PROBLEM_PATH, LOG_PATH])
-  except subprocess.CalledProcessError as err:
-    print("Error while planning: " + err.stderr)
-
-data_load_state.text("Recognizing driver log: Done!")
+  with st.spinner("Recognizing driver log..."):
+    try:
+      # Domain - Problem - Output
+      subprocess.run(['bash', './src/runPlanner.sh', 'hpdl/domain.pddl', PROBLEM_PATH, LOG_PATH])
+    except subprocess.CalledProcessError as err:
+      print("Error while planning: " + err.stderr)
 
 #########################################################################
 # Clustering
@@ -200,9 +132,7 @@ if not redo_file:
   except subprocess.CalledProcessError as err:
     print("Error while planning: " + err.stderr)
 
-data_load_state = st.text('Loading data...')
 df = load_data(driver)
-data_load_state.text("Loading: Done!")
 
 # TODO: https://discuss.streamlit.io/t/simple-button-that-waits-for-input/3322/2
 
@@ -266,9 +196,8 @@ def encode_data(df):
 
 # -----------------------------------------------------------------------------
 
-data_load_state = st.text('Encoding data...')
-corpus_lists = encode_data(df)
-data_load_state.text("Encoding: Done!")
+with st.spinner("Encoding data..."):
+  corpus_lists = encode_data(df)
 
 if st.checkbox('Show encoded data'):
     st.subheader('Encoded data')
@@ -299,10 +228,9 @@ def get_d2v(corpus_lists):
 
 # -----------------------------------------------------------------------------
 
-data_load_state = st.text('Getting D2V...')
-X_d2v = get_d2v(corpus_lists)
-X_d2v = normalize(X_d2v)
-data_load_state.text("D2V: Done!")
+with st.spinner("Getting D2V..."):
+  X_d2v = get_d2v(corpus_lists)
+  X_d2v = normalize(X_d2v)
 
 if st.checkbox('Plot Doc2Vec data'):
     st.subheader('Doc2Vec data')
@@ -337,31 +265,10 @@ def get_decoded_centroids_d2v():
 
 # ------------------------------------------------------------------------------
 
-def put_clusters_in_df(clusters, df):
-  # Final dataset columns
-  cols = df.columns.to_numpy()
-  cols = np.append(cols, 'Cluster')
-
-  df_out = pd.DataFrame(columns=cols)
-
-  groups = df.groupby(['Driver','Day'], sort=False)
-
-  # Add clusters to log
-  for (name, group), cluster in zip(groups, clusters):
-    group["Cluster"] = cluster
-    df_out = df_out.append(group)
-
-  return df_out
-
-# ------------------------------------------------------------------------------
-
-data_load_state = st.text('Clustering data...')
-
-clusters = get_predictions(X_d2v)
-decoded_centroids = get_decoded_centroids_d2v()
-df_clusters = put_clusters_in_df(clusters, df)
-
-data_load_state.text("Clustering data: Done!")
+with st.spinner("Clustering data..."):
+  clusters = get_predictions(X_d2v)
+  decoded_centroids = get_decoded_centroids_d2v()
+  df_clusters = put_clusters_in_df(clusters, df)
 
 # Show data
 st.subheader('Cluster results')
