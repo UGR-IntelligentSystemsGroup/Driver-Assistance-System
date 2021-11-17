@@ -49,7 +49,7 @@ def dateWithDayZeroPadded(date):
 
 def writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol):
     # Write plan (we could use previousDriver for the name too)
-    output_plan = open(output_folder + 'event_log_{}.plan'.format(previousDriverSymbol), 'w')
+    output_plan = open(output_folder + 'event-log-{}.plan'.format(previousDriverSymbol), 'w')
 
     for p in plan:
         output_plan.write(p)
@@ -57,7 +57,7 @@ def writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol):
     output_plan.close()
 
     # Write symbols
-    output_Symbols = open(output_folder + 'event_log_{}.TaskSymbol'.format(previousDriverSymbol), 'w')
+    output_Symbols = open(output_folder + 'event-log-{}.TaskSymbol'.format(previousDriverSymbol), 'w')
 
     symbols = (' '.join(diccionario_TaskInstanceSymbol['D']) + '\n' +
                 ' '.join(diccionario_TaskInstanceSymbol['O']) + '\n' +
@@ -78,7 +78,7 @@ def writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol):
 time_format_input = "%d/%m/%y %H:%M"
 time_format_output = "%d/%m/%Y %H:%M"
 
-output_folder = "./out/"
+output_folder = "./out/plan/"
 
 def main(argv):
     path = argv[1]

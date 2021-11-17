@@ -7,6 +7,7 @@
 
 #########################################################################
 
+import os.path
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -97,21 +98,33 @@ st.title('Driver activity recognition')
 driver = st.number_input('Select driver log', 1, 290)
 
 RAW_DATA_PATH = "./data/split/driver{}.csv".format(driver)
-PLAN_DATA_PATH = "./out/event_log_driver{}.plan".format(driver)
+PLAN_DATA_PATH = "./out/plan/event-log-driver{}.plan".format(driver)
+PROBLEM_PATH = "hpdl/problems/problem-driver{}.pddl".format(driver)
 
 data_load_state = st.text('Preprocessing raw data for recognition...')
 
-# -----------------------------------------------------------------------------
-# FROM CSV to PDDL
-try:
-  subprocess.run(['python', './src/parsers/fromCSVtoPLAN.py' , RAW_DATA_PATH])
-except subprocess.CalledProcessError as err:
-  print("Error while parsing CSV to PLAN: " + err.stderr)
+# Don't call again if PDDL already defined
+redo_file = os.path.isfile(PROBLEM_PATH)
 
-try:
-  subprocess.run(['python', './src/parsers/fromPLANtoPDDL.py' , PLAN_DATA_PATH])
-except subprocess.CalledProcessError as err:
-  print("Error while parsing PLAN to PDDL: " + err.stderr)
+# Let the user decide if redefine the PDDL problem
+button = st.empty()
+if redo_file:
+  if button.button('PDDL problem already exists. Redo?'):
+    redo_file = False
+    button.empty()
+
+if not redo_file:
+  # -----------------------------------------------------------------------------
+  # FROM CSV to PDDL
+  try:
+    subprocess.run(['python', './src/parsers/fromCSVtoPLAN.py' , RAW_DATA_PATH])
+  except subprocess.CalledProcessError as err:
+    print("Error while parsing CSV to PLAN: " + err.stderr)
+
+  try:
+    subprocess.run(['python', './src/parsers/fromPLANtoPDDL.py' , PLAN_DATA_PATH])
+  except subprocess.CalledProcessError as err:
+    print("Error while parsing PLAN to PDDL: " + err.stderr)
 
 data_load_state.text("Preprocessing raw data for recognition: Done!")
 
@@ -120,14 +133,25 @@ data_load_state.text("Preprocessing raw data for recognition: Done!")
 
 data_load_state = st.text('Recognizing driver log...')
 
-PROBLEM_PATH = "hpdl/problem-driver{}.pddl".format(driver)
-LOG_PATH = "out/log_tagged.csv"
+# TODO: Create directory if not exists
 
-try:
-  # Domain - Problem - Output
-  subprocess.run(['bash', './src/runPlanner.sh', 'hpdl/domain.pddl', PROBLEM_PATH, LOG_PATH])
-except subprocess.CalledProcessError as err:
-  print("Error while planning: " + err.stderr)
+LOG_PATH = "out/tagged/tagged-log-driver{}.csv".format(driver)
+
+# Don't call again if log already tagged
+redo_file = os.path.isfile(LOG_PATH)
+button = st.empty()
+
+if redo_file:
+  if button.button('Log already tagged. Redo?'):
+    redo_file = False
+    button.empty()
+
+if not redo_file:
+  try:
+    # Domain - Problem - Output
+    subprocess.run(['bash', './src/runPlanner.sh', 'hpdl/domain.pddl', PROBLEM_PATH, LOG_PATH])
+  except subprocess.CalledProcessError as err:
+    print("Error while planning: " + err.stderr)
 
 data_load_state.text("Recognizing driver log: Done!")
 
@@ -141,8 +165,8 @@ data_load_state.text("Recognizing driver log: Done!")
 
 
 @st.cache
-def load_data(DATA_PATH):
-    df = pd.read_csv("out/clean-log.csv", sep="\t")
+def load_data(driver):
+    df = pd.read_csv(CLEAN_LOG_PATH, sep="\t")
 
     # To timestamp format
     df.DateTimeStart = pd.to_datetime(df.DateTimeStart)
@@ -161,15 +185,23 @@ def load_data(DATA_PATH):
 
 # -----------------------------------------------------------------------------
 
+# TODO: Button to use all logs
 # DATA_PATH = "./out/logs-recognition/combined-log.csv"
 
-# LOG_PATH = "./out/logs-recognition/log-driver{}.csv".format(driver)
-
 # Clean log for driver
-subprocess.run(['bash', './src/formatCSV.sh' , LOG_PATH])
+CLEAN_LOG_PATH = "out/clean/clean-log-driver{}.csv".format(driver)
+
+# Don't call again if log already cleaned
+redo_file = os.path.isfile(CLEAN_LOG_PATH)
+
+if not redo_file:
+  try:
+    subprocess.run(['bash', './src/formatCSV.sh' , LOG_PATH])
+  except subprocess.CalledProcessError as err:
+    print("Error while planning: " + err.stderr)
 
 data_load_state = st.text('Loading data...')
-df = load_data(LOG_PATH)
+df = load_data(driver)
 data_load_state.text("Loading: Done!")
 
 # TODO: https://discuss.streamlit.io/t/simple-button-that-waits-for-input/3322/2
@@ -343,6 +375,6 @@ centroid = decoded_centroids.loc[decoded_centroids['Cluster'] == centroid_num]
 
 st.write("Centroids", centroid)
 
-# TODO: SAVE PREDICTIONS TO DISK
+PREDICTION_PATH = "out/clustering/clustered-log-driver{}.csv".format(driver)
 
-# TODO: CENTROIDS ARE NOT THE CORRECT ONES, RE-SAVE THEM
+df_clusters.to_csv(PREDICTION_PATH, index=False)
