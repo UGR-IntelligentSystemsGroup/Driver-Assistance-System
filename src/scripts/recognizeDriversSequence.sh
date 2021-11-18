@@ -17,7 +17,7 @@ for filename in $list; do
     tmp=${filename#*-}   # remove prefix ending in "_"
     driver=${tmp%.*}   # remove suffix starting with "_"
 
-    ./planner/planner -d hpdl/domain.pddl -p $filename -o out/logs-recognition/log-$driver.csv
+    ./planner/planner -d hpdl/domain.pddl -p $filename -o out/tagged/tagged-log-$driver.csv
 
     echo "$filename Completed!"
 done;

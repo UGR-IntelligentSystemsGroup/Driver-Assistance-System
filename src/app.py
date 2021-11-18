@@ -97,7 +97,7 @@ if not redo_file:
   with st.spinner("Recognizing driver log..."):
     try:
       # Domain - Problem - Output
-      subprocess.run(['bash', './src/runPlanner.sh', 'hpdl/domain.pddl', PROBLEM_PATH, LOG_PATH])
+      subprocess.run(['bash', './src/scripts/runPlanner.sh', 'hpdl/domain.pddl', PROBLEM_PATH, LOG_PATH])
     except subprocess.CalledProcessError as err:
       print("Error while planning: " + err.stderr)
 
@@ -142,13 +142,11 @@ redo_file = os.path.isfile(CLEAN_LOG_PATH)
 
 if not redo_file:
   try:
-    subprocess.run(['bash', './src/formatCSV.sh' , LOG_PATH])
+    subprocess.run(['bash', './src/scripts/formatCSV.sh' , LOG_PATH])
   except subprocess.CalledProcessError as err:
     print("Error while planning: " + err.stderr)
 
 df = load_data(driver)
-
-# TODO: https://discuss.streamlit.io/t/simple-button-that-waits-for-input/3322/2
 
 if st.checkbox('Show raw data'):
     st.subheader('Raw data')
