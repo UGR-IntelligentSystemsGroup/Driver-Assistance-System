@@ -28,19 +28,19 @@ st.title('Driver Activity Recognition')
 
 # Create output directories that doesn't exists
 if not os.path.isdir("./out"):
-  os.mkdir("./out")
+    os.mkdir("./out")
 
 if not os.path.isdir("./out/clean"):
-  os.mkdir("./out/clean")
+    os.mkdir("./out/clean")
 
 if not os.path.isdir("./out/clustering"):
-  os.mkdir("./out/clustering")
+    os.mkdir("./out/clustering")
 
 if not os.path.isdir("./out/plan"):
-  os.mkdir("./out/plan")
+    os.mkdir("./out/plan")
 
 if not os.path.isdir("./out/tagged"):
-  os.mkdir("./out/tagged")
+    os.mkdir("./out/tagged")
 
 #########################################################################
 # Recognition
@@ -66,23 +66,23 @@ redo_file = os.path.isfile(PROBLEM_PATH)
 # Let the user decide if redefine the PDDL problem
 button = st.sidebar.empty()
 if redo_file:
-  if button.button('PDDL problem already exists. Redo?'):
-    redo_file = False
-    button.empty()
+    if button.button('PDDL problem already exists. Redo?'):
+        redo_file = False
+        button.empty()
 
 if not redo_file:
-  with st.spinner("Preprocessing raw data for recognition..."):
-    # -----------------------------------------------------------------------------
-    # FROM CSV to PDDL
-    try:
-      subprocess.run(['python', './src/parsers/fromCSVtoPLAN.py' , RAW_DATA_PATH])
-    except subprocess.CalledProcessError as err:
-      print("Error while parsing CSV to PLAN: " + err.stderr)
+    with st.spinner("Preprocessing raw data for recognition..."):
+        # -----------------------------------------------------------------------------
+        # FROM CSV to PDDL
+        try:
+            subprocess.run(['python', './src/parsers/fromCSVtoPLAN.py' , RAW_DATA_PATH])
+        except subprocess.CalledProcessError as err:
+            print("Error while parsing CSV to PLAN: " + err.stderr)
 
-    try:
-      subprocess.run(['python', './src/parsers/fromPLANtoPDDL.py' , PLAN_DATA_PATH])
-    except subprocess.CalledProcessError as err:
-      print("Error while parsing PLAN to PDDL: " + err.stderr)
+        try:
+            subprocess.run(['python', './src/parsers/fromPLANtoPDDL.py' , PLAN_DATA_PATH])
+        except subprocess.CalledProcessError as err:
+            print("Error while parsing PLAN to PDDL: " + err.stderr)
 
 # -----------------------------------------------------------------------------
 # Calling planner
@@ -94,17 +94,17 @@ redo_file = os.path.isfile(LOG_PATH)
 button = st.sidebar.empty()
 
 if redo_file:
-  if button.button('Log already tagged. Redo?'):
-    redo_file = False
-    button.empty()
+    if button.button('Log already tagged. Redo?'):
+        redo_file = False
+        button.empty()
 
 if not redo_file:
-  with st.spinner("Recognizing driver log..."):
-    try:
-      # Domain - Problem - Output
-      subprocess.run(['bash', './src/scripts/runPlanner.sh', 'hpdl/domain.pddl', PROBLEM_PATH, LOG_PATH])
-    except subprocess.CalledProcessError as err:
-      print("Error while planning: " + err.stderr)
+    with st.spinner("Recognizing driver log..."):
+        try:
+            # Domain - Problem - Output
+            subprocess.run(['bash', './src/scripts/runPlanner.sh', 'hpdl/domain.pddl', PROBLEM_PATH, LOG_PATH])
+        except subprocess.CalledProcessError as err:
+            print("Error while planning: " + err.stderr)
 
 #########################################################################
 # Clustering
@@ -141,10 +141,10 @@ CLEAN_LOG_PATH = "out/clean/clean-log-driver{}.csv".format(driver)
 redo_file = os.path.isfile(CLEAN_LOG_PATH)
 
 if not redo_file:
-  try:
-    subprocess.run(['bash', './src/scripts/formatCSV.sh' , LOG_PATH])
-  except subprocess.CalledProcessError as err:
-    print("Error while planning: " + err.stderr)
+    try:
+        subprocess.run(['bash', './src/scripts/formatCSV.sh' , LOG_PATH])
+    except subprocess.CalledProcessError as err:
+        print("Error while planning: " + err.stderr)
 
 df = load_data(driver)
 
@@ -155,7 +155,7 @@ df = load_data(driver)
 
 @st.cache
 def get_ordinalencoder_model():
-  return load('src/model/ordinal_encoder.joblib')
+    return load('src/model/ordinal_encoder.joblib')
 
 # The encoded columns are:
 # Activity - DayType - Sequence - BreakType - Token - Legal
@@ -205,7 +205,7 @@ def encode_data(df):
 # -----------------------------------------------------------------------------
 
 with st.spinner("Encoding data..."):
-  corpus_lists = encode_data(df)
+    corpus_lists = encode_data(df)
 
 if st.sidebar.checkbox('Show encoded data'):
     st.write('Encoded data', corpus_lists)
@@ -215,7 +215,7 @@ if st.sidebar.checkbox('Show encoded data'):
 #########################################################################
 
 def get_d2v_model():
-  return Doc2Vec.load("src/model/doc2vec.bin")
+    return Doc2Vec.load("src/model/doc2vec.bin")
 
 # Paragraph Vector (Doc2Vec)
 @st.cache
@@ -236,8 +236,8 @@ def get_d2v(corpus_lists):
 # -----------------------------------------------------------------------------
 
 with st.spinner("Getting D2V..."):
-  X_d2v = get_d2v(corpus_lists)
-  X_d2v = normalize(X_d2v)
+    X_d2v = get_d2v(corpus_lists)
+    X_d2v = normalize(X_d2v)
 
 #########################################################################
 # Make KMeans predictions
@@ -245,45 +245,45 @@ with st.spinner("Getting D2V..."):
 
 @st.cache
 def get_kmeans_model():
-  return load('src/model/kmeans.joblib')
+    return load('src/model/kmeans.joblib')
 
 @st.cache
 def get_predictions(X_d2v):
-  # Load KMeans
-  kmeans = get_kmeans_model()
+    # Load KMeans
+    kmeans = get_kmeans_model()
 
-  clusters = kmeans.predict(X_d2v)
+    clusters = kmeans.predict(X_d2v)
 
-  # Get metrics
-  # silhouette = silhouette_score(X, clusters)
-  # ch = calinski_harabasz_score(X, clusters)
-  # db = davies_bouldin_score(X, clusters)
+    # Get metrics
+    # silhouette = silhouette_score(X, clusters)
+    # ch = calinski_harabasz_score(X, clusters)
+    # db = davies_bouldin_score(X, clusters)
 
-  return clusters
+    return clusters
 
 # ------------------------------------------------------------------------------
 
 def get_decoded_centroids_d2v():
-  return pd.read_csv("out/centroids.csv", sep="\t")
+    return pd.read_csv("out/centroids.csv", sep="\t")
 
 # ------------------------------------------------------------------------------
 
 with st.spinner("Clustering data..."):
-  clusters = get_predictions(X_d2v)
-  decoded_centroids = get_decoded_centroids_d2v()
-  df_clusters = put_clusters_in_df(clusters, df)
+    clusters = get_predictions(X_d2v)
+    decoded_centroids = get_decoded_centroids_d2v()
+    df_clusters = put_clusters_in_df(clusters, df)
 
-# Show data
+# Show results
 
 st.pyplot(visualize_data(X_d2v, 'D2V', clusters))
 centroid = decoded_centroids.loc[decoded_centroids['Cluster'] == centroid_num]
 
 col1, col2 = st.columns(2)
 with col1:
-  st.write("Clustered data", df_clusters)
+    st.write("Clustered data", df_clusters)
 
 with col2:
-  st.write("Centroids", centroid)
+    st.write("Centroids", centroid)
 
 
 # Save predictions
