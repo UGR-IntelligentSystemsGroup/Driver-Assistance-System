@@ -27,19 +27,19 @@ from gensim.models.doc2vec import Doc2Vec
 st.title('Driver Activity Recognition')
 
 # Create output directories that doesn't exists
-if os.path.isdir("./out"):
+if not os.path.isdir("./out"):
   os.mkdir("./out")
 
-if os.path.isdir("./out/clean"):
+if not os.path.isdir("./out/clean"):
   os.mkdir("./out/clean")
 
-if os.path.isdir("./out/clustering"):
+if not os.path.isdir("./out/clustering"):
   os.mkdir("./out/clustering")
 
-if os.path.isdir("./out/pan"):
+if not os.path.isdir("./out/plan"):
   os.mkdir("./out/plan")
 
-if os.path.isdir("./out/tagged"):
+if not os.path.isdir("./out/tagged"):
   os.mkdir("./out/tagged")
 
 #########################################################################
@@ -47,8 +47,14 @@ if os.path.isdir("./out/tagged"):
 #########################################################################
 
 # -----------------------------------------------------------------------------
-# Get driver to predict
-driver = st.number_input('Select driver log', 1, 290)
+# Get driver to predict and centroid to display
+st.sidebar.header("Configuration")
+driver = st.sidebar.number_input('Select driver log', 1, 290)
+centroid_num = st.sidebar.number_input('Select centroid to show', 1, 25)
+st.sidebar.subheader("Info")
+
+# TODO: Button to use all logs
+# LOG_DATA_PATH = "./out/tagged/tagged-combined-log.csv"
 
 RAW_DATA_PATH = "./data/split/driver{}.csv".format(driver)
 PLAN_DATA_PATH = "./out/plan/event-log-driver{}.plan".format(driver)
@@ -58,7 +64,7 @@ PROBLEM_PATH = "hpdl/problems/problem-driver{}.pddl".format(driver)
 redo_file = os.path.isfile(PROBLEM_PATH)
 
 # Let the user decide if redefine the PDDL problem
-button = st.empty()
+button = st.sidebar.empty()
 if redo_file:
   if button.button('PDDL problem already exists. Redo?'):
     redo_file = False
@@ -81,12 +87,11 @@ if not redo_file:
 # -----------------------------------------------------------------------------
 # Calling planner
 
-
 LOG_PATH = "out/tagged/tagged-log-driver{}.csv".format(driver)
 
 # Don't call again if log already tagged
 redo_file = os.path.isfile(LOG_PATH)
-button = st.empty()
+button = st.sidebar.empty()
 
 if redo_file:
   if button.button('Log already tagged. Redo?'):
@@ -105,10 +110,8 @@ if not redo_file:
 # Clustering
 #########################################################################
 
-
 #########################################################################
 # Load data
-
 
 @st.cache
 def load_data(driver):
@@ -131,9 +134,6 @@ def load_data(driver):
 
 # -----------------------------------------------------------------------------
 
-# TODO: Button to use all logs
-# DATA_PATH = "./out/logs-recognition/combined-log.csv"
-
 # Clean log for driver
 CLEAN_LOG_PATH = "out/clean/clean-log-driver{}.csv".format(driver)
 
@@ -147,10 +147,6 @@ if not redo_file:
     print("Error while planning: " + err.stderr)
 
 df = load_data(driver)
-
-if st.checkbox('Show raw data'):
-    st.subheader('Raw data')
-    st.write(df)
 
 #########################################################################
 # Transform data
@@ -211,9 +207,8 @@ def encode_data(df):
 with st.spinner("Encoding data..."):
   corpus_lists = encode_data(df)
 
-if st.checkbox('Show encoded data'):
-    st.subheader('Encoded data')
-    st.write(corpus_lists)
+if st.sidebar.checkbox('Show encoded data'):
+    st.write('Encoded data', corpus_lists)
 
 #########################################################################
 # Get embeddings
@@ -243,10 +238,6 @@ def get_d2v(corpus_lists):
 with st.spinner("Getting D2V..."):
   X_d2v = get_d2v(corpus_lists)
   X_d2v = normalize(X_d2v)
-
-if st.checkbox('Plot Doc2Vec data'):
-    st.subheader('Doc2Vec data')
-    st.pyplot(visualize_data(X_d2v, 'D2V'))
 
 #########################################################################
 # Make KMeans predictions
@@ -283,17 +274,19 @@ with st.spinner("Clustering data..."):
   df_clusters = put_clusters_in_df(clusters, df)
 
 # Show data
-st.subheader('Cluster results')
 
 st.pyplot(visualize_data(X_d2v, 'D2V', clusters))
-st.write("Clustered data", df_clusters)
-
-centroid_num = st.number_input('Select centroid to show', 1, 25)
-
 centroid = decoded_centroids.loc[decoded_centroids['Cluster'] == centroid_num]
 
-st.write("Centroids", centroid)
+col1, col2 = st.columns(2)
+with col1:
+  st.write("Clustered data", df_clusters)
 
+with col2:
+  st.write("Centroids", centroid)
+
+
+# Save predictions
 PREDICTION_PATH = "out/clustering/clustered-log-driver{}.csv".format(driver)
 
 df_clusters.to_csv(PREDICTION_PATH, index=False)
