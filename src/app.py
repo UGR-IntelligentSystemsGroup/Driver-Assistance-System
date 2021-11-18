@@ -50,7 +50,6 @@ if not os.path.isdir("./out/tagged"):
 # Get driver to predict and centroid to display
 st.sidebar.header("Configuration")
 driver = st.sidebar.number_input('Select driver log', 1, 290)
-centroid_num = st.sidebar.number_input('Select centroid to show', 1, 25)
 st.sidebar.subheader("Info")
 
 # TODO: Button to use all logs
@@ -115,7 +114,7 @@ if not redo_file:
 
 @st.cache
 def load_data(driver):
-    df = pd.read_csv(CLEAN_LOG_PATH, sep="\t")
+    df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int})
 
     # To timestamp format
     df.DateTimeStart = pd.to_datetime(df.DateTimeStart)
@@ -147,6 +146,9 @@ if not redo_file:
         print("Error while planning: " + err.stderr)
 
 df = load_data(driver)
+
+st.subheader("Tagging")
+st.write("Tagged data", df)
 
 #########################################################################
 # Transform data
@@ -204,11 +206,11 @@ def encode_data(df):
 
 # -----------------------------------------------------------------------------
 
-with st.spinner("Encoding data..."):
+with st.spinner("Encoding log..."):
     corpus_lists = encode_data(df)
 
-if st.sidebar.checkbox('Show encoded data'):
-    st.write('Encoded data', corpus_lists)
+if st.sidebar.checkbox('Show encoded log'):
+    st.write('Encoded log', corpus_lists)
 
 #########################################################################
 # Get embeddings
@@ -264,8 +266,9 @@ def get_predictions(X_d2v):
 # ------------------------------------------------------------------------------
 
 def get_decoded_centroids_d2v():
-    return pd.read_csv("out/centroids.csv", sep="\t")
+    return pd.read_csv("out/centroids.csv", sep="\t", dtype={"Cluster": int})
 
+# ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
 with st.spinner("Clustering data..."):
@@ -273,20 +276,37 @@ with st.spinner("Clustering data..."):
     decoded_centroids = get_decoded_centroids_d2v()
     df_clusters = put_clusters_in_df(clusters, df)
 
-# Show results
-
-st.pyplot(visualize_data(X_d2v, 'D2V', clusters))
-centroid = decoded_centroids.loc[decoded_centroids['Cluster'] == centroid_num]
-
-col1, col2 = st.columns(2)
-with col1:
-    st.write("Clustered data", df_clusters)
-
-with col2:
-    st.write("Centroids", centroid)
-
-
 # Save predictions
 PREDICTION_PATH = "out/clustering/clustered-log-driver{}.csv".format(driver)
 
-df_clusters.to_csv(PREDICTION_PATH, index=False)
+if not os.path.isfile(PREDICTION_PATH):
+    df_clusters.to_csv(PREDICTION_PATH, index=False)
+
+#########################################################################
+# Show results
+#########################################################################
+
+st.subheader("Clustering")
+st.pyplot(visualize_data(X_d2v, 'D2V', clusters))
+
+# Select rows for day
+day = st.number_input('Select driver day to display', 1, df['Day'].max())
+df_day = df_clusters[df_clusters['Day'] == day].loc[:, df_clusters.columns != 'Driver']
+
+# Show centroid for selected day
+centroid_num = df_day.Cluster.iloc[0]
+centroid = decoded_centroids.loc[decoded_centroids['Cluster'] == centroid_num]
+
+st.write("Clustered data for day", df_day)
+st.write("Centroid", centroid)
+
+# ------------------------------------------------------------------------------
+# Show all centroids
+
+if st.sidebar.checkbox("Show all centroids"):
+    st.subheader("Centroids")
+
+    centroid_num = st.number_input('Select centroid', 1, df_clusters['Cluster'].max())
+    centroid = decoded_centroids.loc[decoded_centroids['Cluster'] == centroid_num]
+
+    st.write("Centroid", centroid)
