@@ -92,12 +92,12 @@ def color_tagged_df(val):
         "Yes": "green",
 
         "ndd": "#3071e8ff", # light-steel-blue
-        "edd": "#ff2e00",
+        "edd": "#e1d89f",
 
         "first": "#faa549ff",
-        "second": "#f2564fff",
+        "second": "#eb9788",
         "third": "#b7d0f1ff",
-        "unique": "#E09F3E",
+        "unique": "#90AD2A",
 
         "split_1": "#963d72ff",
         "split_2": "#537a34ff",

@@ -187,7 +187,7 @@ col1, col2 = st.columns(2)
 text = 'Days processed<p style="font-size: 60px; font-weight:bold;">{}</p>'.format(max_days)
 col1.markdown(text, unsafe_allow_html=True)
 
-text = 'Illegal sequences detected<p style="color:Red; font-size: 60px; font-weight:bold;">{}</p>'.format(illegal_seq)
+text = 'Illegal sequences detected<p style="color:#9E2A2B; font-size: 60px; font-weight:bold;">{}</p>'.format(illegal_seq)
 col2.markdown(text, unsafe_allow_html=True)
 
 #########################################################################
