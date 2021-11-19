@@ -276,6 +276,10 @@ with st.spinner("Clustering data..."):
     decoded_centroids = get_decoded_centroids_d2v()
     df_clusters = put_clusters_in_df(clusters, df)
 
+# Rename Legal values to Yes/No
+df_clusters.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True)
+decoded_centroids.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True)
+
 # Save predictions
 PREDICTION_PATH = "out/clustering/clustered-log-driver{}.csv".format(driver)
 
@@ -297,8 +301,12 @@ df_day = df_clusters[df_clusters['Day'] == day].loc[:, df_clusters.columns != 'D
 centroid_num = df_day.Cluster.iloc[0]
 centroid = decoded_centroids.loc[decoded_centroids['Cluster'] == centroid_num]
 
-st.write("Clustered data for day", df_day)
-st.write("Centroid", centroid)
+# Color cells
+df_colored = df_day.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token", "Legal"])
+centroid_colored = centroid.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token", "Legal"])
+
+st.write("Clustered data for day", df_colored)
+st.write("Centroid", centroid_colored)
 
 # ------------------------------------------------------------------------------
 # Show all centroids
