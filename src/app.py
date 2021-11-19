@@ -118,7 +118,7 @@ if st.sidebar.checkbox("Show original data"):
 
 @st.cache
 def load_data(driver):
-    df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int})
+    df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int, "Duration(min)":int})
 
     # To timestamp format
     df.DateTimeStart = pd.to_datetime(df.DateTimeStart)
@@ -131,7 +131,7 @@ def load_data(driver):
     df.Legal = df.Legal.map({"yes": 1, "no": 0}) # Not sure if [-1,1] is better
 
     # Drop columns
-    df = df.drop(columns=['Duration', 'ZenoInfo', "DateTimeStart", "DateTimeEnd", 'Week'])
+    df = df.drop(columns=['ZenoInfo', "DateTimeStart", "DateTimeEnd", 'Week'])
 
     return df
 
@@ -152,7 +152,7 @@ if not redo_file:
 df = load_data(driver)
 
 st.subheader("Tagging")
-st.write("Tagged data", df)
+st.write("Tagged data", df.drop(columns="Driver"))
 
 #########################################################################
 # Transform data
@@ -281,6 +281,7 @@ with st.spinner("Clustering data..."):
     df_clusters = put_clusters_in_df(clusters, df)
 
 # Rename Legal values to Yes/No
+df_clusters.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True)
 decoded_centroids.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True)
 
 # Save predictions
@@ -300,6 +301,9 @@ st.pyplot(visualize_data(X_d2v, 'D2V', clusters))
 day = st.number_input('Select driver day to display', 1, df['Day'].max())
 df_day = df_clusters[df_clusters['Day'] == day].loc[:, df_clusters.columns != 'Driver']
 
+# Drop Day column
+df_day = df_day.drop(columns="Day")
+
 # Show centroid for selected day
 centroid_num = df_day.Cluster.iloc[0]
 centroid = decoded_centroids.loc[decoded_centroids['Cluster'] == centroid_num]
@@ -315,8 +319,8 @@ description = c_descriptions[c_descriptions['Centroid'] == centroid_num].Descrip
 
 # ------------------------------------------------------------------------------
 
-st.write("Clustered data for day", df_colored)
-st.write("Centroid")
+st.write("Clustered data for day {}".format(day), df_colored)
+st.write("Centroid for day {}".format(day))
 st.info(description)
 st.write(centroid_colored)
 
