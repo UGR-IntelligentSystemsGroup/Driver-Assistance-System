@@ -32,6 +32,7 @@
 
 		; Initialize functions
 		(= (hours_in_mins) 60)
+		(= (dt_wd) 0)
 		(= (dt_previous_wd) 0)
 		(= (edds_in_week) 0)
 
