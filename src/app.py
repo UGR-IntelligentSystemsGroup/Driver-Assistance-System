@@ -1,10 +1,6 @@
-# Requirements:
-# gensim
-# streamlit
-# pandas
-# numpy
-# sklearn
-
+#########################################################################
+# app.py
+# Web app to test Driver Recognition functionality
 #########################################################################
 
 import os
@@ -50,14 +46,20 @@ if not os.path.isdir("./out/tagged"):
 # Get driver to predict and centroid to display
 st.sidebar.header("Configuration")
 driver = st.sidebar.number_input('Select driver log', 1, 290)
-st.sidebar.subheader("Info")
 
-# TODO: Button to use all logs
-# LOG_DATA_PATH = "./out/tagged/tagged-combined-log.csv"
-
+# Paths
 RAW_DATA_PATH = "./data/split/driver{}.csv".format(driver)
 PLAN_DATA_PATH = "./out/plan/event-log-driver{}.plan".format(driver)
 PROBLEM_PATH = "hpdl/problems/problem-driver{}.pddl".format(driver)
+
+st.sidebar.subheader("Info")
+
+# Documentation
+link = '[Go to documentation](https://github.com/IgnacioVellido/IMLAP-Driver-Activity-Recognition/tree/main/doc/)'
+st.sidebar.markdown(link, unsafe_allow_html=True)
+
+# -----------------------------------------------------------------------------
+# FROM CSV to PDDL
 
 # Don't call again if PDDL already defined
 redo_file = os.path.isfile(PROBLEM_PATH)
@@ -71,8 +73,6 @@ if redo_file:
 
 if not redo_file:
     with st.spinner("Preprocessing raw data for recognition..."):
-        # -----------------------------------------------------------------------------
-        # FROM CSV to PDDL
         try:
             subprocess.run(['python', './src/parsers/fromCSVtoPLAN.py' , RAW_DATA_PATH])
         except subprocess.CalledProcessError as err:
@@ -113,9 +113,7 @@ if st.sidebar.checkbox("Show original data"):
 # Clustering
 #########################################################################
 
-#########################################################################
 # Load data
-
 @st.cache
 def load_data(driver):
     df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int, "Duration(min)":int})
@@ -136,8 +134,8 @@ def load_data(driver):
     return df
 
 # -----------------------------------------------------------------------------
-
 # Clean log for driver
+
 CLEAN_LOG_PATH = "out/clean/clean-log-driver{}.csv".format(driver)
 
 # Don't call again if log already cleaned
@@ -151,17 +149,25 @@ if not redo_file:
 
 df = load_data(driver)
 
+# -----------------------------------------------------------------------------
+# Coloring for display
+
+df_colored = df.drop(columns="Driver")
+df_colored.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True) # Rename Legal values to Yes/No
+df_colored = df_colored.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token", "Legal"])
+
 st.subheader("Tagging")
-st.write("Tagged data", df.drop(columns="Driver"))
+st.write("Tagged data", df_colored)
 
 #########################################################################
-# Transform data
-# Encode each column as numeric and group them
+# Encode each column as numeric and join them
 #########################################################################
 
 @st.cache
 def get_ordinalencoder_model():
     return load('src/model/ordinal_encoder.joblib')
+
+# -------------------------------------------------------------------------
 
 # The encoded columns are:
 # Activity - DayType - Sequence - BreakType - Token - Legal
@@ -209,6 +215,7 @@ def encode_data(df):
     return corpus_lists
 
 # -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 with st.spinner("Encoding log..."):
     corpus_lists = encode_data(df)
@@ -222,6 +229,8 @@ if st.sidebar.checkbox('Show encoded log'):
 
 def get_d2v_model():
     return Doc2Vec.load("src/model/doc2vec.bin")
+
+# -----------------------------------------------------------------------------
 
 # Paragraph Vector (Doc2Vec)
 @st.cache
@@ -240,6 +249,7 @@ def get_d2v(corpus_lists):
     return embeddings_d2v
 
 # -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 with st.spinner("Getting D2V..."):
     X_d2v = get_d2v(corpus_lists)
@@ -253,6 +263,8 @@ with st.spinner("Getting D2V..."):
 def get_kmeans_model():
     return load('src/model/kmeans.joblib')
 
+# -----------------------------------------------------------------------------
+
 @st.cache
 def get_predictions(X_d2v):
     # Load KMeans
@@ -261,9 +273,9 @@ def get_predictions(X_d2v):
     clusters = kmeans.predict(X_d2v)
 
     # Get metrics
-    # silhouette = silhouette_score(X, clusters)
-    # ch = calinski_harabasz_score(X, clusters)
-    # db = davies_bouldin_score(X, clusters)
+    # silhouette = silhouette_score(X_d2v, clusters)
+    # ch = calinski_harabasz_score(X_d2v, clusters)
+    # db = davies_bouldin_score(X_d2v, clusters)
 
     return clusters
 
@@ -277,12 +289,12 @@ def get_decoded_centroids_d2v():
 
 with st.spinner("Clustering data..."):
     clusters = get_predictions(X_d2v)
-    decoded_centroids = get_decoded_centroids_d2v()
+    centroids = get_decoded_centroids_d2v()
     df_clusters = put_clusters_in_df(clusters, df)
 
 # Rename Legal values to Yes/No
 df_clusters.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True)
-decoded_centroids.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True)
+centroids.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True)
 
 # Save predictions
 PREDICTION_PATH = "out/clustering/clustered-log-driver{}.csv".format(driver)
@@ -294,6 +306,21 @@ if not os.path.isfile(PREDICTION_PATH):
 # Show results
 #########################################################################
 
+CENTROID_DESCRIPTION_PATH = "out/centroids_description.csv"
+c_descriptions = pd.read_csv(CENTROID_DESCRIPTION_PATH)
+
+# Get colored centroid and its description
+def get_centroid(descriptions, centroids, num):
+    description = descriptions[descriptions['Centroid'] == num].Description.iloc[0]
+
+    centroid = centroids.loc[centroids['Cluster'] == centroid_num]
+    centroid_colored = centroid.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token", "Legal"])
+
+    return centroid_colored, description
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 st.subheader("Clustering")
 st.pyplot(visualize_data(X_d2v, 'D2V', clusters))
 
@@ -304,18 +331,12 @@ df_day = df_clusters[df_clusters['Day'] == day].loc[:, df_clusters.columns != 'D
 # Drop Day column
 df_day = df_day.drop(columns="Day")
 
-# Show centroid for selected day
-centroid_num = df_day.Cluster.iloc[0]
-centroid = decoded_centroids.loc[decoded_centroids['Cluster'] == centroid_num]
-
 # Color cells
 df_colored = df_day.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token", "Legal"])
-centroid_colored = centroid.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token", "Legal"])
 
-# Get centroid description
-CENTROID_DESCRIPTION_PATH = "out/centroids_description.csv"
-c_descriptions = pd.read_csv(CENTROID_DESCRIPTION_PATH)
-description = c_descriptions[c_descriptions['Centroid'] == centroid_num].Description.iloc[0]
+# Get centroid and its description
+centroid_num = df_day.Cluster.iloc[0]
+centroid_colored, description = get_centroid(c_descriptions, centroids, centroid_num)
 
 # ------------------------------------------------------------------------------
 
@@ -331,6 +352,7 @@ if st.sidebar.checkbox("Show all centroids"):
     st.subheader("Centroids")
 
     centroid_num = st.number_input('Select centroid', 1, df_clusters['Cluster'].max())
-    centroid = decoded_centroids.loc[decoded_centroids['Cluster'] == centroid_num]
+    centroid_colored, description = get_centroid(c_descriptions, centroids, centroid_num)
 
-    st.write("Centroid", centroid)
+    st.info(description)
+    st.write(centroid_colored)
