@@ -1,8 +1,5 @@
-# Documentation
-doc/*
-
-# Except graphs
-!doc/graphs
+# Old documentation
+doc/old
 
 # Python
 **/__pycache__
