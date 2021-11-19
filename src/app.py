@@ -105,6 +105,10 @@ if not redo_file:
         except subprocess.CalledProcessError as err:
             print("Error while planning: " + err.stderr)
 
+if st.sidebar.checkbox("Show original data"):
+    df_original = pd.read_csv(RAW_DATA_PATH)
+    st.write("Raw data", df_original)
+    
 #########################################################################
 # Clustering
 #########################################################################
