@@ -93,3 +93,8 @@ Each of the 25 centroids can be found in format the ``out`` folder.
 ## ⏲️ HOS Regulation
 
 Detailed information about the regulation on which the project is based can be found [here](doc/HOS_regulation.md).
+
+## :handshake: Contributing
+
+We will gladly hear any feedback you may have, so don't be shy and open an issue whenever you want.
+If you also want to contribute to this project please consider opening a PR. All contributions are welcome! :smile:
