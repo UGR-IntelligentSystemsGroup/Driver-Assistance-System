@@ -320,7 +320,7 @@ description = c_descriptions[c_descriptions['Centroid'] == centroid_num].Descrip
 # ------------------------------------------------------------------------------
 
 st.write("Clustered data for day {}".format(day), df_colored)
-st.write("Centroid for day {}".format(day))
+st.write("Centroid for cluster {}".format(centroid_num))
 st.info(description)
 st.write(centroid_colored)
 
