@@ -1,0 +1,11 @@
+Activity	DayType	Sequence	BreakType	Token	Legal	Topic
+Driving	edd	second	uninterrupted	A	1	0.0
+Other	edd	second	uninterrupted	A	1	0.0
+Break	edd	second	uninterrupted	B_T1	1	0.0
+Break	edd	second	uninterrupted	B_T0	1	0.0
+Driving	edd	first	split_1	A	1	0.0
+Break	edd	first	split_1	B_T2	1	0.0
+Break	edd	first	split_2	B_T3	1	0.0
+Driving	edd	first	split_2	A	1	0.0
+Break	edd	third	split_1	B_T2	1	0.0
+Driving	edd	third	split_1	A	1	0.0
