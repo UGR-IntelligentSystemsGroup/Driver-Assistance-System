@@ -277,7 +277,6 @@ with st.spinner("Clustering data..."):
     df_clusters = put_clusters_in_df(clusters, df)
 
 # Rename Legal values to Yes/No
-df_clusters.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True)
 decoded_centroids.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True)
 
 # Save predictions
@@ -305,8 +304,17 @@ centroid = decoded_centroids.loc[decoded_centroids['Cluster'] == centroid_num]
 df_colored = df_day.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token", "Legal"])
 centroid_colored = centroid.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token", "Legal"])
 
+# Get centroid description
+CENTROID_DESCRIPTION_PATH = "out/centroids_description.csv"
+c_descriptions = pd.read_csv(CENTROID_DESCRIPTION_PATH)
+description = c_descriptions[c_descriptions['Centroid'] == centroid_num].Description.iloc[0]
+
+# ------------------------------------------------------------------------------
+
 st.write("Clustered data for day", df_colored)
-st.write("Centroid", centroid_colored)
+st.write("Centroid")
+st.info(description)
+st.write(centroid_colored)
 
 # ------------------------------------------------------------------------------
 # Show all centroids
