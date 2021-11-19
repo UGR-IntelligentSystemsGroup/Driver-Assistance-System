@@ -134,6 +134,7 @@ def load_data(driver):
     return df
 
 # -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Clean log for driver
 
 CLEAN_LOG_PATH = "out/clean/clean-log-driver{}.csv".format(driver)
@@ -158,6 +159,36 @@ df_colored = df_colored.style.applymap(color_tagged_df, subset=["DayType", "Sequ
 
 st.subheader("Tagging")
 st.write("Tagged data", df_colored)
+
+#########################################################################
+# Display metrics
+#########################################################################
+
+def find_num_illegal(df):
+    groups = df.groupby('Day', sort=False) # False to keep driver ordering
+
+    num = 0
+    for _, group in groups:
+        if "none" in group.values:
+            num += 1
+
+    return num
+
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
+# Metrics
+max_days = int(df['Day'].max())
+illegal_seq = find_num_illegal(df)
+
+
+col1, col2 = st.columns(2)
+
+text = 'Days processed<p style="font-size: 60px; font-weight:bold;">{}</p>'.format(max_days)
+col1.markdown(text, unsafe_allow_html=True)
+
+text = 'Illegal sequences detected<p style="color:Red; font-size: 60px; font-weight:bold;">{}</p>'.format(illegal_seq)
+col2.markdown(text, unsafe_allow_html=True)
 
 #########################################################################
 # Encode each column as numeric and join them
@@ -325,7 +356,7 @@ st.subheader("Clustering")
 st.pyplot(visualize_data(X_d2v, 'D2V', clusters))
 
 # Select rows for day
-day = st.number_input('Select driver day to display', 1, df['Day'].max())
+day = st.number_input('Select driver day to display', 1, max_days)
 df_day = df_clusters[df_clusters['Day'] == day].loc[:, df_clusters.columns != 'Driver']
 
 # Drop Day column
