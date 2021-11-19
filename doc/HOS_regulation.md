@@ -2,13 +2,13 @@
 
 This projects is based on the european **H**ours **O**f **S**ervice regulation No 561/2006 (you can find a copy of it [here](https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX%3A32006R0561)). The most important elements to consider are reflected in the following images:
 
-![Weekly Driving Example](./doc/graphs/wd_example.svg)
+![Weekly Driving Example](./graphs/wd_example.svg)
 
-![Driving Day Types](./doc/graphs/dd_types.svg)
+![Driving Day Types](./graphs/dd_types.svg)
 
-![Driving Sequence Types](./doc/graphs/cdd_types.svg)
+![Driving Sequence Types](./graphs/cdd_types.svg)
 
-![Rest Day Types](./doc/graphs/rd_types.svg)
+![Rest Day Types](./graphs/rd_types.svg)
 
 A detailed explanation from (Legal aspects in road transport optimization in Europe, Asvin Goel): 
 
