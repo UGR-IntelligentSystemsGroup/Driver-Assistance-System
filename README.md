@@ -89,8 +89,8 @@ Please see some of our examples (like [this one](https://github.com/IgnacioVelli
 
 ### Clustering
 
-We provide a K-Means model pre-trained using Doc2Vec in our data, which can be loaded from the ``src/model`` folder.
-Each of the 25 centroids can be found in format the ``out`` folder.
+We provide a K-Means model pre-trained using Doc2Vec (also called [Paragraph Vector model](https://cs.stanford.edu/~quocle/paragraph_vector.pdf)) in our data, which can be loaded from the ``src/model`` folder.
+Each of the 25 centroids can be found in human readable format the ``out`` folder.
 
 ## ⏲️ HOS Regulation
 
