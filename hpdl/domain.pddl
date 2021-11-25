@@ -195,8 +195,12 @@
             if ?preference_cdd == 1 and (dur > (2.25*60)):
                 dur = (2.25*60)
             
+            # Already Driving sequence in split, do not follow with another
+            if ?dt_activity > 0:
+                dur = -1
+            
 #            print(dur)
-#            print("------------------------------------")
+#            print("@@@@@@@@@@@@2")
 
             return dur
         }
@@ -225,8 +229,8 @@
             else:
                 dur = 45     # B_T1
 
-            print(dur)
-            print("#####")
+#            print(dur)
+#            print("#####")
 
             return dur
         }
@@ -234,6 +238,7 @@
         ; --------------------------------------------------------------------------------
 
         (next_break_is_rest)
+        (next_dt_wont_be_negative ?d - Driver)
 
         ; Zenotravel
         (total-fuel-used ?d - Driver)
@@ -853,7 +858,9 @@
         (:method REST
             :precondition (next_break_is_rest)
             :tasks (
+                (:inline (:print "---uint\n") ())
                 (A ?d)
+                (:inline (:print "---uint\n") ())
 
                 (:inline
                     (and
@@ -917,7 +924,6 @@
             :precondition()
             :tasks (
                 (A ?d)
-                ; (:inline (:print "---A\n") ())
 
                 (:inline
                     (and
@@ -927,11 +933,7 @@
                     (assign (dt_cdd_split1) (dt_activity))
                 )
 
-                ; (:inline (:print "---A2\n") ())
-
                 (B_T2 ?d)
-
-                ; (:inline (:print "---A3\n") ())
 
                 (:inline
                     ()
@@ -969,8 +971,6 @@
                 )
 
                 (REST ?d)
-
-                ; (:inline (:print "---REST\n") ())
 
                 (:inline
                     ()
@@ -1312,16 +1312,16 @@
             :precondition ()
             :tasks (
                 (b_token B_T2)
-                (:inline (:print "---Bt2-1\n") ())
+                ; (:inline (:print "---Bt2-1\n") ())
                 (B ?d ?dur)
-                (:inline (:print "---Bt2-2\n") ())
+                ; (:inline (:print "---Bt2-2\n") ())
                 (:inline
                     (and (>= ?dur 15) (< ?dur (* 3.0 (hours_in_mins))))
                     ()
                 )
                 (e_token B_T2)
 
-                (:inline (:print "---Bt2-3\n") ())
+                ; (:inline (:print "---Bt2-3\n") ())
 
                 (:inline
                     ()
@@ -1393,6 +1393,7 @@
             :precondition (and (modo_generar) (destination ?b - box ?c - city))
             :tasks (
                 (transport ?d)
+                (:inline (:print "----------------------------------\n") ())
             )
         )
         
@@ -1591,7 +1592,7 @@
                 )
 
                 ; Get duration
-                (:inline (:print "#1\n") ())
+                ; (:inline (:print "#1\n") ())
                 ; TODO: Fix. If activiy is 0 (a bug) and next break is a rest it can't continue
                 (:inline ()
                     (when (next_break_is_rest) (assign (dt_dd) (* 4.5 (hours_in_mins))))
@@ -1611,18 +1612,18 @@
                         (bind ?last_dr (last_dr))
                         (bind ?last_wr (last_wr))
 
-                        (bind ?last_bt (bt_cdd))
+                        (bind ?last_bt (bt_cdd_split1))
                         (bind ?preference_cdd (preference_cdd))
 
                         (bind ?dur (calculate_duration_B ?d ?dt_dd ?dt_activity ?actual_timestamp ?last_dr ?last_wr ?last_bt ?preference_cdd))
                     )
                     ()
                 )
-                (:inline (:print ?dur) ())
-                (:inline (:print "#2\n") ())
+                ; (:inline (:print ?dur) ())
+                ; (:inline (:print "#2\n") ())
 
                 (B_suggested ?d ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
-                (:inline (:print "#3\n") ())
+                ; (:inline (:print "#3\n") ())
             )
         )
         (:method modo_reconocer
@@ -2090,10 +2091,29 @@
         )
     )
 
+    (:derived (next_dt_wont_be_negative ?d - Driver)
+        (and
+            (bind ?dt_dd (dt_dd))
+            (bind ?dt_activity (dt_activity))
+            (bind ?dt_wd (dt_wd))
+
+            (bind ?preference_dd (preference_dd))
+            (bind ?preference_cdd (preference_cdd))
+
+            (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd ?preference_dd ?preference_cdd))
+
+            ; Check if positive
+            (> ?dur 0)
+        )
+    )
+
     (:task transport
         :parameters (?d - Driver)
         (:method delivery
-            :precondition (destination ?b - box ?c - city)
+            :precondition (and
+                (destination ?b - box ?c - city)
+                (next_dt_wont_be_negative ?d)
+            )
             :tasks (
                 (transport-box ?b ?c)
                 (transport ?d)
