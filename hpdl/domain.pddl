@@ -164,11 +164,12 @@
         ; 9 - dt_dd      si dt_dd < 9
         ; 10 - dt_dd    si dt_dd > 9 < 10
         ; TODO: Can't surpass (<= (dt_wd) (* 56.0 (hours_in_mins)))
-        (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd) {
+        (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd ?preference_dd ?preference_cdd) {
             dur = -1
 
             # Deciding between NDD or EDD
-            max_hours = 10 if (?dt_dd > (9*60)) else 9
+#            max_hours = 10 if (?dt_dd > (9*60)) else 9
+            max_hours = 10 if (?dt_dd > (9*60) or ?preference_dd == 1) else 9
 
             # If dt_dd already bigger than 10, returning negative value
             dur = (max_hours * 60) - ?dt_dd
@@ -186,6 +187,17 @@
             # Bigger than 0
             dur = dur if (dur > 0) else -1
 
+#            print(dur)
+
+            # If split preference, don't surpass 2.5h
+            # If suggesting second part of split remaining time 
+            # can't be bigger than 2.5h, so keeping previously calculated value
+            if ?preference_cdd == 1 and (dur > (2.25*60)):
+                dur = (2.25*60)
+            
+#            print(dur)
+#            print("------------------------------------")
+
             return dur
         }
         
@@ -193,7 +205,7 @@
         ; If dt_dd > 4.5 -> DR o WR
         ; Else B_T1 = 45m
                 ; #if ((?actual_timestamp + 45) > (24*60 + ?last_dr))
-        (calculate_duration_B ?d ?dt_dd ?dt_activity ?actual_timestamp ?last_dr ?last_wr) {
+        (calculate_duration_B ?d ?dt_dd ?dt_activity ?actual_timestamp ?last_dr ?last_wr ?last_bt ?preference_cdd) {
             dur = -1
 
             # If end of CDD -> DR o WR
@@ -203,11 +215,23 @@
                     dur = 45 * 60
                 else:
                     dur = 11 * 60
+            # If split wanted
+            elif ?preference_cdd == 1: 
+                # Check if we are already in the second part of split
+                if ?last_bt == 0:
+                    dur = 15 # B_T2
+                else:
+                    dur = 30 # B_T3
             else:
-                dur = 45    # B_T1
+                dur = 45     # B_T1
+
+            print(dur)
+            print("#####")
 
             return dur
         }
+
+        ; --------------------------------------------------------------------------------
 
         (next_break_is_rest)
 
@@ -226,6 +250,12 @@
 
         (remaining_transport_dt)
         (next_transport_dt)
+
+        ; Preferences
+        (preference_dd) ; 0: NDD - 1: EDD
+                            ; 2 EDD max per week. So it should be based on whether an EDD 
+                            ; let finish the transport earlier or the driver always uses the EDD availables
+        (preference_cdd) ; 0: Uninterrupted - 1: Split
     )
 
     ; =========================================================================
@@ -378,6 +408,9 @@
                         (assign (bt_cdd_split1) 0)
                         (assign (bt_cdd_split2) 0)
                         (assign (current_bt) 0)
+
+                        (assign (preference_cdd) 0)
+		                (assign (preference_dd) 0)
                     )
                 )
             )
@@ -450,7 +483,7 @@
             )
         )
 
-        ; Finished activity recognition a WD, start with Zenotravel actions
+        ; Finished activity recognition with a WR, start with Zenotravel actions
         (:method transport
             :precondition (destination ?b - box ?c - city)
             :tasks (
@@ -483,6 +516,8 @@
     ; Daily Driving
     (:task DD
         :parameters (?d - Driver)
+        ; DO NOT CHANGE - Tags for reordering methods
+        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         (:method ndd
             :precondition (or
                 (secuencia_entrada_no_vacia)
@@ -491,6 +526,9 @@
 
             :tasks (
                 (reset_counters)
+
+                ; Set preferences function
+                (:inline () (when (fin_secuencia_entrada) (assign (preference_dd) 0)))
 
                 (b_dayType NDD)
                 (NDD ?d)
@@ -508,10 +546,13 @@
                 (print_new_day)
             )
         )
+        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         
+        ; DO NOT CHANGE - Tags for reordering methods
+        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         (:method edd
             :precondition (and
-                (<= (edds_in_week) 2)
+                (< (edds_in_week) 2)
                 (or
                     (secuencia_entrada_no_vacia)
                     (destination ?b - box ?c - city)
@@ -519,6 +560,9 @@
             )
             :tasks (
                 (reset_counters)
+
+                ; Set preferences function
+                (:inline () (when (fin_secuencia_entrada) (assign (preference_dd) 1)))
 
                 (b_dayType EDD)
                 (EDD ?d)
@@ -537,6 +581,7 @@
                 (print_new_day)
             )
         )
+        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
         ; --------------------------------------------------------------
         ; Below: DayType not recognized
@@ -745,29 +790,17 @@
 
     ; Continuous Daily Driving -> <4.5h
     (:task CDD
-        :parameters (?d - Driver) 
-        ; Uninterrupted (normal, no splits)
-        (:method uninterrupted
-            :precondition ()
-            :tasks (
-                (b_breakType uninterrupted)
-                (CDD_UNINT ?d)
-                (e_breakType uninterrupted)
+        :parameters (?d - Driver)
 
-                (:inline
-                    ()
-                    (and
-                        (assign (dt_cdd) (dt_cdd_unint))
-                        (assign (bt_cdd) (bt_cdd_unint))
-                    )
-                )
-            )
-        )
-
+        ; DO NOT CHANGE - Tags for reordering methods
+        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         ; Type 2 (with a split)
         (:method split
-            :precondition ()
+            :precondition (not (next_break_is_rest))
             :tasks (
+                ; Set preferences function
+                (:inline () (when (fin_secuencia_entrada) (assign (preference_cdd) 1)))
+
                 (b_breakType split_1)
                 (CDD_SPLIT_1 ?d)
                 (e_breakType split_1)
@@ -785,6 +818,31 @@
                 )
             )
         )
+        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+                ; DO NOT CHANGE - Tags for reordering methods
+        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        ; Uninterrupted (normal, no splits)
+        (:method uninterrupted
+            :precondition ()
+            :tasks (
+                ; Set preferences function
+                (:inline () (when (fin_secuencia_entrada) (assign (preference_cdd) 0)))
+
+                (b_breakType uninterrupted)
+                (CDD_UNINT ?d)
+                (e_breakType uninterrupted)
+
+                (:inline
+                    ()
+                    (and
+                        (assign (dt_cdd) (dt_cdd_unint))
+                        (assign (bt_cdd) (bt_cdd_unint))
+                    )
+                )
+            )
+        )
+        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     )
 
     ; -------------------------------------------------------------------------
@@ -859,6 +917,7 @@
             :precondition()
             :tasks (
                 (A ?d)
+                ; (:inline (:print "---A\n") ())
 
                 (:inline
                     (and
@@ -868,7 +927,11 @@
                     (assign (dt_cdd_split1) (dt_activity))
                 )
 
+                ; (:inline (:print "---A2\n") ())
+
                 (B_T2 ?d)
+
+                ; (:inline (:print "---A3\n") ())
 
                 (:inline
                     ()
@@ -883,6 +946,15 @@
     ; Second split of a CDD. Ending in B_T3 or RD
     (:task CDD_SPLIT_2
         :parameters (?d - Driver)
+        ; If previous transport already finished deliveries
+        (:method END
+            :precondition (and 
+                (fin_secuencia_entrada)
+                (not (destination ?b - box ?c - city))
+            )
+            :tasks ()
+        )
+
         (:method RD
             :precondition (next_break_is_rest)
             :tasks (
@@ -897,6 +969,8 @@
                 )
 
                 (REST ?d)
+
+                ; (:inline (:print "---REST\n") ())
 
                 (:inline
                     ()
@@ -959,7 +1033,6 @@
             ; Comprobar que se ha realizado en menos de 6 períodos de 24h
             :precondition (wr_in_less_than_6_24)
             :tasks (
-                ; (:inline (:print "Weekly-legal\n")())
                 (WR ?d)
 
                 (:inline
@@ -1239,12 +1312,16 @@
             :precondition ()
             :tasks (
                 (b_token B_T2)
+                (:inline (:print "---Bt2-1\n") ())
                 (B ?d ?dur)
+                (:inline (:print "---Bt2-2\n") ())
                 (:inline
                     (and (>= ?dur 15) (< ?dur (* 3.0 (hours_in_mins))))
                     ()
                 )
                 (e_token B_T2)
+
+                (:inline (:print "---Bt2-3\n") ())
 
                 (:inline
                     ()
@@ -1457,7 +1534,11 @@
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
                         (bind ?dt_wd (dt_wd))
-                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd))
+
+                        (bind ?preference_dd (preference_dd))
+                        (bind ?preference_cdd (preference_cdd))
+
+                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd ?preference_dd ?preference_cdd))
                     )
                     ()
                 )
@@ -1510,6 +1591,7 @@
                 )
 
                 ; Get duration
+                (:inline (:print "#1\n") ())
                 ; TODO: Fix. If activiy is 0 (a bug) and next break is a rest it can't continue
                 (:inline ()
                     (when (next_break_is_rest) (assign (dt_dd) (* 4.5 (hours_in_mins))))
@@ -1528,12 +1610,19 @@
                         (bind ?dt_activity (dt_activity))
                         (bind ?last_dr (last_dr))
                         (bind ?last_wr (last_wr))
-                        (bind ?dur (calculate_duration_B ?d ?dt_dd ?dt_activity ?actual_timestamp ?last_dr ?last_wr))
+
+                        (bind ?last_bt (bt_cdd))
+                        (bind ?preference_cdd (preference_cdd))
+
+                        (bind ?dur (calculate_duration_B ?d ?dt_dd ?dt_activity ?actual_timestamp ?last_dr ?last_wr ?last_bt ?preference_cdd))
                     )
                     ()
                 )
+                (:inline (:print ?dur) ())
+                (:inline (:print "#2\n") ())
 
                 (B_suggested ?d ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
+                (:inline (:print "#3\n") ())
             )
         )
         (:method modo_reconocer
@@ -1990,7 +2079,11 @@
             (bind ?dt_dd (dt_dd))
             (bind ?dt_activity (dt_activity))
             (bind ?dt_wd (dt_wd))
-            (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd))
+
+            (bind ?preference_dd (preference_dd))
+            (bind ?preference_cdd (preference_cdd))
+
+            (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd ?preference_dd ?preference_cdd))
             
             ; See if enough time to complete transport
             (>= ?dur (+ (* (hours_in_mins) (/ (distance ?c1 ?c2) (speed ?d))) 5)) ; +5 min margin
@@ -2304,17 +2397,6 @@
                 )
             )
         )
-
-        ; Layover don't needed thanks to the breaks
-        ; (:method layover
-            ; :precondition (and
-                ; (> (distance ?c1 ?c3 - city) 0)
-                ; (> (distance ?c1 ?c2 - city) (distance ?c1 ?c3))
-                ; (> (distance ?c1 ?c2 - city) (distance ?c3 ?c2))
-
-                ; (not (= ?c2 ?c3))
-                ; (not (= ?c1 ?c3))
-            ; )
     )
 
     ; ---------------------------------------------------------------------------
@@ -2336,7 +2418,11 @@
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
                         (bind ?dt_wd (dt_wd))
-                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd))
+
+                        (bind ?preference_dd (preference_dd))
+                        (bind ?preference_cdd (preference_cdd))
+
+                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd ?preference_dd ?preference_cdd))
                         (> ?dur 0)
                     )
                     ; See if enough time to complete transport
@@ -2382,7 +2468,11 @@
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
                         (bind ?dt_wd (dt_wd))
-                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd))
+
+                        (bind ?preference_dd (preference_dd))
+                        (bind ?preference_cdd (preference_cdd))
+
+                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd ?preference_dd ?preference_cdd))
                         (> ?dur 0)
                         
                         ; See if enough time to complete transport
@@ -2418,7 +2508,11 @@
                         (bind ?dt_dd (dt_dd))
                         (bind ?dt_activity (dt_activity))
                         (bind ?dt_wd (dt_wd))
-                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd))
+
+                        (bind ?preference_dd (preference_dd))
+                        (bind ?preference_cdd (preference_cdd))
+
+                        (bind ?dur (calculate_duration_D ?d ?dt_dd ?dt_activity ?dt_wd ?preference_dd ?preference_cdd))
                         (> ?dur 0)
                     )
                     (and
