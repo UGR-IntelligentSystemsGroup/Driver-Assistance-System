@@ -4,6 +4,29 @@
 import pandas as pd
 
 #########################################################################
+# Metrics
+#########################################################################
+# Driver - Driver name
+# Days - Number of days processed
+# Illegal - Number of illegal sequences detected 
+#           (TODO: As of now only one per day, but could be more)
+# 
+# NDD, EDD                          - DayTypes counters
+# uninterrupted, split_1, split_2   - BreakType counters
+# Driving, Other, Break, Idle       - Activity counters
+# 
+# A, I, B_T0,
+# B_T1, B_T2, B_T3,
+# DR_T1, DR_T2, DR_T3, DR_T4,
+# WR_T1, WR_T2                      - Token counters
+#
+# TODO:
+# Productivity - Time spent Driving + Other against Break + Idle [0,1]
+# DrivingSpeed - Mean time spent Driving per kilometer 
+#                (lower the better, but very small could indicate illegality)
+#                (although tachograph should also measure speed)
+# OtherSpeed - Mean time spent Other per activity
+#########################################################################
 
 def get_metrics(driver, df):
     columns = ["Driver", "Days", "Illegal",
