@@ -168,7 +168,6 @@
             dur = -1
 
             # Deciding between NDD or EDD
-#            max_hours = 10 if (?dt_dd > (9*60)) else 9
             max_hours = 10 if (?dt_dd > (9*60) or ?preference_dd == 1) else 9
 
             # If dt_dd already bigger than 10, returning negative value
@@ -187,8 +186,6 @@
             # Bigger than 0
             dur = dur if (dur > 0) else -1
 
-#            print(dur)
-
             # If split preference, don't surpass 2.5h
             # If suggesting second part of split remaining time 
             # can't be bigger than 2.5h, so keeping previously calculated value
@@ -198,9 +195,6 @@
             # Already Driving sequence in split, do not follow with another
             if ?dt_activity > 0:
                 dur = -1
-            
-#            print(dur)
-#            print("@@@@@@@@@@@@2")
 
             return dur
         }
@@ -228,9 +222,6 @@
                     dur = 30 # B_T3
             else:
                 dur = 45     # B_T1
-
-#            print(dur)
-#            print("#####")
 
             return dur
         }
@@ -521,8 +512,6 @@
     ; Daily Driving
     (:task DD
         :parameters (?d - Driver)
-        ; DO NOT CHANGE - Tags for reordering methods
-        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         (:method ndd
             :precondition (or
                 (secuencia_entrada_no_vacia)
@@ -551,10 +540,7 @@
                 (print_new_day)
             )
         )
-        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         
-        ; DO NOT CHANGE - Tags for reordering methods
-        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
         (:method edd
             :precondition (and
                 (< (edds_in_week) 2)
@@ -586,7 +572,6 @@
                 (print_new_day)
             )
         )
-        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
         ; --------------------------------------------------------------
         ; Below: DayType not recognized
@@ -796,9 +781,8 @@
     ; Continuous Daily Driving -> <4.5h
     (:task CDD
         :parameters (?d - Driver)
-
-        ; DO NOT CHANGE - Tags for reordering methods
         ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        ; DO NOT CHANGE - Tags for reordering methods
         ; Type 2 (with a split)
         (:method split
             :precondition (not (next_break_is_rest))
@@ -825,8 +809,8 @@
         )
         ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-                ; DO NOT CHANGE - Tags for reordering methods
         ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        ; DO NOT CHANGE - Tags for reordering methods
         ; Uninterrupted (normal, no splits)
         (:method uninterrupted
             :precondition ()
@@ -858,9 +842,7 @@
         (:method REST
             :precondition (next_break_is_rest)
             :tasks (
-                (:inline (:print "---uint\n") ())
                 (A ?d)
-                (:inline (:print "---uint\n") ())
 
                 (:inline
                     (and
@@ -1312,16 +1294,12 @@
             :precondition ()
             :tasks (
                 (b_token B_T2)
-                ; (:inline (:print "---Bt2-1\n") ())
                 (B ?d ?dur)
-                ; (:inline (:print "---Bt2-2\n") ())
                 (:inline
                     (and (>= ?dur 15) (< ?dur (* 3.0 (hours_in_mins))))
                     ()
                 )
                 (e_token B_T2)
-
-                ; (:inline (:print "---Bt2-3\n") ())
 
                 (:inline
                     ()
@@ -1393,7 +1371,6 @@
             :precondition (and (modo_generar) (destination ?b - box ?c - city))
             :tasks (
                 (transport ?d)
-                (:inline (:print "----------------------------------\n") ())
             )
         )
         
@@ -1592,7 +1569,6 @@
                 )
 
                 ; Get duration
-                ; (:inline (:print "#1\n") ())
                 ; TODO: Fix. If activiy is 0 (a bug) and next break is a rest it can't continue
                 (:inline ()
                     (when (next_break_is_rest) (assign (dt_dd) (* 4.5 (hours_in_mins))))
@@ -1600,10 +1576,6 @@
                 (:inline
                     (and
                         ; Get actual timestamp
-                        ; (bind ?k (- (current_index_action) 1))
-                        ; (index_action ?sa ?k)
-                        ; (start_action ?sa ?final)
-                        ; (bind ?start (+ ?final (dt_dd)))
                         (bind ?actual_timestamp (actual-timestamp))
 
                         ; Get duration
@@ -1619,11 +1591,8 @@
                     )
                     ()
                 )
-                ; (:inline (:print ?dur) ())
-                ; (:inline (:print "#2\n") ())
 
                 (B_suggested ?d ?dur ?tkctxt ?drivctxt ?seqctxt ?dayctxt ?weekcount ?daycount ?legalctxt)
-                ; (:inline (:print "#3\n") ())
             )
         )
         (:method modo_reconocer
