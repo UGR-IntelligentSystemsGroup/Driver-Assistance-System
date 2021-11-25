@@ -12,6 +12,9 @@ from joblib import load
 # Visualization
 from plot_utils import *
 
+# Metrics
+from get_driver_metrics import *
+
 # Preprocessing
 from sklearn.preprocessing import normalize
 
@@ -164,24 +167,13 @@ st.write("Tagged data", df_colored)
 # Display metrics
 #########################################################################
 
-def find_num_illegal(df):
-    groups = df.groupby('Day', sort=False) # False to keep driver ordering
+# Get driver metrics
+driver_metrics = get_metrics(driver, df)
 
-    num = 0
-    for _, group in groups:
-        if "none" in group.values:
-            num += 1
+max_days = driver_metrics.Days.loc[0]
+illegal_seq = driver_metrics.Illegal.loc[0]
 
-    return num
-
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-
-# Metrics
-max_days = int(df['Day'].max())
-illegal_seq = find_num_illegal(df)
-
-
+# Print
 col1, col2 = st.columns(2)
 
 text = 'Days processed<p style="font-size: 60px; font-weight:bold;">{}</p>'.format(max_days)
@@ -189,6 +181,8 @@ col1.markdown(text, unsafe_allow_html=True)
 
 text = 'Illegal sequences detected<p style="color:#9E2A2B; font-size: 60px; font-weight:bold;">{}</p>'.format(illegal_seq)
 col2.markdown(text, unsafe_allow_html=True)
+
+st.write(driver_metrics)
 
 #########################################################################
 # Encode each column as numeric and join them
