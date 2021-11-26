@@ -4,6 +4,7 @@
 #########################################################################
 
 import os
+import shutil
 import subprocess
 import pandas as pd
 import streamlit as st
@@ -19,6 +20,20 @@ from get_driver_metrics import *
 st.title('Driver Functionality')
 st.write("Simulating tachograph data streaming")
 
+# TODO: Improve. Put each driver in a folder and only delete that data
+# Delete temporal folder if already exists
+# try:
+#     shutil.rmtree("tmp")
+# except OSError:
+#     pass
+
+# # Create temporal directories
+# os.mkdir("./tmp")
+# os.mkdir("./tmp/problems")
+# os.mkdir("./tmp/clean")
+# os.mkdir("./tmp/plan")
+# os.mkdir("./tmp/tagged")
+
 # Create temporal directories that don't exists
 if not os.path.isdir("./tmp"):
     os.mkdir("./tmp")
@@ -32,12 +47,15 @@ if not os.path.isdir("./tmp/plan"):
 if not os.path.isdir("./tmp/tagged"):
     os.mkdir("./tmp/tagged")
 
+if not os.path.isdir("./tmp/problems"):
+    os.mkdir("./tmp/problems")
+
 #########################################################################
 
 # -----------------------------------------------------------------------------
 # Get driver to simulate
 st.sidebar.header("Configuration")
-DRIVER = "driver" + st.sidebar.number_input('Select driver to simulate', 1, 290)
+DRIVER = "driver" + str(st.sidebar.number_input('Select driver to simulate', 1, 290))
 
 # Documentation
 st.sidebar.subheader("Info")
@@ -45,11 +63,18 @@ link = '[Go to documentation](https://github.com/IgnacioVellido/IMLAP-Driver-Act
 st.sidebar.markdown(link, unsafe_allow_html=True)
 
 # Paths
-TACHO_PATH = "./tmp/{}.csv".format(DRIVER)
-PLAN_FOLDER_PATH = "./out/plan"
-PLAN_DATA_PATH = "./tmp/plan/event-log-driver{}.plan".format(DRIVER)
-PROBLEM_FOLDER_PATH = "hpdl/problems".format(DRIVER)
-PROBLEM_PATH = "hpdl/problems/problem-driver{}.pddl".format(DRIVER)
+TACHO_PATH = "tmp/{}.csv".format(DRIVER)
+
+PLAN_FOLDER_PATH = "tmp/plan"
+PLAN_DATA_PATH = "tmp/plan/event-log-{}.plan".format(DRIVER)
+
+PROBLEM_FOLDER_PATH = "tmp/problems"
+PROBLEM_PATH = "{}/problem-{}.pddl".format(PROBLEM_FOLDER_PATH, DRIVER)
+
+LOG_PATH = "tmp/tagged/tagged-log-{}.csv".format(DRIVER)
+
+CLEAN_LOG_FOLDER = "tmp/clean"
+CLEAN_LOG_PATH = "tmp/clean/clean-log-{}.csv".format(DRIVER)
 
 # -----------------------------------------------------------------------------
 # Start tachograph simulation
@@ -73,3 +98,72 @@ if st.button("Refresh?"):
             subprocess.run(['python', './src/parsers/fromPLANtoPDDL.py', PLAN_DATA_PATH, PROBLEM_FOLDER_PATH])
         except subprocess.CalledProcessError as err:
             print("Error while parsing PLAN to PDDL: " + err.stderr)
+
+    # TODO: CHECK PREFERENCES HERE
+
+    # -----------------------------------------------------------------------------
+    # Calling planner
+
+    with st.spinner("Recognizing driver log..."):
+        try:
+            # Domain - Problem - Output
+            subprocess.run(['bash', './src/scripts/runPlanner.sh', 'hpdl/domain.pddl', PROBLEM_PATH, LOG_PATH])
+        except subprocess.CalledProcessError as err:
+            print("Error while planning: " + err.stderr)
+
+    # -----------------------------------------------------------------------------
+    # Clean log for driver
+
+    try:
+        subprocess.run(['bash', './src/scripts/formatCSV.sh', LOG_PATH, CLEAN_LOG_FOLDER])
+    except subprocess.CalledProcessError as err:
+        print("Error while cleaning log: " + err.stderr)
+
+    # -----------------------------------------------------------------------------
+    # Load data
+
+    df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int, "Duration(min)":int})
+
+    # To timestamp format
+    df.DateTimeStart = pd.to_datetime(df.DateTimeStart)
+    df.DateTimeEnd = pd.to_datetime(df.DateTimeEnd)
+
+    # Rename column
+    df = df.rename(columns={"#Driver":"Driver", "Duration(min)":"Duration"})
+
+    # To numerical
+    df.Legal = df.Legal.map({"yes": 1, "no": 0}) # Not sure if [-1,1] is better
+
+    # Drop columns
+    df = df.drop(columns=['ZenoInfo', "DateTimeStart", "DateTimeEnd", 'Week'])
+
+    # -----------------------------------------------------------------------------
+    # Coloring for display
+
+    df_colored = df.drop(columns="Driver")
+    df_colored.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True) # Rename Legal values to Yes/No
+    df_colored = df_colored.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token", "Legal"])
+
+    st.subheader("Tagging")
+    st.write("Tagged data", df_colored)
+
+    # -----------------------------------------------------------------------------
+    # Get driver metrics
+    driver_metrics = get_metrics(DRIVER, df)
+
+    max_days = driver_metrics.Days.loc[0]
+    illegal_seq = driver_metrics.Illegal.loc[0]
+
+    # Print
+    col1, col2 = st.columns(2)
+
+    text = 'Days processed<p style="font-size: 60px; font-weight:bold;">{}</p>'.format(max_days)
+    col1.markdown(text, unsafe_allow_html=True)
+
+    text = 'Illegal sequences detected<p style="color:#9E2A2B; font-size: 60px; font-weight:bold;">{}</p>'.format(illegal_seq)
+    col2.markdown(text, unsafe_allow_html=True)
+
+    st.write(driver_metrics)
+
+# # -----------------------------------------------------------------------------
+# # -----------------------------------------------------------------------------
