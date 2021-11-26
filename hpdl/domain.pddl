@@ -101,6 +101,7 @@
         (wr_in_less_than_6_24)  ; To check if a WR is taken each "week" (6 x 24h)
 
         (next_dr_is_t4) ; If a DR_T3 is found, next DR must be DR_T4
+        (next_break_is_rest)
 
         (is_activity_illegal) ; To set legal context ("no" if some other context is none)
     )
@@ -388,7 +389,7 @@
     (:task DD
         :parameters (?d - Driver)
         (:method ndd
-            :precondition (secuencia_entrada_no_vacia))
+            :precondition (secuencia_entrada_no_vacia)
             :tasks (
                 (reset_counters)
 
@@ -952,6 +953,12 @@
                 )
             )
         )
+
+        ; To don't make illegal last unfinished sequence
+        (:method fin_secuencia_entrada
+            :precondition (fin_secuencia_entrada)
+            :tasks ()
+        )
     )
 
     ; -------------------------------------------------------------------------
@@ -1219,7 +1226,7 @@
         
         ; aquí se acabó la secuencia de acciones, cuando sale por aquí se le ha acabado la secuencia y CORRECTO Y DEBE TERMINAR
         (:method fin_secuencia_entrada
-            :precondition (and (fin_secuencia_entrada) (modo_reconocer))
+            :precondition (fin_secuencia_entrada)
             :tasks ()
         ) 
         
@@ -1346,6 +1353,10 @@
 
     (:task B
         :parameters (?d - Driver ?dur - number)        
+        (:method fin_secuencia_entrada
+            :precondition (fin_secuencia_entrada)
+            :tasks (:inline (bind ?dur 0) ())
+        )
         (:method modo_reconocer
             :precondition (modo_reconocer)
             :tasks (

@@ -101,6 +101,7 @@
         (wr_in_less_than_6_24)  ; To check if a WR is taken each "week" (6 x 24h)
 
         (next_dr_is_t4) ; If a DR_T3 is found, next DR must be DR_T4
+        (next_break_is_rest)
 
         (is_activity_illegal) ; To set legal context ("no" if some other context is none)
 
@@ -136,7 +137,6 @@
         (bt_cdd_unint)
         (bt_cdd_split1)
         (bt_cdd_split2)
-        ; (bt_activity)
 
         (current_bt) ;tiempo de descanso actual, se entiende que el recién reconocido
         (current_dt) ;current driving time of the recently recognized activity
@@ -228,7 +228,6 @@
 
         ; --------------------------------------------------------------------------------
 
-        (next_break_is_rest)
         (next_dt_wont_be_negative ?d - Driver)
 
         ; Zenotravel
