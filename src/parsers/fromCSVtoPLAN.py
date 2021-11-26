@@ -51,9 +51,9 @@ def dateWithDayZeroPadded(date):
     return day + "/" + date[1] + "/" + date[2]
 
 
-def writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol):
+def writeOutput(output_folder, plan, previousDriverSymbol, diccionario_TaskInstanceSymbol):
     # Write plan (we could use previousDriver for the name too)
-    output_plan = open(output_folder + 'event-log-{}.plan'.format(previousDriverSymbol), 'w')
+    output_plan = open(output_folder + '/event-log-{}.plan'.format(previousDriverSymbol), 'w')
 
     for p in plan:
         output_plan.write(p)
@@ -61,7 +61,7 @@ def writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol):
     output_plan.close()
 
     # Write symbols
-    output_Symbols = open(output_folder + 'event-log-{}.TaskSymbol'.format(previousDriverSymbol), 'w')
+    output_Symbols = open(output_folder + '/event-log-{}.TaskSymbol'.format(previousDriverSymbol), 'w')
 
     symbols = (' '.join(diccionario_TaskInstanceSymbol['D']) + '\n' +
                 ' '.join(diccionario_TaskInstanceSymbol['O']) + '\n' +
@@ -82,15 +82,17 @@ def writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol):
 time_format_input = "%d/%m/%y %H:%M"
 time_format_output = "%d/%m/%Y %H:%M"
 
-output_folder = "./out/plan/"
-
+# Arguments:
+# CSV input path
+# Path to output folder
 def main(argv):
-    path = argv[1]
+    csv_path = argv[1]
+    output_folder = argv[2]
 
     # -------------------------------------------------------------------------
 
     # probar con encoding "utf-8" o "ISO-8859-1"
-    with open(path, 'r', encoding="ISO-8859-1") as csvfile:
+    with open(csv_path, 'r', encoding="ISO-8859-1") as csvfile:
 
         # cada fila es un diccionario con keys
         tracereader = csv.DictReader(csvfile, delimiter=',')
@@ -125,7 +127,7 @@ def main(argv):
 
             # If new driver found, write previous plan
             if previousDriver != currentDriver and previousDriver != "":
-                writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol)
+                writeOutput(output_folder, plan, previousDriverSymbol, diccionario_TaskInstanceSymbol)
 
                 # Reset plan
                 plan = []
@@ -203,7 +205,7 @@ def main(argv):
 
         # If plan not empty -> Write last driver
         if plan:
-            writeOutput(plan, previousDriverSymbol, diccionario_TaskInstanceSymbol)
+            writeOutput(output_folder, plan, previousDriverSymbol, diccionario_TaskInstanceSymbol)
 
 ###############################################################################
 # -----------------------------------------------------------------------------

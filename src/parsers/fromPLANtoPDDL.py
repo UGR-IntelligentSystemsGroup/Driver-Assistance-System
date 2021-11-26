@@ -3,6 +3,8 @@
 
 import sys
 
+from reorder_domain import OUTPUT_PATH
+
 ###############################################################################
 # Auxiliary functions
 ###############################################################################
@@ -158,11 +160,15 @@ def getProblemTask(drivers):
 
 from os import walk
 
-
+# Arguments:
+# .plan input path
+# Path to output folder
 def main(argv):
     # Assuming both .plan and .TaskSymbol have the same name
     eventsFile = argv[1]
     symbolFile = eventsFile.replace(".plan", ".TaskSymbol")
+    
+    output_folder = argv[2]
 
     # -------------------------------------------------------------------------
     # Get sections of a PDDL problem
@@ -173,7 +179,7 @@ def main(argv):
 
     # -------------------------------------------------------------------------
     # Write output
-    outputFile = "hpdl/problems/problem-{}.pddl".format(drivers[0])
+    outputFile = "{}/problem-{}.pddl".format(output_folder, drivers[0])
     output = open(outputFile, 'w')
 
     output.write(pddlHeader)

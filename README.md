@@ -54,11 +54,11 @@ streamlit run ./src/app.py
 We provide Python scripts to transform a tachograph into HTN domains and problems.more precisely, ``./parsers/``
 
 ```bash
-python ./src/parsers/fromCSVtoPLAN.py <csv_file>
+python ./src/parsers/fromCSVtoPLAN.py <csv_file> <plan_output_folder_path>
 
 and then, given the <driver_name> for the driver sequence to tag:
 
-python ./src/parsers/fromPLANtoPDDL.py ./out/plan/event-log-<driver_name>.plan
+python ./src/parsers/fromPLANtoPDDL.py <plan_output_folder_path>/event-log-<driver_name>.plan <problem_output_folder_path>
 ```
 
 Please see our data examples as input files require specific formatting.
