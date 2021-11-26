@@ -781,7 +781,31 @@
     ; Continuous Daily Driving -> <4.5h
     (:task CDD
         :parameters (?d - Driver)
-        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+;@#@-Uninterrupted
+        ; DO NOT CHANGE - Tags for reordering methods
+        ; Uninterrupted (normal, no splits)
+        (:method uninterrupted
+            :precondition ()
+            :tasks (
+                ; Set preferences function
+                (:inline () (when (fin_secuencia_entrada) (assign (preference_cdd) 0)))
+
+                (b_breakType uninterrupted)
+                (CDD_UNINT ?d)
+                (e_breakType uninterrupted)
+
+                (:inline
+                    ()
+                    (and
+                        (assign (dt_cdd) (dt_cdd_unint))
+                        (assign (bt_cdd) (bt_cdd_unint))
+                    )
+                )
+            )
+        )
+;#@#-Uninterrupted
+
+;@#@-Split
         ; DO NOT CHANGE - Tags for reordering methods
         ; Type 2 (with a split)
         (:method split
@@ -807,31 +831,7 @@
                 )
             )
         )
-        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        ; DO NOT CHANGE - Tags for reordering methods
-        ; Uninterrupted (normal, no splits)
-        (:method uninterrupted
-            :precondition ()
-            :tasks (
-                ; Set preferences function
-                (:inline () (when (fin_secuencia_entrada) (assign (preference_cdd) 0)))
-
-                (b_breakType uninterrupted)
-                (CDD_UNINT ?d)
-                (e_breakType uninterrupted)
-
-                (:inline
-                    ()
-                    (and
-                        (assign (dt_cdd) (dt_cdd_unint))
-                        (assign (bt_cdd) (bt_cdd_unint))
-                    )
-                )
-            )
-        )
-        ;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+;#@#-Split
     )
 
     ; -------------------------------------------------------------------------
