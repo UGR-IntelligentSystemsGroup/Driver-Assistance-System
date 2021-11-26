@@ -144,6 +144,7 @@ def load_data(driver):
 # -----------------------------------------------------------------------------
 # Clean log for driver
 
+CLEAN_LOG_FOLDER = "out/clean"
 CLEAN_LOG_PATH = "out/clean/clean-log-driver{}.csv".format(driver)
 
 # Don't call again if log already cleaned
@@ -151,7 +152,7 @@ redo_file = os.path.isfile(CLEAN_LOG_PATH)
 
 if not redo_file:
     try:
-        subprocess.run(['bash', './src/scripts/formatCSV.sh' , LOG_PATH])
+        subprocess.run(['bash', './src/scripts/formatCSV.sh' , LOG_PATH, CLEAN_LOG_FOLDER])
     except subprocess.CalledProcessError as err:
         print("Error while cleaning log: " + err.stderr)
 
