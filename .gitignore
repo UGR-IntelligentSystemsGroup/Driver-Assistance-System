@@ -4,6 +4,9 @@ doc/old
 # Python
 **/__pycache__
 
+# Tmp files
+tmp/
+
 # Planner
 planner/
 
