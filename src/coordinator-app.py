@@ -195,7 +195,7 @@ st.write(driver_metrics)
 
 @st.cache
 def get_ordinalencoder_model():
-    return load('src/model/ordinal_encoder.joblib')
+    return load('src/models/ordinal_encoder.joblib')
 
 # -------------------------------------------------------------------------
 
@@ -258,7 +258,7 @@ if st.sidebar.checkbox('Show encoded log'):
 #########################################################################
 
 def get_d2v_model():
-    return Doc2Vec.load("src/model/doc2vec.bin")
+    return Doc2Vec.load("src/models/doc2vec.bin")
 
 # -----------------------------------------------------------------------------
 
@@ -291,7 +291,7 @@ with st.spinner("Getting D2V..."):
 
 @st.cache
 def get_kmeans_model():
-    return load('src/model/kmeans.joblib')
+    return load('src/models/kmeans.joblib')
 
 # -----------------------------------------------------------------------------
 
