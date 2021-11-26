@@ -3,8 +3,6 @@
 
 import sys
 
-from reorder_domain import OUTPUT_PATH
-
 ###############################################################################
 # Auxiliary functions
 ###############################################################################
@@ -84,7 +82,9 @@ def getProblemObjects(symbolFile, drivers):
     lines = input.readlines()   # lines es una row de strings
 
     for l in lines:
-        problemObjects += "\n\t\t" + l + " - TaskInstanceSymbol"
+        # Ignore empty lines
+        if not l in ['\n', '\r\n']:
+            problemObjects += "\n\t\t" + l + "\t\t\t- TaskInstanceSymbol"
 
     problemObjects += "\n\t)\n"
 
