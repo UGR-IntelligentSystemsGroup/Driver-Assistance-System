@@ -13,12 +13,12 @@ import streamlit as st
 from plot_utils import *
 
 # Metrics
-from get_driver_metrics import *
+from displayed_metrics import *
 
 #########################################################################
 
 st.title('Driver Functionality')
-st.write("Simulating tachograph data streaming")
+st.write("Simulating streaming of tachograph data")
 
 # TODO: Improve. Put each driver in a folder and only delete that data
 # Delete temporal folder if already exists
@@ -79,10 +79,16 @@ CLEAN_LOG_PATH = "tmp/clean/clean-log-{}.csv".format(DRIVER)
 # -----------------------------------------------------------------------------
 # Start tachograph simulation
 
-try:
-    subprocess.Popen(['python', './src/stream_tachograph.py', DRIVER])
-except subprocess.CalledProcessError as err:
-    print("Error while streaming tachograph data: " + err.stderr)
+@st.cache()
+def start_simulation():
+    try:
+        subprocess.Popen(['python', './src/stream_tachograph.py', DRIVER])
+    except subprocess.CalledProcessError as err:
+        print("Error while streaming tachograph data: " + err.stderr)
+
+
+
+start_simulation()
 
 # TODO: Automatically refresh whenever tmp file changes
 if st.button("Refresh?"):
@@ -122,7 +128,8 @@ if st.button("Refresh?"):
     # -----------------------------------------------------------------------------
     # Load data
 
-    df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int, "Duration(min)":int})
+    # TODO: Move this lines and subprocesses into functions
+    df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int, "Duration(min)":int, "Week":int})
 
     # To timestamp format
     df.DateTimeStart = pd.to_datetime(df.DateTimeStart)
@@ -135,7 +142,7 @@ if st.button("Refresh?"):
     df.Legal = df.Legal.map({"yes": 1, "no": 0}) # Not sure if [-1,1] is better
 
     # Drop columns
-    df = df.drop(columns=['ZenoInfo', "DateTimeStart", "DateTimeEnd", 'Week'])
+    df = df.drop(columns=['ZenoInfo', "DateTimeStart", "DateTimeEnd"])
 
     # -----------------------------------------------------------------------------
     # Coloring for display
@@ -149,21 +156,26 @@ if st.button("Refresh?"):
 
     # -----------------------------------------------------------------------------
     # Get driver metrics
-    driver_metrics = get_metrics(DRIVER, df)
+    metrics = get_displayed_metrics(df)
 
-    max_days = driver_metrics.Days.loc[0]
-    illegal_seq = driver_metrics.Illegal.loc[0]
+    # max_days = driver_metrics.Days.loc[0]
+    # illegal_seq = driver_metrics.Illegal.loc[0]
 
-    # Print
-    col1, col2 = st.columns(2)
+    # # Print
+    # col1, col2 = st.columns(2)
 
-    text = 'Days processed<p style="font-size: 60px; font-weight:bold;">{}</p>'.format(max_days)
-    col1.markdown(text, unsafe_allow_html=True)
+    # text = 'Days processed<p style="font-size: 60px; font-weight:bold;">{}</p>'.format(max_days)
+    # col1.markdown(text, unsafe_allow_html=True)
 
-    text = 'Illegal sequences detected<p style="color:#9E2A2B; font-size: 60px; font-weight:bold;">{}</p>'.format(illegal_seq)
-    col2.markdown(text, unsafe_allow_html=True)
+    # text = 'Illegal sequences detected<p style="color:#9E2A2B; font-size: 60px; font-weight:bold;">{}</p>'.format(illegal_seq)
+    # col2.markdown(text, unsafe_allow_html=True)
 
-    st.write(driver_metrics)
+    st.write(metrics)
 
 # # -----------------------------------------------------------------------------
 # # -----------------------------------------------------------------------------
+
+# TODO: Process only last two weeks of data. The rest should be moved into another file
+# The stored driver metrics should be calculated per 2 weeks
+
+# TODO: Investigate old driver data to get preferences when computing zeno actions

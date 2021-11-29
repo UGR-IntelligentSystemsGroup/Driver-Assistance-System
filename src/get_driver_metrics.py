@@ -4,8 +4,9 @@
 import pandas as pd
 
 #########################################################################
-# Metrics
+# Stored driver metrics
 #########################################################################
+#
 # Driver - Driver name
 # Days - Number of days processed
 # Illegal - Number of illegal sequences detected 
@@ -26,6 +27,7 @@ import pandas as pd
 #                (lower the better, but very small could indicate illegality)
 #                (although tachograph should also measure speed)
 # OtherSpeed - Mean time spent Other per activity
+#
 #########################################################################
 
 def get_metrics(driver, df):
