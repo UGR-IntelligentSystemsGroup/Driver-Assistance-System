@@ -137,8 +137,15 @@ if st.button("Refresh?"):
     # -----------------------------------------------------------------------------
     # Load data
 
-    # TODO: Move this lines and subprocesses into functions
+    # TODO: Move this lines (loading of data) and subprocesses into functions
     df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int, "Duration(min)":int, "Week":int})
+
+    # TODO: Change domain for zeno and include zeno primitives into problem
+    df.loc[len(df)] = ["driver1","16/01/2017 00:24","16/01/2017 01:09",45,"Sug-Break",1,1,"ndd","first","split_2","B_T3","yes",None]
+    df.loc[len(df)] = ["driver1","16/01/2017 01:09","16/01/2017 01:12",3,"Sug-Load",1,1,"ndd","second","uninterrupted","A","yes","box7"]
+    df.loc[len(df)] = ["driver1","16/01/2017 01:12","16/01/2017 01:15",3,"Sug-Load",1,1,"ndd","second","uninterrupted","A","yes","box8"]
+    df.loc[len(df)] = ["driver1","16/01/2017 01:15","16/01/2017 01:18",3,"Sug-Load",1,1,"ndd","second","uninterrupted","A","yes","box9"]
+    df.loc[len(df)] = ["driver1","16/01/2017 01:18","16/01/2017 02:34",76,"Sug-Driving",1,1,"ndd","second","uninterrupted","A","yes","sevilla-cadiz"]
 
     # To timestamp format
     df.DateTimeStart = pd.to_datetime(df.DateTimeStart)
@@ -150,29 +157,48 @@ if st.button("Refresh?"):
     # To numerical
     df.Legal = df.Legal.map({"yes": 1, "no": 0}) # Not sure if [-1,1] is better
 
+    # Separate suggestions in different DF
+    df_sug = df[df.Activity.str.contains("Sug")]
+    df_no_sug = df[~df.Activity.str.contains("Sug")]
+
     # Drop columns
-    df = df.drop(columns=['ZenoInfo', "DateTimeStart", "DateTimeEnd"])
+    df_sug = df_sug.drop(columns=['ZenoInfo'])
+    df_no_sug = df_no_sug.drop(columns=['ZenoInfo', "DateTimeStart", "DateTimeEnd"])
 
     # -----------------------------------------------------------------------------
     # Coloring for display
+    # Today
 
-    df_colored = df.drop(columns="Driver")
+    # Get last day of data
+    max_days = int(df_no_sug['Day'].max())
+
+    df_colored = df_no_sug.loc[df_no_sug['Day'] == max_days].drop(columns="Driver")
     df_colored.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True) # Rename Legal values to Yes/No
     df_colored = df_colored.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token", "Legal"])
 
-    st.subheader("Tagging")
     st.write("Tagged data", df_colored)
 
     # -----------------------------------------------------------------------------
+    # Next recommendations
+
+    # Get first day of data
+    min_days = int(df_sug['Day'].min())
+
+    df_colored = df_sug.loc[df_sug['Day'] == min_days].drop(columns=["Driver","Legal","DateTimeEnd", "Week", "Day"])
+    df_colored = df_colored.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token"])
+
+    st.write("Recommended Activities", df_colored)
+
+    # -----------------------------------------------------------------------------
     # Get driver metrics
-    metrics = get_displayed_metrics(df)
+    metrics = get_displayed_metrics(df_no_sug, df_sug)
 
     # Print
     col1, col2, col3 = st.columns(3)
 
-    col1.metric("Recommended Action", metrics.NextActionName)
-    col2.metric("Starting Time", metrics.NextActionStartTime)
-    col3.metric("Ending Time", metrics.NextActionEndTime)
+    col1.metric("Recommended Activity", metrics.NextActivityName)
+    col2.metric("Starting Time", metrics.NextActivityStartTime)
+    col3.metric("Ending Time", metrics.NextActivityEndTime)
 
     hours, minutes = format_time(metrics.DrivingTimeDay)
     col1.metric("Driving time today", "{}h {}m".format(hours, minutes))
@@ -182,7 +208,7 @@ if st.button("Refresh?"):
 
     col3.metric("Remaining EDD available", metrics.RemainingEDDs)
 
-    # TODO: Move it to a function
+    # TODO: Move it
     # -----------------------------------------------------------------------------
     def plot_remaining_time(ax, actual, remaining, title):
         # If "remaining negative" don't plot anything
@@ -228,6 +254,6 @@ if st.button("Refresh?"):
 # # -----------------------------------------------------------------------------
 
 # TODO: Process only last two weeks of data. The rest should be moved into another file
-# The stored driver metrics should be calculated per 2 weeks
+# ALSO: The stored driver metrics should be calculated each 2 weeks
 
 # TODO: Investigate old driver data to get preferences when computing zeno actions
