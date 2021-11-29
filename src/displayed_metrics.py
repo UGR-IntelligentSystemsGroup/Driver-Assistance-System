@@ -51,7 +51,7 @@ def get_displayed_metrics(df):
     dt_biweek = get_dt(df_no_sugg)
 
     # Calculate Remaining Driving Times (minutes)
-    r_dt_seq = (4.5*60) - dt_seq
+    r_dt_seq = int((4.5*60) - dt_seq)
     r_dt_ndd = (9*60) - dt_day
     r_dt_edd = (10*60) - dt_day
     r_dt_week = (56*60) - dt_week

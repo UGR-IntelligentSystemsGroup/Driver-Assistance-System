@@ -18,6 +18,14 @@ from displayed_metrics import *
 
 #########################################################################
 
+def format_time(time):
+    hours = int(time // 60)
+    minutes = int(time - (hours * 60))
+
+    return hours, minutes
+
+#########################################################################
+
 st.title('Driver Functionality')
 st.write("Simulating streaming of tachograph data")
 
@@ -166,22 +174,39 @@ if st.button("Refresh?"):
     col2.metric("Starting Time", metrics.NextActionStartTime)
     col3.metric("Ending Time", metrics.NextActionEndTime)
 
+    hours, minutes = format_time(metrics.DrivingTimeDay)
+    col1.metric("Driving time today", "{}h {}m".format(hours, minutes))
+
+    hours, minutes = format_time(metrics.RemainingDrivingTimeSequence)
+    col2.metric("Time remaining before break", "{}h {}m".format(hours, minutes))
+
+    col3.metric("Remaining EDD available", metrics.RemainingEDDs)
+
     # TODO: Move it to a function
-    def plot_remaining_time(ax, min, remaining, title):
+    # -----------------------------------------------------------------------------
+    def plot_remaining_time(ax, actual, remaining, title):
+        # If "remaining negative" don't plot anything
+        if remaining < 0:
+            return
+            
         ax.set_xticklabels([])
         ax.set_yticklabels([])    
 
         ax.set_theta_zero_location('N')
         ax.set_theta_direction(-1)
 
-        max = min + remaining
+        # Getting length of bar (transforming to polar)
+        total = actual + remaining
+        value = actual * 360 / total
 
         # Title
-        hours = remaining // 60
-        minutes = remaining % 60
+        hours, minutes = format_time(remaining)
         ax.set_title("Remaining {} time\n{}h {}m".format(title, hours, minutes), fontsize=11)
 
-        ax.barh(np.radians(min), np.radians(max))
+        ax.xaxis.set_visible(False)
+
+        ax.barh(0, np.radians(value))
+    # -----------------------------------------------------------------------------
 
     fig, (ax1,ax2,ax3) = plt.subplots(1, 3, subplot_kw=dict(projection="polar"))
 
