@@ -4,7 +4,6 @@
 #########################################################################
 
 import os
-import subprocess
 import pandas as pd
 import streamlit as st
 from joblib import load
@@ -20,6 +19,9 @@ from sklearn.preprocessing import normalize
 
 # D2V
 from gensim.models.doc2vec import Doc2Vec
+
+# Subprocess
+from subprocess_functions import *
 
 #########################################################################
 
@@ -51,7 +53,7 @@ st.sidebar.header("Configuration")
 driver = st.sidebar.number_input('Select driver log', 1, 290)
 
 # Paths
-RAW_DATA_PATH = "./data/split/driver{}.csv".format(driver)
+TACHO_PATH = "./data/split/driver{}.csv".format(driver)
 
 PLAN_FOLDER_PATH = "./out/plan"
 PLAN_DATA_PATH = "./out/plan/event-log-driver{}.plan".format(driver)
@@ -80,19 +82,13 @@ if redo_file:
 
 if not redo_file:
     with st.spinner("Preprocessing raw data for recognition..."):
-        try:
-            subprocess.run(['python', './src/parsers/fromCSVtoPLAN.py', RAW_DATA_PATH, PLAN_FOLDER_PATH])
-        except subprocess.CalledProcessError as err:
-            print("Error while parsing CSV to PLAN: " + err.stderr)
-
-        try:
-            subprocess.run(['python', './src/parsers/fromPLANtoPDDL.py', PLAN_DATA_PATH, PROBLEM_FOLDER_PATH])
-        except subprocess.CalledProcessError as err:
-            print("Error while parsing PLAN to PDDL: " + err.stderr)
+        fromCSVtoPLAN(TACHO_PATH, PLAN_FOLDER_PATH)
+        fromPLANtoPDDL(PLAN_DATA_PATH, PROBLEM_FOLDER_PATH)
 
 # -----------------------------------------------------------------------------
 # Calling planner
 
+DOMAIN_PATH = "hpdl/domain.pddl"
 LOG_PATH = "out/tagged/tagged-log-driver{}.csv".format(driver)
 
 # Don't call again if log already tagged
@@ -106,14 +102,10 @@ if redo_file:
 
 if not redo_file:
     with st.spinner("Recognizing driver log..."):
-        try:
-            # Domain - Problem - Output
-            subprocess.run(['bash', './src/scripts/runPlanner.sh', 'hpdl/domain.pddl', PROBLEM_PATH, LOG_PATH])
-        except subprocess.CalledProcessError as err:
-            print("Error while planning: " + err.stderr)
+        runPlanner(DOMAIN_PATH, PROBLEM_PATH, LOG_PATH)
 
 if st.sidebar.checkbox("Show original data"):
-    df_original = pd.read_csv(RAW_DATA_PATH)
+    df_original = pd.read_csv(TACHO_PATH)
     st.write("Raw data", df_original)
     
 #########################################################################
@@ -151,10 +143,7 @@ CLEAN_LOG_PATH = "out/clean/clean-log-driver{}.csv".format(driver)
 redo_file = os.path.isfile(CLEAN_LOG_PATH)
 
 if not redo_file:
-    try:
-        subprocess.run(['bash', './src/scripts/formatCSV.sh' , LOG_PATH, CLEAN_LOG_FOLDER])
-    except subprocess.CalledProcessError as err:
-        print("Error while cleaning log: " + err.stderr)
+    cleanLog(LOG_PATH, CLEAN_LOG_FOLDER)
 
 df = load_data(driver)
 

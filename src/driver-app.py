@@ -5,7 +5,6 @@
 
 import os
 import shutil
-import subprocess
 import pandas as pd
 import streamlit as st
 import matplotlib as plt
@@ -16,13 +15,8 @@ from plot_utils import *
 # Metrics
 from displayed_metrics import *
 
-#########################################################################
-
-def format_time(time):
-    hours = int(time // 60)
-    minutes = int(time - (hours * 60))
-
-    return hours, minutes
+# Subprocess
+from subprocess_functions import *
 
 #########################################################################
 
@@ -85,34 +79,20 @@ LOG_PATH = "tmp/tagged/tagged-log-{}.csv".format(DRIVER)
 CLEAN_LOG_FOLDER = "tmp/clean"
 CLEAN_LOG_PATH = "tmp/clean/clean-log-{}.csv".format(DRIVER)
 
+DOMAIN_PATH = "hpdl/domain-zeno.pddl"
+
 # -----------------------------------------------------------------------------
 # Start tachograph simulation
 
-@st.cache()
-def start_simulation():
-    try:
-        subprocess.Popen(['python', './src/stream_tachograph.py', DRIVER])
-    except subprocess.CalledProcessError as err:
-        print("Error while streaming tachograph data: " + err.stderr)
-
-
-
-start_simulation()
+start_simulation(DRIVER)
 
 # TODO: Automatically refresh whenever tmp file changes
 if st.button("Refresh?"):
     # -----------------------------------------------------------------------------
     # Generate HPDL problem
     with st.spinner("Preprocessing raw data for recognition..."):
-        try:
-            subprocess.run(['python', './src/parsers/fromCSVtoPLAN.py', TACHO_PATH, PLAN_FOLDER_PATH])
-        except subprocess.CalledProcessError as err:
-            print("Error while parsing CSV to PLAN: " + err.stderr)
-
-        try:
-            subprocess.run(['python', './src/parsers/fromPLANtoPDDL.py', PLAN_DATA_PATH, PROBLEM_FOLDER_PATH])
-        except subprocess.CalledProcessError as err:
-            print("Error while parsing PLAN to PDDL: " + err.stderr)
+        fromCSVtoPLAN(TACHO_PATH, PLAN_FOLDER_PATH)
+        fromPLANtoPDDL(PLAN_DATA_PATH, PROBLEM_FOLDER_PATH)
 
     # TODO: CHECK PREFERENCES HERE
 
@@ -120,19 +100,12 @@ if st.button("Refresh?"):
     # Calling planner
 
     with st.spinner("Recognizing driver log..."):
-        try:
-            # Domain - Problem - Output
-            subprocess.run(['bash', './src/scripts/runPlanner.sh', 'hpdl/domain.pddl', PROBLEM_PATH, LOG_PATH])
-        except subprocess.CalledProcessError as err:
-            print("Error while planning: " + err.stderr)
+        runPlanner(DOMAIN_PATH, PROBLEM_PATH, LOG_PATH)
 
     # -----------------------------------------------------------------------------
     # Clean log for driver
 
-    try:
-        subprocess.run(['bash', './src/scripts/formatCSV.sh', LOG_PATH, CLEAN_LOG_FOLDER])
-    except subprocess.CalledProcessError as err:
-        print("Error while cleaning log: " + err.stderr)
+    cleanLog(LOG_PATH, CLEAN_LOG_FOLDER)
 
     # -----------------------------------------------------------------------------
     # Load data
@@ -208,32 +181,7 @@ if st.button("Refresh?"):
 
     col3.metric("Remaining EDD available", metrics.RemainingEDDs)
 
-    # TODO: Move it
-    # -----------------------------------------------------------------------------
-    def plot_remaining_time(ax, actual, remaining, title):
-        # If "remaining negative" don't plot anything
-        if remaining < 0:
-            return
-            
-        ax.set_xticklabels([])
-        ax.set_yticklabels([])    
-
-        ax.set_theta_zero_location('N')
-        ax.set_theta_direction(-1)
-
-        # Getting length of bar (transforming to polar)
-        total = actual + remaining
-        value = actual * 360 / total
-
-        # Title
-        hours, minutes = format_time(remaining)
-        ax.set_title("Remaining {} time\n{}h {}m".format(title, hours, minutes), fontsize=11)
-
-        ax.xaxis.set_visible(False)
-
-        ax.barh(0, np.radians(value))
-    # -----------------------------------------------------------------------------
-
+    # Plot remaining time
     fig, (ax1,ax2,ax3) = plt.subplots(1, 3, subplot_kw=dict(projection="polar"))
 
     plot_remaining_time(ax1, metrics.DrivingTimeSequence, metrics.RemainingDrivingTimeSequence, "SEQ")

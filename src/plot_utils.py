@@ -107,3 +107,36 @@ def color_tagged_df(val):
     color = "default" if not val in colors.keys() else colors[val]
 
     return 'color: %s' % color
+
+#########################################################################
+
+def format_time(time):
+    hours = int(time // 60)
+    minutes = int(time - (hours * 60))
+
+    return hours, minutes
+
+# ------------------------------------------------------------------------------
+
+def plot_remaining_time(ax, actual, remaining, title):
+    # If "remaining" is negative don't plot anything
+    if remaining < 0:
+        return
+        
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])    
+
+    ax.set_theta_zero_location('N')
+    ax.set_theta_direction(-1)
+
+    # Getting length of bar (transforming to polar)
+    total = actual + remaining
+    value = actual * 360 / total
+
+    # Title
+    hours, minutes = format_time(remaining)
+    ax.set_title("Remaining {} time\n{}h {}m".format(title, hours, minutes), fontsize=11)
+
+    ax.xaxis.set_visible(False)
+
+    ax.barh(0, np.radians(value))
