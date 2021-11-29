@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import pandas as pd
 import streamlit as st
+import matplotlib as plt
 
 # Visualization
 from plot_utils import *
@@ -159,9 +160,36 @@ if st.button("Refresh?"):
     metrics = get_displayed_metrics(df)
 
     # Print
-    # col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
 
-    # col1.metric("Recommended Action", metrics.NextActionName)
+    col1.metric("Recommended Action", metrics.NextActionName)
+    col2.metric("Starting Time", metrics.NextActionStartTime)
+    col3.metric("Ending Time", metrics.NextActionEndTime)
+
+    # TODO: Move it to a function
+    def plot_remaining_time(ax, min, remaining, title):
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])    
+
+        ax.set_theta_zero_location('N')
+        ax.set_theta_direction(-1)
+
+        max = min + remaining
+
+        # Title
+        hours = remaining // 60
+        minutes = remaining % 60
+        ax.set_title("Remaining {} time\n{}h {}m".format(title, hours, minutes), fontsize=11)
+
+        ax.barh(np.radians(min), np.radians(max))
+
+    fig, (ax1,ax2,ax3) = plt.subplots(1, 3, subplot_kw=dict(projection="polar"))
+
+    plot_remaining_time(ax1, metrics.DrivingTimeSequence, metrics.RemainingDrivingTimeSequence, "SEQ")
+    plot_remaining_time(ax2, metrics.DrivingTimeDay, metrics.RemainingDrivingTimeNDD, "NDD")
+    plot_remaining_time(ax3, metrics.DrivingTimeDay, metrics.RemainingDrivingTimeEDD, "EDD")
+
+    st.pyplot(fig)
 
     # text = 'Days processed<p style="font-size: 60px; font-weight:bold;">{}</p>'.format(max_days)
     # col1.markdown(text, unsafe_allow_html=True)

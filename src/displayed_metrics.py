@@ -25,8 +25,8 @@ def get_displayed_metrics(df):
     of historical data"""
 
     columns = ["NextActionName", "NextActionStartTime", "NextActionEndTime",
-                "DrivingSequenceTime", "DrivingTimeDay", "DrivingTimeWeek", "DrivingTimeBiWeek",
-                "RemainingSequenceTime",
+                "DrivingTimeSequence", "DrivingTimeDay", "DrivingTimeWeek", "DrivingTimeBiWeek",
+                "RemainingDrivingTimeSequence",
                 "RemainingDrivingTimeNDD",
                 "RemainingDrivingTimeEDD",
                 "RemainingDrivingTimeWeek", "RemainingDrivingTimeBiWeek",

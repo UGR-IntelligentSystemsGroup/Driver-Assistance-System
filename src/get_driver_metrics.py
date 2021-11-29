@@ -43,8 +43,6 @@ def get_metrics(driver, df):
             "B_T1", "B_T2", "B_T3",
             "DR_T1", "DR_T2", "DR_T3", "DR_T4",
             "WR_T1", "WR_T2"]
-            
-    metrics = pd.Series(index=columns)
 
     max_days = int(df['Day'].max())
     illegal_seq = get_num_illegal(df)
