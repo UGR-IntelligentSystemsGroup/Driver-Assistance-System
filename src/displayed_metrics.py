@@ -32,11 +32,13 @@ def get_displayed_metrics(df):
                 "RemainingDrivingTimeWeek", "RemainingDrivingTimeBiWeek",
                 "RemainingEDDs"
             ]
-            
-    metrics = pd.DataFrame(columns=columns)
+
+    # TODO: Get next action from log
+    next_action = "REST"
+    next_action_start = "12:22"
+    next_action_end = "13:07"
 
     # Get df with no suggestions
-    # df_no_sugg = df["Sug" in df["Activity"]].index[0]
     df_no_sugg = df[~df.Activity.str.contains("Sug")]
 
     max_days = int(df_no_sugg['Day'].max())
@@ -58,13 +60,13 @@ def get_displayed_metrics(df):
     r_edds = get_remaining_edds(df_no_sugg.loc[df['Week'] == max_week])
 
     # Appending driver row
-    metrics.loc[0] = ([0,0,0,
+    data = ([next_action, next_action_start, next_action_end,
                         dt_seq, dt_day, dt_week, dt_biweek,
                         r_dt_seq, r_dt_ndd, r_dt_edd,
                         r_dt_week, r_dt_biweek, r_edds
     ])
 
-    return metrics
+    return pd.Series(data, index=columns)
 
 # -------------------------------------------------------------------------
 # -------------------------------------------------------------------------

@@ -158,11 +158,10 @@ if st.button("Refresh?"):
     # Get driver metrics
     metrics = get_displayed_metrics(df)
 
-    # max_days = driver_metrics.Days.loc[0]
-    # illegal_seq = driver_metrics.Illegal.loc[0]
+    # Print
+    # col1, col2, col3 = st.columns(3)
 
-    # # Print
-    # col1, col2 = st.columns(2)
+    # col1.metric("Recommended Action", metrics.NextActionName)
 
     # text = 'Days processed<p style="font-size: 60px; font-weight:bold;">{}</p>'.format(max_days)
     # col1.markdown(text, unsafe_allow_html=True)
@@ -170,7 +169,7 @@ if st.button("Refresh?"):
     # text = 'Illegal sequences detected<p style="color:#9E2A2B; font-size: 60px; font-weight:bold;">{}</p>'.format(illegal_seq)
     # col2.markdown(text, unsafe_allow_html=True)
 
-    st.write(metrics)
+    st.write(metrics.to_markdown())
 
 # # -----------------------------------------------------------------------------
 # # -----------------------------------------------------------------------------

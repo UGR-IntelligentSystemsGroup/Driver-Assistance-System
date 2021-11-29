@@ -175,8 +175,8 @@ st.write("Tagged data", df_colored)
 # Get driver metrics
 driver_metrics = get_metrics(driver, df)
 
-max_days = driver_metrics.Days.loc[0]
-illegal_seq = driver_metrics.Illegal.loc[0]
+max_days = driver_metrics.Days
+illegal_seq = driver_metrics.Illegal
 
 # Print
 col1, col2 = st.columns(2)
@@ -187,7 +187,7 @@ col1.markdown(text, unsafe_allow_html=True)
 text = 'Illegal sequences detected<p style="color:#9E2A2B; font-size: 60px; font-weight:bold;">{}</p>'.format(illegal_seq)
 col2.markdown(text, unsafe_allow_html=True)
 
-st.write(driver_metrics)
+st.write(driver_metrics.to_markdown())
 
 #########################################################################
 # Encode each column as numeric and join them

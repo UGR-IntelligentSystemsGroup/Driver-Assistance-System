@@ -44,19 +44,19 @@ def get_metrics(driver, df):
             "DR_T1", "DR_T2", "DR_T3", "DR_T4",
             "WR_T1", "WR_T2"]
             
-    metrics = pd.DataFrame(columns=columns)
+    metrics = pd.Series(index=columns)
 
     max_days = int(df['Day'].max())
     illegal_seq = get_num_illegal(df)
     ndd, edd = get_num_ndd_edd(df)
 
     # Appending driver row
-    metrics.loc[0] = ([driver, max_days, illegal_seq, ndd, edd] +
+    data = ([driver, max_days, illegal_seq, ndd, edd] +
                         get_breaktype_values(df).iloc[0].values.flatten().tolist() +
                         get_dobi_values(df).iloc[0].values.flatten().tolist() +
                         get_token_values(df).iloc[0].values.flatten().tolist())
 
-    return metrics
+    return pd.Series(data, index=columns)
 
 # -------------------------------------------------------------------------
 # -------------------------------------------------------------------------
