@@ -158,8 +158,6 @@ def getProblemTask(drivers):
 # Main
 ###############################################################################
 
-from os import walk
-
 # Arguments:
 # .plan input path
 # Path to output folder

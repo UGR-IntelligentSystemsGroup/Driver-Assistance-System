@@ -94,7 +94,18 @@ if st.button("Refresh?"):
         fromCSVtoPLAN(TACHO_PATH, PLAN_FOLDER_PATH)
         fromPLANtoPDDL(PLAN_DATA_PATH, PROBLEM_FOLDER_PATH)
 
-    # TODO: CHECK PREFERENCES HERE
+    # TODO: Add Zenotravel predicates to problem
+    # It should receive a ID for an entry in a database indicating the travel to process
+    # The script should read the entry, transform it into HPDL predicates, add constant
+    # information and append it into the existing problem
+
+    # NOTE: For the moment. I'll read the predicates from a file and append it
+    # First two lines goes to the object section, the rest into the init
+        ZENO_PATH = "hpdl/zeno-primitives.pddl"
+        addingZenoToPDDL(PROBLEM_PATH, ZENO_PATH)
+
+    # -----------------------------------------------------------------------------
+    # TODO: CHECK PREFERENCES and change domain if necessary
 
     # -----------------------------------------------------------------------------
     # Calling planner
