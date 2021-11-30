@@ -10,9 +10,11 @@ import sys
 # Arguments:
 # Problem path
 # Path to zeno primitives
+# Driver name
 def main(argv):
     PROBLEM_PATH = argv[1]
     ZENO_PATH = argv[2]
+    DRIVER = argv[3]
 
     # -------------------------------------------------------------------------
     # Read data
@@ -26,6 +28,10 @@ def main(argv):
     # Read problem file
     with open(PROBLEM_PATH, "r") as file:
         problem = file.read()
+
+    # -------------------------------------------------------------------------
+    # Replace driver name in zeno_data
+    zeno_data = zeno_data.replace("driver1", DRIVER)
 
     # -------------------------------------------------------------------------
     # Append into :object

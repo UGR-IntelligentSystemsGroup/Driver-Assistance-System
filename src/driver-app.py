@@ -60,11 +60,15 @@ if not os.path.isdir("./tmp/problems"):
 st.sidebar.header("Configuration")
 DRIVER = "driver" + str(st.sidebar.number_input('Select driver to simulate', 1, 290))
 
+show_all_suggestions = st.sidebar.checkbox("Show all recommended activities")
+
 # Documentation
 st.sidebar.subheader("Info")
 link = '[Go to documentation](https://github.com/IgnacioVellido/IMLAP-Driver-Activity-Recognition/tree/main/doc/)'
 st.sidebar.markdown(link, unsafe_allow_html=True)
 
+
+# -----------------------------------------------------------------------------
 # Paths
 TACHO_PATH = "tmp/{}.csv".format(DRIVER)
 
@@ -94,15 +98,15 @@ if st.button("Refresh?"):
         fromCSVtoPLAN(TACHO_PATH, PLAN_FOLDER_PATH)
         fromPLANtoPDDL(PLAN_DATA_PATH, PROBLEM_FOLDER_PATH)
 
-    # TODO: Add Zenotravel predicates to problem
-    # It should receive a ID for an entry in a database indicating the travel to process
-    # The script should read the entry, transform it into HPDL predicates, add constant
-    # information and append it into the existing problem
+        # TODO: Add Zenotravel predicates to problem
+        # It should receive a ID for an entry in a database indicating the travel to process
+        # The script should read the entry, transform it into HPDL predicates, add constant
+        # information and append it into the existing problem
 
-    # NOTE: For the moment. I'll read the predicates from a file and append it
-    # First two lines goes to the object section, the rest into the init
-        ZENO_PATH = "hpdl/zeno-primitives.pddl"
-        addingZenoToPDDL(PROBLEM_PATH, ZENO_PATH)
+        # NOTE: For the moment. I'll read the predicates from a file and append it
+        # First two lines goes to the object section, the rest into the init
+        ZENO_PATH = "hpdl/zeno-primitives/problem1.pddl"
+        addingZenoToPDDL(PROBLEM_PATH, ZENO_PATH, DRIVER)
 
     # -----------------------------------------------------------------------------
     # TODO: CHECK PREFERENCES and change domain if necessary
@@ -122,14 +126,14 @@ if st.button("Refresh?"):
     # Load data
 
     # TODO: Move this lines (loading of data) and subprocesses into functions
-    df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int, "Duration(min)":int, "Week":int})
+    df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int, "Duration(min)":int, "Week":int}, keep_default_na=False)
 
     # TODO: Change domain for zeno and include zeno primitives into problem
-    df.loc[len(df)] = ["driver1","16/01/2017 00:24","16/01/2017 01:09",45,"Sug-Break",1,1,"ndd","first","split_2","B_T3","yes",None]
-    df.loc[len(df)] = ["driver1","16/01/2017 01:09","16/01/2017 01:12",3,"Sug-Load",1,1,"ndd","second","uninterrupted","A","yes","box7"]
-    df.loc[len(df)] = ["driver1","16/01/2017 01:12","16/01/2017 01:15",3,"Sug-Load",1,1,"ndd","second","uninterrupted","A","yes","box8"]
-    df.loc[len(df)] = ["driver1","16/01/2017 01:15","16/01/2017 01:18",3,"Sug-Load",1,1,"ndd","second","uninterrupted","A","yes","box9"]
-    df.loc[len(df)] = ["driver1","16/01/2017 01:18","16/01/2017 02:34",76,"Sug-Driving",1,1,"ndd","second","uninterrupted","A","yes","sevilla-cadiz"]
+    # df.loc[len(df)] = ["driver1","16/01/2017 00:24","16/01/2017 01:09",45,"Sug-Break",1,1,"ndd","first","split_2","B_T3","yes",None]
+    # df.loc[len(df)] = ["driver1","16/01/2017 01:09","16/01/2017 01:12",3,"Sug-Load",1,1,"ndd","second","uninterrupted","A","yes","box7"]
+    # df.loc[len(df)] = ["driver1","16/01/2017 01:12","16/01/2017 01:15",3,"Sug-Load",1,1,"ndd","second","uninterrupted","A","yes","box8"]
+    # df.loc[len(df)] = ["driver1","16/01/2017 01:15","16/01/2017 01:18",3,"Sug-Load",1,1,"ndd","second","uninterrupted","A","yes","box9"]
+    # df.loc[len(df)] = ["driver1","16/01/2017 01:18","16/01/2017 02:34",76,"Sug-Driving",1,1,"ndd","second","uninterrupted","A","yes","sevilla-cadiz"]
 
     # To timestamp format
     df.DateTimeStart = pd.to_datetime(df.DateTimeStart)
@@ -146,7 +150,6 @@ if st.button("Refresh?"):
     df_no_sug = df[~df.Activity.str.contains("Sug")]
 
     # Drop columns
-    df_sug = df_sug.drop(columns=['ZenoInfo'])
     df_no_sug = df_no_sug.drop(columns=['ZenoInfo', "DateTimeStart", "DateTimeEnd"])
 
     # -----------------------------------------------------------------------------
@@ -172,6 +175,9 @@ if st.button("Refresh?"):
     df_colored = df_colored.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token"])
 
     st.write("Recommended Activities", df_colored)
+
+    if show_all_suggestions:
+        st.write("All recommended activities", df_sug)
 
     # -----------------------------------------------------------------------------
     # Get driver metrics

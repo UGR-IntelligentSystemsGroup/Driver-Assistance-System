@@ -48,8 +48,8 @@ def cleanLog(LOG_PATH, CLEAN_LOG_FOLDER):
 
 # -----------------------------------------------------------------------------
 
-def addingZenoToPDDL(PROBLEM_PATH, ZENO_PATH):
+def addingZenoToPDDL(PROBLEM_PATH, ZENO_PATH, DRIVER):
     try:
-        subprocess.run(['python', './src/scripts/addZenoToPDDL.py', PROBLEM_PATH, ZENO_PATH])
+        subprocess.run(['python', './src/scripts/addZenoToPDDL.py', PROBLEM_PATH, ZENO_PATH, DRIVER])
     except subprocess.CalledProcessError as err:
         print("Error while parsing PLAN to PDDL: " + err.stderr)
