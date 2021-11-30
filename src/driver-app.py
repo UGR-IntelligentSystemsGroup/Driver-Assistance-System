@@ -4,7 +4,6 @@
 #########################################################################
 
 import os
-import shutil
 import pandas as pd
 import streamlit as st
 import matplotlib as plt
@@ -46,20 +45,6 @@ def load_data(CLEAN_LOG_PATH):
 
 st.title('Driver Functionality')
 st.write("Simulating streaming of tachograph data")
-
-# TODO: Improve. Put each driver in a folder and only delete that data
-# Delete temporal folder if already exists
-# try:
-#     shutil.rmtree("tmp")
-# except OSError:
-#     pass
-
-# # Create temporal directories
-# os.mkdir("./tmp")
-# os.mkdir("./tmp/problems")
-# os.mkdir("./tmp/clean")
-# os.mkdir("./tmp/plan")
-# os.mkdir("./tmp/tagged")
 
 # Create temporal directories that don't exists
 if not os.path.isdir("./tmp"):
