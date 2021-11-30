@@ -6,8 +6,8 @@
 
 import re
 
-DOMAIN_PATH = "hpdl/domain.pddl"
-OUTPUT_PATH = "hpdl/domain-prescriptive.pddl"
+DOMAIN_PATH = "hpdl/domain-zeno.pddl"
+OUTPUT_PATH = "hpdl/domain-zeno2.pddl"
 
 with open(DOMAIN_PATH) as infile:
     content = infile.read()

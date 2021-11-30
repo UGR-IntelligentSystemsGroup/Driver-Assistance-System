@@ -20,6 +20,30 @@ from subprocess_functions import *
 
 #########################################################################
 
+def load_data(CLEAN_LOG_PATH):
+    df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int, "Duration(min)":int, "Week":int}, keep_default_na=False)
+
+    # To timestamp format
+    df.DateTimeStart = pd.to_datetime(df.DateTimeStart)
+    df.DateTimeEnd = pd.to_datetime(df.DateTimeEnd)
+
+    # Rename column
+    df = df.rename(columns={"#Driver":"Driver", "Duration(min)":"Duration"})
+
+    # To numerical
+    df.Legal = df.Legal.map({"yes": 1, "no": 0}) # Not sure if [-1,1] is better
+
+    # Separate suggestions in different DF
+    df_sug = df[df.Activity.str.contains("Sug")]
+    df_no_sug = df[~df.Activity.str.contains("Sug")]
+
+    # Drop columns
+    df_no_sug = df_no_sug.drop(columns=['ZenoInfo', "DateTimeStart", "DateTimeEnd"])
+
+    return df_sug, df_no_sug
+
+#########################################################################
+
 st.title('Driver Functionality')
 st.write("Simulating streaming of tachograph data")
 
@@ -99,17 +123,27 @@ if st.button("Refresh?"):
         fromPLANtoPDDL(PLAN_DATA_PATH, PROBLEM_FOLDER_PATH)
 
         # TODO: Add Zenotravel predicates to problem
-        # It should receive a ID for an entry in a database indicating the travel to process
+        # It should receive a ID for an entry in a database indicating the route to process.
         # The script should read the entry, transform it into HPDL predicates, add constant
         # information and append it into the existing problem
 
-        # NOTE: For the moment. I'll read the predicates from a file and append it
+        # NOTE: For the moment, I'll read the predicates from a file and append it
         # First two lines goes to the object section, the rest into the init
         ZENO_PATH = "hpdl/zeno-primitives/problem1.pddl"
         addingZenoToPDDL(PROBLEM_PATH, ZENO_PATH, DRIVER)
 
     # -----------------------------------------------------------------------------
-    # TODO: CHECK PREFERENCES and change domain if necessary
+    # TODO: CHECK PREFERENCES and change domain if necessary 
+    # (could be as simple as a query to a driver database)
+    # preferences = get_preferences(DRIVER)
+    change_preference = False
+
+    if change_preference:
+        changePreferences(DOMAIN_PATH) #, preferences)
+        DOMAIN_PATH = "hpdl/domain-zeno2.pddl"
+        # NOTE: This shouldn't be done like this.
+        # A domain copy should be stored in the tmp directory with either the original
+        # domain or the reordered one.
 
     # -----------------------------------------------------------------------------
     # Calling planner
@@ -125,29 +159,10 @@ if st.button("Refresh?"):
     # -----------------------------------------------------------------------------
     # Load data
 
-    # TODO: Move this lines (loading of data) and subprocesses into functions
-    df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int, "Duration(min)":int, "Week":int}, keep_default_na=False)
-
-    # To timestamp format
-    df.DateTimeStart = pd.to_datetime(df.DateTimeStart)
-    df.DateTimeEnd = pd.to_datetime(df.DateTimeEnd)
-
-    # Rename column
-    df = df.rename(columns={"#Driver":"Driver", "Duration(min)":"Duration"})
-
-    # To numerical
-    df.Legal = df.Legal.map({"yes": 1, "no": 0}) # Not sure if [-1,1] is better
-
-    # Separate suggestions in different DF
-    df_sug = df[df.Activity.str.contains("Sug")]
-    df_no_sug = df[~df.Activity.str.contains("Sug")]
-
-    # Drop columns
-    df_no_sug = df_no_sug.drop(columns=['ZenoInfo', "DateTimeStart", "DateTimeEnd"])
+    df_sug, df_no_sug = load_data(CLEAN_LOG_PATH)
 
     # -----------------------------------------------------------------------------
-    # Coloring for display
-    # Today
+    # Coloring for display - Today
 
     # Get last day of data
     max_days = int(df_no_sug['Day'].max())
@@ -159,7 +174,7 @@ if st.button("Refresh?"):
     st.write("Tagged data", df_colored)
 
     # -----------------------------------------------------------------------------
-    # Next recommendations
+    # Coloring for display - Next recommendations
 
     # Get first day of data
     min_days = int(df_sug['Day'].min())
@@ -213,11 +228,3 @@ if st.button("Refresh?"):
     st.pyplot(fig)
 
     st.write(metrics.to_markdown())
-
-# # -----------------------------------------------------------------------------
-# # -----------------------------------------------------------------------------
-
-# TODO: Process only last two weeks of data. The rest should be moved into another file
-# ALSO: The stored driver metrics should be calculated each 2 weeks
-
-# TODO: Investigate old driver data to get preferences when computing zeno actions

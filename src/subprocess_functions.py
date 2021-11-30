@@ -53,3 +53,11 @@ def addingZenoToPDDL(PROBLEM_PATH, ZENO_PATH, DRIVER):
         subprocess.run(['python', './src/scripts/addZenoToPDDL.py', PROBLEM_PATH, ZENO_PATH, DRIVER])
     except subprocess.CalledProcessError as err:
         print("Error while parsing PLAN to PDDL: " + err.stderr)
+
+# -----------------------------------------------------------------------------
+
+def changePreferences(DOMAIN_PATH, preferences=None):
+    try:
+        subprocess.run(['python', './src/reorder_domain.py', DOMAIN_PATH, preferences])
+    except subprocess.CalledProcessError as err:
+        print("Error while parsing PLAN to PDDL: " + err.stderr)
