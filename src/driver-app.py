@@ -128,13 +128,6 @@ if st.button("Refresh?"):
     # TODO: Move this lines (loading of data) and subprocesses into functions
     df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int, "Duration(min)":int, "Week":int}, keep_default_na=False)
 
-    # TODO: Change domain for zeno and include zeno primitives into problem
-    # df.loc[len(df)] = ["driver1","16/01/2017 00:24","16/01/2017 01:09",45,"Sug-Break",1,1,"ndd","first","split_2","B_T3","yes",None]
-    # df.loc[len(df)] = ["driver1","16/01/2017 01:09","16/01/2017 01:12",3,"Sug-Load",1,1,"ndd","second","uninterrupted","A","yes","box7"]
-    # df.loc[len(df)] = ["driver1","16/01/2017 01:12","16/01/2017 01:15",3,"Sug-Load",1,1,"ndd","second","uninterrupted","A","yes","box8"]
-    # df.loc[len(df)] = ["driver1","16/01/2017 01:15","16/01/2017 01:18",3,"Sug-Load",1,1,"ndd","second","uninterrupted","A","yes","box9"]
-    # df.loc[len(df)] = ["driver1","16/01/2017 01:18","16/01/2017 02:34",76,"Sug-Driving",1,1,"ndd","second","uninterrupted","A","yes","sevilla-cadiz"]
-
     # To timestamp format
     df.DateTimeStart = pd.to_datetime(df.DateTimeStart)
     df.DateTimeEnd = pd.to_datetime(df.DateTimeEnd)
@@ -186,7 +179,19 @@ if st.button("Refresh?"):
     # Print
     col1, col2, col3 = st.columns(3)
 
-    col1.metric("Recommended Activity", metrics.NextActivityName)
+    emojis = {
+        "Driving": ":truck:",
+        "Break": ":tent:",
+        "Load": ":package:",
+        "Unload": ":package:"
+    }
+    next_activity = metrics.NextActivityName
+    emoji = emojis[next_activity]
+
+    text = 'Recommended Activity<p style="font-size: 30px;">{} {}</p>'.format(next_activity, emoji)
+    col1.markdown(text, unsafe_allow_html=True)
+
+    # col1.metric("Recommended Activity", next_activity + emoji)
     col2.metric("Starting Time", metrics.NextActivityStartTime)
     col3.metric("Ending Time", metrics.NextActivityEndTime)
 
@@ -206,12 +211,6 @@ if st.button("Refresh?"):
     plot_remaining_time(ax3, metrics.DrivingTimeDay, metrics.RemainingDrivingTimeEDD, "EDD")
 
     st.pyplot(fig)
-
-    # text = 'Days processed<p style="font-size: 60px; font-weight:bold;">{}</p>'.format(max_days)
-    # col1.markdown(text, unsafe_allow_html=True)
-
-    # text = 'Illegal sequences detected<p style="color:#9E2A2B; font-size: 60px; font-weight:bold;">{}</p>'.format(illegal_seq)
-    # col2.markdown(text, unsafe_allow_html=True)
 
     st.write(metrics.to_markdown())
 
