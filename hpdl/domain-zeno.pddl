@@ -193,7 +193,8 @@
                 dur = (2.25*60)
             
             # Already Driving sequence in split, do not follow with another
-            if ?dt_activity > 0:
+            # THIS ALWAYS FORCES A BREAK
+            if ?preference_cdd == 1 and ?dt_activity > 0:
                 dur = -1
 
             return dur
@@ -1389,6 +1390,7 @@
                         (modo_generar)
                     )
                 )
+                (A ?d)
             )
         ) 
         
