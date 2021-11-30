@@ -9,13 +9,13 @@ import streamlit as st
 import matplotlib as plt
 
 # Visualization
-from plot_utils import *
+from utils.plot_utils import *
 
 # Metrics
-from displayed_metrics import *
+from utils.displayed_metrics import *
 
 # Subprocess
-from subprocess_functions import *
+from utils.subprocess_functions import *
 
 #########################################################################
 
@@ -71,11 +71,13 @@ DRIVER = "driver" + str(st.sidebar.number_input('Select driver to simulate', 1, 
 
 show_all_suggestions = st.sidebar.checkbox("Show all recommended activities")
 
+# Preferences (FOR TESTING PURPOSES)
+change_preference = st.sidebar.checkbox("Change driver preferences")
+
 # Documentation
 st.sidebar.subheader("Info")
 link = '[Go to documentation](https://github.com/IgnacioVellido/IMLAP-Driver-Activity-Recognition/tree/main/doc/)'
 st.sidebar.markdown(link, unsafe_allow_html=True)
-
 
 # -----------------------------------------------------------------------------
 # Paths
@@ -90,7 +92,7 @@ PROBLEM_PATH = "{}/problem-{}.pddl".format(PROBLEM_FOLDER_PATH, DRIVER)
 LOG_PATH = "tmp/tagged/tagged-log-{}.csv".format(DRIVER)
 
 CLEAN_LOG_FOLDER = "tmp/clean"
-CLEAN_LOG_PATH = "tmp/clean/clean-log-{}.csv".format(DRIVER)
+CLEAN_LOG_PATH = "{}/clean-log-{}.csv".format(CLEAN_LOG_FOLDER, DRIVER)
 
 DOMAIN_PATH = "hpdl/domain-zeno.pddl"
 
@@ -121,7 +123,6 @@ if st.button("Refresh?"):
     # TODO: CHECK PREFERENCES and change domain if necessary 
     # (could be as simple as a query to a driver database)
     # preferences = get_preferences(DRIVER)
-    change_preference = False
 
     if change_preference:
         changePreferences(DOMAIN_PATH) #, preferences)

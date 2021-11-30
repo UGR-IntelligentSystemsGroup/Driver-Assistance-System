@@ -5,12 +5,13 @@
 # NOTE: CALL ONLY IF DRIVER PREFERS SPLIT
 
 import re
+import sys
 
-DOMAIN_PATH = "hpdl/domain-zeno.pddl"
+DOMAIN_PATH = sys.argv[1]
 OUTPUT_PATH = "hpdl/domain-zeno2.pddl"
 
-with open(DOMAIN_PATH) as infile:
-    content = infile.read()
+with open(DOMAIN_PATH, encoding="utf8") as file:
+    content = file.read()
 
 # Get Uninterrupted method start-end positions
 pattern_un = r';@#@-Uninterrupted.*?;#@#-Uninterrupted'

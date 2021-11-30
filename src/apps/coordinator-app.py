@@ -9,10 +9,10 @@ import streamlit as st
 from joblib import load
 
 # Visualization
-from plot_utils import *
+from utils.plot_utils import *
 
 # Metrics
-from get_driver_metrics import *
+from utils.get_driver_metrics import *
 
 # Preprocessing
 from sklearn.preprocessing import normalize
@@ -21,7 +21,7 @@ from sklearn.preprocessing import normalize
 from gensim.models.doc2vec import Doc2Vec
 
 # Subprocess
-from subprocess_functions import *
+from utils.subprocess_functions import *
 
 #########################################################################
 
@@ -52,6 +52,7 @@ if not os.path.isdir("./out/tagged"):
 st.sidebar.header("Configuration")
 driver = st.sidebar.number_input('Select driver log', 1, 290)
 
+# -----------------------------------------------------------------------------
 # Paths
 TACHO_PATH = "./data/split/driver{}.csv".format(driver)
 
@@ -60,6 +61,16 @@ PLAN_DATA_PATH = "./out/plan/event-log-driver{}.plan".format(driver)
 
 PROBLEM_FOLDER_PATH = "hpdl/problems"
 PROBLEM_PATH = "{}/problem-driver{}.pddl".format(PROBLEM_FOLDER_PATH, driver)
+
+DOMAIN_PATH = "hpdl/domain.pddl"
+LOG_PATH = "out/tagged/tagged-log-driver{}.csv".format(driver)
+
+CLEAN_LOG_FOLDER = "out/clean"
+CLEAN_LOG_PATH = "out/clean/clean-log-driver{}.csv".format(driver)
+
+CENTROID_DESCRIPTION_PATH = "out/centroids_description.csv"
+
+# -----------------------------------------------------------------------------
 
 st.sidebar.subheader("Info")
 
@@ -87,9 +98,6 @@ if not redo_file:
 
 # -----------------------------------------------------------------------------
 # Calling planner
-
-DOMAIN_PATH = "hpdl/domain.pddl"
-LOG_PATH = "out/tagged/tagged-log-driver{}.csv".format(driver)
 
 # Don't call again if log already tagged
 redo_file = os.path.isfile(LOG_PATH)
@@ -133,11 +141,8 @@ def load_data(driver):
     return df
 
 # -----------------------------------------------------------------------------
+# Remove comments from driver log
 # -----------------------------------------------------------------------------
-# Clean log for driver
-
-CLEAN_LOG_FOLDER = "out/clean"
-CLEAN_LOG_PATH = "out/clean/clean-log-driver{}.csv".format(driver)
 
 # Don't call again if log already cleaned
 redo_file = os.path.isfile(CLEAN_LOG_PATH)
@@ -176,7 +181,7 @@ col1.markdown(text, unsafe_allow_html=True)
 text = 'Illegal sequences detected<p style="color:#9E2A2B; font-size: 60px; font-weight:bold;">{}</p>'.format(illegal_seq)
 col2.markdown(text, unsafe_allow_html=True)
 
-st.write(driver_metrics.to_markdown())
+# st.write(driver_metrics.to_markdown())
 
 #########################################################################
 # Encode each column as numeric and join them
@@ -325,7 +330,6 @@ if not os.path.isfile(PREDICTION_PATH):
 # Show results
 #########################################################################
 
-CENTROID_DESCRIPTION_PATH = "out/centroids_description.csv"
 c_descriptions = pd.read_csv(CENTROID_DESCRIPTION_PATH)
 
 # Get colored centroid and its description

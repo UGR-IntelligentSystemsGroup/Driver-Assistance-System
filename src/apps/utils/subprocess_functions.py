@@ -9,7 +9,7 @@ import streamlit as st
 @st.cache()
 def start_simulation(DRIVER):
     try:
-        subprocess.Popen(['python', './src/stream_tachograph.py', DRIVER])
+        subprocess.Popen(['python', './src/scripts/stream_tachograph.py', DRIVER])
     except subprocess.CalledProcessError as err:
         print("Error while streaming tachograph data: " + err.stderr)
 
@@ -50,14 +50,14 @@ def cleanLog(LOG_PATH, CLEAN_LOG_FOLDER):
 
 def addingZenoToPDDL(PROBLEM_PATH, ZENO_PATH, DRIVER):
     try:
-        subprocess.run(['python', './src/scripts/addZenoToPDDL.py', PROBLEM_PATH, ZENO_PATH, DRIVER])
+        subprocess.run(['python', './src/parsers/addZenoToPDDL.py', PROBLEM_PATH, ZENO_PATH, DRIVER])
     except subprocess.CalledProcessError as err:
         print("Error while parsing PLAN to PDDL: " + err.stderr)
 
 # -----------------------------------------------------------------------------
 
-def changePreferences(DOMAIN_PATH, preferences=None):
+def changePreferences(DOMAIN_PATH, preferences=""):
     try:
-        subprocess.run(['python', './src/reorder_domain.py', DOMAIN_PATH, preferences])
+        subprocess.run(['python', './src/scripts/reorder_domain.py', DOMAIN_PATH])
     except subprocess.CalledProcessError as err:
         print("Error while parsing PLAN to PDDL: " + err.stderr)
