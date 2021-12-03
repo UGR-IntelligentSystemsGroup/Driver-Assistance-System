@@ -213,6 +213,7 @@
         (AND
             (currentindex_is_typeB ?k ?sa)
             (duration_action ?sa ?dur)
+            ; SOFT-CONSTRAINTS: CHANGE?
             (>= ?dur 15)
         )
     )
@@ -348,7 +349,9 @@
 
                 ; At most 90h driving in two consecutives weeks
                 (:inline
-                    (<= (dt_bwd) (* 90 (hours_in_mins)))
+                    ; SOFT-CONSTRAINTS: CHANGE
+                    ; (<= (dt_bwd) (* 90 (hours_in_mins)))
+                    (<= (dt_bwd) (* 95 (hours_in_mins)))
                     ()
                 )
 
@@ -364,7 +367,9 @@
                 (:inline
                     (and
                         (<= (edds_in_week) 2)
-                        (<= (dt_wd) (* 56.0 (hours_in_mins)))
+                        ; SOFT-CONSTRAINTS: CHANGE
+                        ; (<= (dt_wd) (* 56.0 (hours_in_mins)))
+                        (<= (dt_wd) (* 58.0 (hours_in_mins)))
                     )
                     ()
                 )
@@ -543,7 +548,9 @@
                 ; -------------------------------------------
 
                 (:inline
-                    (<= (dt_dd) (* 9.0 (hours_in_mins)))
+                    ; SOFT-CONSTRAINTS: CHANGE
+                    ; (<= (dt_dd) (* 9.0 (hours_in_mins)))
+                    (<= (dt_dd) (* 9.5 (hours_in_mins)))
                     ()
                 )
             )
@@ -627,7 +634,9 @@
 
                 ; Because NDD is placed before in the tree: (9,10]h
                 (:inline
-                    (<= (dt_dd) (* 10.0 (hours_in_mins)))
+                    ; SOFT-CONSTRAINTS: CHANGE
+                    ; (<= (dt_dd) (* 10.0 (hours_in_mins)))
+                    (<= (dt_dd) (* 10.5 (hours_in_mins)))
                     ()
                 )
             )
@@ -698,7 +707,9 @@
                 (:inline
                     (and
                         ; (> (dt_activity) 0) ; If included it loops. See commit Part 4
-                        (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                        ; SOFT-CONSTRAINTS: CHANGE
+                        ; (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                        (<= (dt_activity) (* 5 (hours_in_mins)))
                     )
                     ()
                 )
@@ -728,7 +739,9 @@
                 (:inline
                     (and
                         ; (> (dt_activity) 0)
-                        (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                        ; SOFT-CONSTRAINTS: CHANGE
+                        ; (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                        (<= (dt_activity) (* 5 (hours_in_mins)))
                     )
                     ()
                 )
@@ -761,7 +774,9 @@
                 (:inline
                     (and
                         ; (> (dt_activity) 0)
-                        (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                        ; SOFT-CONSTRAINTS: CHANGE
+                        ; (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                        (<= (dt_activity) (* 5 (hours_in_mins)))
                     )
                     (assign (dt_cdd_split1) (dt_activity))
                 )
@@ -795,7 +810,9 @@
                 (:inline
                     (and
                         ; (> (dt_activity) 0)
-                        (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                        ; SOFT-CONSTRAINTS: CHANGE
+                        ; (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                        (<= (dt_activity) (* 5 (hours_in_mins)))
                     )
                     (assign (dt_cdd_split2) (dt_activity))
                 )
@@ -820,7 +837,9 @@
                 (:inline
                     (and
                         ; (> (dt_activity) 0)
-                        (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                        ; SOFT-CONSTRAINTS: CHANGE
+                        ; (<= (dt_activity) (* 4.5 (hours_in_mins)))
+                        (<= (dt_activity) (* 5 (hours_in_mins)))
                     )
                     (assign (dt_cdd_split2) (dt_activity))
                 )
@@ -850,6 +869,7 @@
 
                 ; A daily rest is not bigger than 24h
                 (:inline
+                    ; SOFT-CONSTRAINTS: CHANGE?
                     (< (current_bt) (* 24 (hours_in_mins)))
                     ()
                 )
@@ -1123,7 +1143,8 @@
                 (b_token B_T1)		
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur 45) (< ?dur (* 3.0 (hours_in_mins))))
+                    ; SOFT-CONSTRAINTS: CHANGE
+                    (and (>= ?dur 38) (< ?dur (* 3.0 (hours_in_mins))))
                     ()
                 )
                 (e_token B_T1)
@@ -1150,7 +1171,9 @@
                 (b_token B_T2)
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur 15) (< ?dur (* 3.0 (hours_in_mins))))
+                    ; SOFT-CONSTRAINTS: CHANGE
+                    ; (and (>= ?dur 15) (< ?dur (* 3.0 (hours_in_mins))))
+                    (and (>= ?dur 13) (< ?dur (* 3.0 (hours_in_mins))))
                     ()
                 )
                 (e_token B_T2)
@@ -1177,7 +1200,9 @@
                 (b_token B_T3)
                 (B ?d ?dur)
                 (:inline
-                    (and (>= ?dur 30) (< ?dur (* 3.0 (hours_in_mins))))
+                    ; SOFT-CONSTRAINTS: CHANGE
+                    ; (and (>= ?dur 30) (< ?dur (* 3.0 (hours_in_mins))))
+                    (and (>= ?dur 25) (< ?dur (* 3.0 (hours_in_mins))))
                     ()
                 )
                 (e_token B_T3)
@@ -1207,7 +1232,9 @@
                 (Process_A ?d)
 
                 (:inline
-                    (< (current_bt) 15)
+                    ; SOFT-CONSTRAINTS: CHANGE
+                    ; (< (current_bt) 15)
+                    (< (current_bt) 17)
                     ()
                 )
 
@@ -1287,7 +1314,9 @@
                 (b_token B_T0)
                 (B ?d ?dur)
                 (:inline
-                    (and (< ?dur 15))
+                    ; SOFT-CONSTRAINTS: CHANGE
+                    ; (and (< ?dur 15))
+                    (and (< ?dur 17))
                     ()
                 )
                 (e_token B_T0)
