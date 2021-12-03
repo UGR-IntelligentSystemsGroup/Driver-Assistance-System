@@ -1,0 +1,15 @@
+Driver	DateTimeStart	DateTimeEnd	Duration	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	Cluster	ZenoInfo
+driver7	2017-01-01 17:49:00	2017-02-01 18:29:00	1480.0	Break	1.0	1.0	ndd	unique	uninterrupted	WR_T2	1	16	
+driver63	2017-07-01 19:32:00	2017-09-01 06:56:00	2124.0	Break	1.0	1.0	ndd	unique	uninterrupted	WR_T2	1	16	
+driver79	2017-04-01 09:13:00	2017-05-01 11:13:00	1560.0	Break	1.0	1.0	ndd	unique	uninterrupted	WR_T2	1	16	
+driver88	2017-04-01 09:35:00	2017-05-01 14:57:00	1762.0	Break	1.0	1.0	ndd	unique	uninterrupted	WR_T2	1	16	
+driver94	2017-03-01 16:22:00	2017-04-01 16:55:00	1473.0	Break	1.0	1.0	ndd	unique	uninterrupted	WR_T2	1	16	
+driver97	2017-06-01 10:17:00	2017-07-01 12:43:00	1586.0	Break	1.0	1.0	ndd	unique	uninterrupted	WR_T2	1	16	
+driver119	2017-04-01 17:01:00	2017-05-01 18:11:00	1510.0	Break	1.0	1.0	ndd	unique	uninterrupted	WR_T2	1	16	
+driver192	2017-06-01 09:02:00	2017-07-01 12:03:00	1621.0	Break	1.0	1.0	ndd	unique	uninterrupted	WR_T2	1	16	
+driver219	2017-05-01 12:17:00	2017-06-01 12:30:00	1453.0	Break	1.0	4.0	ndd	unique	uninterrupted	WR_T2	1	16	
+driver220	2017-06-01 10:11:00	2017-07-01 12:41:00	1590.0	Break	1.0	1.0	ndd	unique	uninterrupted	WR_T2	1	16	
+driver221	2017-01-01 00:12:00	2017-02-01 07:03:00	1851.0	Break	1.0	1.0	ndd	unique	uninterrupted	WR_T2	1	16	
+driver228	2017-01-13 13:37:00	2017-01-15 09:51:00	2654.0	Break	4.0	9.0	ndd	unique	uninterrupted	WR_T2	1	16	
+driver234	2017-05-01 12:15:00	2017-06-01 12:31:00	1456.0	Break	1.0	4.0	ndd	unique	uninterrupted	WR_T2	1	16	
+driver261	2017-01-01 00:12:00	2017-02-01 07:03:00	1851.0	Break	1.0	1.0	ndd	unique	uninterrupted	WR_T2	1	16	
