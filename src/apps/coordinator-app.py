@@ -12,7 +12,7 @@ from joblib import load
 from utils.plot_utils import *
 
 # Metrics
-from utils.get_driver_metrics import *
+from utils.get_driver_metrics import get_metrics
 
 # Preprocessing
 from sklearn.preprocessing import normalize

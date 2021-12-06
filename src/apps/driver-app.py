@@ -12,10 +12,13 @@ import matplotlib as plt
 from utils.plot_utils import *
 
 # Metrics
-from utils.displayed_metrics import *
+from utils.displayed_metrics import get_displayed_metrics
 
 # Subprocess
 from utils.subprocess_functions import *
+
+# Infringements
+from utils.infringements import find_infringements
 
 #########################################################################
 
@@ -160,7 +163,23 @@ if st.button("Refresh?"):
     st.write("Tagged data", df_colored)
 
     # -----------------------------------------------------------------------------
+    # Infringements
+    st.subheader("Infringements")
+
+    infringements = find_infringements(df_no_sug)
+    illegal_seq = True if "none" in df_no_sug.values else False
+
+    if infringements:
+        for inf in infringements:
+            st.warning("Action {}: {}".format(inf[0],inf[1]))
+    elif illegal_seq:
+        st.warning("Infringements cause not identified")
+    else:
+        st.info("No infringements detected")
+
+    # -----------------------------------------------------------------------------
     # Coloring for display - Next recommendations
+    st.subheader("Recommended Activities")
 
     # Get first day of data
     min_days = int(df_sug['Day'].min())
@@ -168,13 +187,14 @@ if st.button("Refresh?"):
     df_colored = df_sug.loc[df_sug['Day'] == min_days].drop(columns=["Driver","Legal","DateTimeEnd", "Week", "Day"])
     df_colored = df_colored.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token"])
 
-    st.write("Recommended Activities", df_colored)
+    st.write(df_colored)
 
     if show_all_suggestions:
         st.write("All recommended activities", df_sug)
 
     # -----------------------------------------------------------------------------
     # Get driver metrics
+    st.subheader("Status")
     metrics = get_displayed_metrics(df_no_sug, df_sug)
 
     # Print

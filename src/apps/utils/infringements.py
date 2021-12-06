@@ -183,6 +183,7 @@ def missing_half_split_rest(df):
 
 # -------------------------------------------------------------------------
 
+# WILL EVER HAPPEN? I THINK DOMAIN PUTS LEGAL BASED ON THE REST OF TAGS
 # IF
 #     Tags - Good
 #     Legal - No
