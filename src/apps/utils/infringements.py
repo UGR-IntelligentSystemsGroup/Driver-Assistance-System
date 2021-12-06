@@ -9,11 +9,15 @@ def find_infringements(df):
     """Receives tagged driver log"""
     infringements = [] # List (starting_action_num, infringement_details)
 
+    # Search week by week
     week_groups = df.groupby('Week', sort=False) # False to keep driver ordering
     for _, week_group in week_groups:
 
         remaining_edds = get_remaining_edds(week_group)
 
+        infringements.append(missing_half_split_rest(week_group))
+
+        # Search day by day
         day_groups = week_group.groupby('Day', sort=False)
         for _, day_group in day_groups:
             
@@ -29,6 +33,9 @@ def find_infringements(df):
 
     # Remove None from list
     infringements = [x for x in infringements if x is not None]
+
+    # Sort by activity index
+    infringements.sort(key=lambda tup: tup[1])
 
     return infringements
         
@@ -133,7 +140,7 @@ def excessive_driving_seq(df):
     details = "Excessive Driving without breaks"
     infringement = []
 
-    groups = df.groupby("Sequence")
+    groups = df.groupby("Sequence", sort=False)
 
     for _, group in groups:
         dt_seq = get_dt(group)
@@ -151,6 +158,29 @@ def excessive_driving_seq(df):
 # THEN
 #     Missing other half of split daily rest
 
+def missing_half_split_rest(df):
+    """Receives week log"""
+    details = "Missing other half of split daily rest"
+    infringement = None
+
+    if "DR_T3" in df.values and not "DR_T4" in df.values:
+        index = df.index[0]
+
+        # Find expected DR_T4 index
+        groups = df.groupby('Day', sort=False) # False to keep driver ordering
+        dr_t3_found = False
+        for _, day in groups:
+            if dr_t3_found:
+                index = day.query("Activity == 'Break' & Token == 'none'").index[0]
+
+            # Missing DR_T4 in next iteration
+            if "DR_T3" in day.values:
+                dr_t3_found = True
+
+        infringement = (index, details)
+
+    return infringement
+
 # -------------------------------------------------------------------------
 
 # IF
@@ -158,3 +188,5 @@ def excessive_driving_seq(df):
 #     Legal - No
 # THEN
 #     Some kind of weekly problem
+
+# def unknown_weekly_problem(df):
