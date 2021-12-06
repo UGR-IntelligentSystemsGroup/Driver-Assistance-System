@@ -74,7 +74,7 @@ def get_dt(df):
 
 
 def get_dt_seq(df):
-    """Receives df with only a day"""
+    """Get dt of last seq in day. Receives df with only a day"""
 
     # Get last day
     groups = df.groupby("Sequence")

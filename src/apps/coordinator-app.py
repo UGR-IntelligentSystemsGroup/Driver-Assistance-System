@@ -23,6 +23,9 @@ from gensim.models.doc2vec import Doc2Vec
 # Subprocess
 from utils.subprocess_functions import *
 
+# Infringements
+from utils.infringements import find_infringements
+
 #########################################################################
 
 st.title('Driver Activity Recognition')
@@ -136,7 +139,7 @@ def load_data(driver):
     df.Legal = df.Legal.map({"yes": 1, "no": 0}) # Not sure if [-1,1] is better
 
     # Drop columns
-    df = df.drop(columns=['ZenoInfo', "DateTimeStart", "DateTimeEnd", 'Week'])
+    df = df.drop(columns=['ZenoInfo', "DateTimeStart", "DateTimeEnd"])
 
     return df
 
@@ -155,7 +158,7 @@ df = load_data(driver)
 # -----------------------------------------------------------------------------
 # Coloring for display
 
-df_colored = df.drop(columns="Driver")
+df_colored = df.drop(columns=["Driver","Week"])
 df_colored.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True) # Rename Legal values to Yes/No
 df_colored = df_colored.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token", "Legal"])
 
@@ -181,7 +184,21 @@ col1.markdown(text, unsafe_allow_html=True)
 text = 'Illegal sequences detected<p style="color:#9E2A2B; font-size: 60px; font-weight:bold;">{}</p>'.format(illegal_seq)
 col2.markdown(text, unsafe_allow_html=True)
 
-# st.write(driver_metrics.to_markdown())
+#########################################################################
+# Display infringements
+#########################################################################
+
+st.subheader("Infringements")
+
+infringements = find_infringements(df)
+
+if infringements:
+    for inf in infringements:
+        st.warning("Action {}: {}".format(inf[0],inf[1]))
+elif illegal_seq > 0:
+    st.warning("Infringements cause not identified")
+
+# st.write(infringements)
 
 #########################################################################
 # Encode each column as numeric and join them
