@@ -1,0 +1,2 @@
+Driver,DateStart,HourStart,HourEnd,Duration,Distance,Status,Profession,Vehicle,PlaceStart,PlaceEnd,LatitudeStart,LongitudeStart,LatitudeEnd,LongitudeEnd,MilometerStart,MilometerEnd
+driver61,dom 15/01/17,11:03,19:34,32h 31m,266.3032182161916,Pausa,1,SB26ZFO MI5256H00800,"Arras, 62128, FR, 43,9 km sur Lille","Arras, 62128, FR, 43,9 km sur Lille",50.262489,-2.86601,50.262489,-6.612736,"31,905","31,905"

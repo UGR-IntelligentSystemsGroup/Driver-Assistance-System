@@ -1,0 +1,7 @@
+Driver,DateStart,HourStart,HourEnd,Duration,Distance,Status,Profession,Vehicle,PlaceStart,PlaceEnd,LatitudeStart,LongitudeStart,LatitudeEnd,LongitudeEnd,MilometerStart,MilometerEnd
+driver13,dom 15/01/17,18:45,18:52,0h 07m,0.007544559314805183,Pausa,1,4387JSVMI6186H01471,"11207, Algeciras, GI, próximo a Gibraltar","11207, Algeciras, GI, próximo a Gibraltar",36.124649,-5.439809,36.124649,-5.439725,"27,412","27,412"
+driver13,dom 15/01/17,18:52,18:53,0h 01m,0.21214590100315958,Conduciendo,1,4387JSVMI6186H01471,"11207, Algeciras, GI, próximo a Gibraltar","11207, Algeciras, GI, próximo a Gibraltar",36.12462,-5.439725,36.12462,-5.437363,"27,412","27,413"
+driver13,dom 15/01/17,18:53,18:54,0h 01m,0.0030537230848571577,En espera,1,4387JSVMI6186H01471,"11207, Algeciras, GI, próximo a Gibraltar","11207, Algeciras, GI, próximo a Gibraltar",36.125346,-5.437363,36.125346,-5.437329,"27,413","27,413"
+driver13,dom 15/01/17,18:54,18:56,0h 02m,0.018052967326157306,Otro trabajo,1,4387JSVMI6186H01471,"11207, Algeciras, GI, próximo a Gibraltar","11207, Algeciras, GI, próximo a Gibraltar",36.12502,-5.437329,36.12502,-5.43753,"27,413","27,413"
+driver13,dom 15/01/17,18:56,19:06,0h 10m,3.3270571342346384,Conduciendo,1,4387JSVMI6186H01471,"11207, Algeciras, GI, próximo a Gibraltar","11206, Algeciras, ES",36.124736,-5.43753,36.124736,-5.474573,"27,413","27,418"
+driver13,dom 15/01/17,19:06,19:07,0h 01m,0.001347416222319357,Otro trabajo,1,4387JSVMI6186H01471,"11206, Algeciras, ES","11206, Algeciras, ES",36.114539,-5.474573,36.114539,-5.474588,"27,418","27,418"
