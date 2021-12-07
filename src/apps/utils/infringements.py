@@ -154,7 +154,7 @@ def excessive_driving_seq(df):
 
 # IF
 #     DR_T3 day before
-#     No DR_T4
+#     No DR_T4 or WR
 # THEN
 #     Missing other half of split daily rest
 
@@ -163,7 +163,7 @@ def missing_half_split_rest(df):
     details = "Missing other half of split daily rest"
     infringement = None
 
-    if "DR_T3" in df.values and not "DR_T4" in df.values:
+    if "DR_T3" in df.values and not "DR_T4" and not "WR" in df.values:
         index = df.index[0]
 
         # Find expected DR_T4 index
