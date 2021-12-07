@@ -1,16 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-# ###############################
-# Preprocessing
-# ###############################
-# Calculate coordinates
-# https://stackoverflow.com/questions/365826/calculate-distance-between-2-gps-coordinates
-# Use Latitud,Longitud current row and NEXT ROW
-# 
-# REMOVE IF distance < 100m AND (duration < 3 min OR other OR idle)
-# A unas malas perdemos algún delivery en la misma calle
-
 import sys
 import numpy as np
 import pandas as pd

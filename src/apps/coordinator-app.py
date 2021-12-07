@@ -34,6 +34,9 @@ st.title('Driver Activity Recognition')
 if not os.path.isdir("./out"):
     os.mkdir("./out")
 
+if not os.path.isdir("./out/preprocess"):
+    os.mkdir("./out/preprocess")
+
 if not os.path.isdir("./out/clean"):
     os.mkdir("./out/clean")
 
@@ -57,7 +60,8 @@ driver = st.sidebar.number_input('Select driver log', 1, 290)
 
 # -----------------------------------------------------------------------------
 # Paths
-TACHO_PATH = "./data/split/driver{}.csv".format(driver)
+RAW_PATH = "./data/split/driver{}.csv".format(driver)
+TACHO_PATH = "./out/preprocess/driver{}.csv".format(driver)
 
 PLAN_FOLDER_PATH = "./out/plan"
 PLAN_DATA_PATH = "./out/plan/event-log-driver{}.plan".format(driver)
@@ -82,20 +86,21 @@ link = '[Go to documentation](https://github.com/IgnacioVellido/IMLAP-Driver-Act
 st.sidebar.markdown(link, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# FROM CSV to PDDL
+# Preprocess and From CSV to PDDL
 
 # Don't call again if PDDL already defined
-redo_file = os.path.isfile(PROBLEM_PATH)
+exits_pddl = os.path.isfile(PROBLEM_PATH)
 
 # Let the user decide if redefine the PDDL problem
 button = st.sidebar.empty()
-if redo_file:
+if exits_pddl:
     if button.button('PDDL problem already exists. Redo?'):
-        redo_file = False
+        exits_file = False
         button.empty()
 
-if not redo_file:
+if not exits_pddl:
     with st.spinner("Preprocessing raw data for recognition..."):
+        preprocess(RAW_PATH, TACHO_PATH)
         fromCSVtoPLAN(TACHO_PATH, PLAN_FOLDER_PATH)
         fromPLANtoPDDL(PLAN_DATA_PATH, PROBLEM_FOLDER_PATH)
 
@@ -103,15 +108,16 @@ if not redo_file:
 # Calling planner
 
 # Don't call again if log already tagged
-redo_file = os.path.isfile(LOG_PATH)
+exits_tagged = os.path.isfile(LOG_PATH)
 button = st.sidebar.empty()
 
-if redo_file:
+if exits_tagged:
     if button.button('Log already tagged. Redo?'):
-        redo_file = False
+        exits_tagged = False
         button.empty()
 
-if not redo_file:
+# Also call when new pddl has been generated
+if not exits_tagged or not exits_pddl:
     with st.spinner("Recognizing driver log..."):
         runPlanner(DOMAIN_PATH, PROBLEM_PATH, LOG_PATH)
 
@@ -124,8 +130,7 @@ if st.sidebar.checkbox("Show original data"):
 #########################################################################
 
 # Load data
-@st.cache
-def load_data(driver):
+def load_data():
     df = pd.read_csv(CLEAN_LOG_PATH, sep="\t", dtype={"Day":int, "Duration(min)":int})
 
     # To timestamp format
@@ -147,13 +152,13 @@ def load_data(driver):
 # Remove comments from driver log
 # -----------------------------------------------------------------------------
 
-# Don't call again if log already cleaned
-redo_file = os.path.isfile(CLEAN_LOG_PATH)
+# Don't call again if log not modified
+reload_file = os.path.isfile(CLEAN_LOG_PATH) and not exits_tagged
 
-if not redo_file:
+if not reload_file:
     cleanLog(LOG_PATH, CLEAN_LOG_FOLDER)
 
-df = load_data(driver)
+df = load_data()
 
 # -----------------------------------------------------------------------------
 # Coloring for display
@@ -369,7 +374,7 @@ day = st.number_input('Select driver day to display', 1, max_days)
 df_day = df_clusters[df_clusters['Day'] == day].loc[:, df_clusters.columns != 'Driver']
 
 # Drop Day column
-df_day = df_day.drop(columns="Day")
+df_colored = df.drop(columns=["Driver","Week"])
 
 # Color cells
 df_colored = df_day.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token", "Legal"])

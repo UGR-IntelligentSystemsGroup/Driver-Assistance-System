@@ -15,6 +15,14 @@ def start_simulation(DRIVER):
 
 # -----------------------------------------------------------------------------
 
+def preprocess(DATA_PATH, OUTPUT_PATH):
+    try:
+        subprocess.run(['python', './src/scripts/preprocessing.py', DATA_PATH, OUTPUT_PATH])
+    except subprocess.CalledProcessError as err:
+        print("Error while preprocessing input data: " + err.stderr)
+
+# -----------------------------------------------------------------------------
+
 def fromCSVtoPLAN(TACHO_PATH, PLAN_FOLDER_PATH):
     try:
         subprocess.run(['python', './src/parsers/fromCSVtoPLAN.py', TACHO_PATH, PLAN_FOLDER_PATH])
