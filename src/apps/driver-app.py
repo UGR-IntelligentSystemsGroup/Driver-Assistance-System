@@ -53,6 +53,9 @@ st.write("Simulating streaming of tachograph data")
 if not os.path.isdir("./tmp"):
     os.mkdir("./tmp")
 
+if not os.path.isdir("./tmp/preprocess"):
+    os.mkdir("./tmp/preprocess")
+
 if not os.path.isdir("./tmp/clean"):
     os.mkdir("./tmp/clean")
 
@@ -84,7 +87,8 @@ st.sidebar.markdown(link, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
 # Paths
-TACHO_PATH = "tmp/{}.csv".format(DRIVER)
+RAW_PATH = "tmp/{}.csv".format(DRIVER)
+TACHO_PATH = "tmp/preprocess/{}.csv".format(DRIVER)
 
 PLAN_FOLDER_PATH = "tmp/plan"
 PLAN_DATA_PATH = "tmp/plan/event-log-{}.plan".format(DRIVER)
@@ -109,6 +113,7 @@ if st.button("Refresh?"):
     # -----------------------------------------------------------------------------
     # Generate HPDL problem
     with st.spinner("Preprocessing raw data for recognition..."):
+        preprocess(RAW_PATH, TACHO_PATH)
         fromCSVtoPLAN(TACHO_PATH, PLAN_FOLDER_PATH)
         fromPLANtoPDDL(PLAN_DATA_PATH, PROBLEM_FOLDER_PATH)
 
