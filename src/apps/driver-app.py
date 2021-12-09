@@ -176,7 +176,14 @@ if st.button("Refresh?"):
 
     if infringements:
         for inf in infringements:
-            st.warning("Activity {}: {}".format(inf[0],inf[1]))
+            text = "Activity {}: {}".format(inf[0],inf[1])
+        
+            # If not warning
+            if "Possible" in text:
+                st.warning(text)
+            else:
+                st.error(text)
+                
     elif illegal_seq:
         st.warning("Infringements cause not identified")
     else:

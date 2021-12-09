@@ -257,7 +257,13 @@ def soft_constraints(df, PROBLEM_PATH, DRIVER):
     # -------------------------------------------------------------------------
     # Define infringements
     infringements = []
-    details = "Possible borderline duration. {} should be {} to become legal."
+    details = "Possible borderline duration. {} should be {} to become legal"
+
+    # TODO: Consider receiving list of previous infringement and don't show the new
+    # detected that overlap
+
+    # Get which activities are already explained in another infringement
+    # activities = [x[0] for x in infringements]
 
     # Loop over values when changes is True
     for i, change, soft, actual in zip(index, changes, soft_tokens, actual_tokens):
