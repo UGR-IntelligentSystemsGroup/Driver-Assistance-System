@@ -5,7 +5,7 @@
 # 3. Repair according to each illegality
 # 4. Repeat 2 and 3 until no changes
 
-def find_infringements(df):
+def find_infringements(df, PROBLEM_PATH, DRIVER):
     """Receives tagged driver log"""
     infringements = [] # List (starting_action_num, infringement_details)
 
@@ -34,13 +34,30 @@ def find_infringements(df):
     # Remove None from list
     infringements = [x for x in infringements if x is not None]
 
+    # Call soft constraints if there are illegal sequences not yet recognized
+    if len(infringements) < get_num_illegal(df):
+        infringements.extend(soft_constraints(df, PROBLEM_PATH, DRIVER))
+
     # Sort by activity index
-    infringements.sort(key=lambda tup: tup[1])
+    infringements.sort(key=lambda tup: tup[0])
 
     return infringements
         
 
 # -------------------------------------------------------------------------
+# -------------------------------------------------------------------------
+
+def get_num_illegal(df):
+    """Get the number of illegal sequences in a log"""
+    groups = df.groupby('Day', sort=False) # False to keep driver ordering
+
+    num = 0
+    for _, group in groups:
+        if "none" in group.values:
+            num += 1
+
+    return num
+
 # -------------------------------------------------------------------------
 
 # dt = Driving Time (minutes)
@@ -191,3 +208,60 @@ def missing_half_split_rest(df):
 #     Some kind of weekly problem
 
 # def unknown_weekly_problem(df):
+
+
+# -------------------------------------------------------------------------
+
+# If all prior functions fails to recognize the error
+# Call domain with soft constraints and compare which tokens changes in the 
+# problematic sequence
+
+from genericpath import isfile
+from numpy import True_
+import pandas as pd
+from os import remove
+from os.path import isfile
+from utils.subprocess_functions import runPlanner
+import streamlit as st
+
+@st.cache
+def soft_constraints(df, PROBLEM_PATH, DRIVER):
+    """Receives week log, PDDL problem path and driver ID"""
+    DOMAIN_PATH = "hpdl/domain-soft.pddl"
+    LOG_PATH = "tmp-soft-{}.csv".format(DRIVER)
+
+    # -------------------------------------------------------------------------
+    # Call planner
+    runPlanner(DOMAIN_PATH, PROBLEM_PATH, LOG_PATH)
+
+    # -------------------------------------------------------------------------
+    # Compare tokens
+    soft_df = pd.read_csv(LOG_PATH, sep="\t", comment="#")
+    soft_df.columns = ["Driver","DateTimeStart","DateTimeEnd","Duration(min)",
+                        "Activity","Week","Day","DayType","Sequence",
+                        "BreakType","Token","Legal"] # Assign headers
+
+    # Get tokens 
+    index = df.query("Legal == 0").index
+    soft_tokens = soft_df.loc[index-1].Token.reset_index(drop=True)
+    actual_tokens = df.loc[index].Token.reset_index(drop=True)
+
+    changes = soft_tokens != actual_tokens
+
+    # -------------------------------------------------------------------------
+    # Delete temporary file
+
+    if isfile(LOG_PATH):
+        remove(LOG_PATH)
+
+    # -------------------------------------------------------------------------
+    # Define infringements
+    infringements = []
+    details = "Possible borderline duration. {} should be {} to become legal."
+
+    # Loop over values when changes is True
+    for i, change, soft, actual in zip(index, changes, soft_tokens, actual_tokens):
+        if change:
+            infringements.append((i, details.format(actual, soft)))
+
+    return infringements

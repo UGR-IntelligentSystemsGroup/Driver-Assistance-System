@@ -3,6 +3,7 @@
 # Web app to test Driver Recognition functionality
 #########################################################################
 
+from genericpath import exists
 import os
 import pandas as pd
 import streamlit as st
@@ -89,37 +90,39 @@ st.sidebar.markdown(link, unsafe_allow_html=True)
 # Preprocess and From CSV to PDDL
 
 # Don't call again if PDDL already defined
-exits_pddl = os.path.isfile(PROBLEM_PATH)
+exist_pddl = os.path.isfile(PROBLEM_PATH)
 
 # Let the user decide if redefine the PDDL problem
 button = st.sidebar.empty()
-if exits_pddl:
+if exist_pddl:
     if button.button('PDDL problem already exists. Redo?'):
-        exits_file = False
+        exist_file = False
         button.empty()
 
-if not exits_pddl:
+if not exist_pddl:
     with st.spinner("Preprocessing raw data for recognition..."):
         preprocess(RAW_PATH, TACHO_PATH)
         fromCSVtoPLAN(TACHO_PATH, PLAN_FOLDER_PATH)
         fromPLANtoPDDL(PLAN_DATA_PATH, PROBLEM_FOLDER_PATH)
+        exist_pddl = True
 
 # -----------------------------------------------------------------------------
 # Calling planner
 
 # Don't call again if log already tagged
-exits_tagged = os.path.isfile(LOG_PATH)
+exist_tagged = os.path.isfile(LOG_PATH)
 button = st.sidebar.empty()
 
-if exits_tagged:
+if exist_tagged:
     if button.button('Log already tagged. Redo?'):
-        exits_tagged = False
+        exist_tagged = False
         button.empty()
 
 # Also call when new pddl has been generated
-if not exits_tagged or not exits_pddl:
+if not exist_tagged or not exist_pddl:
     with st.spinner("Recognizing driver log..."):
         runPlanner(DOMAIN_PATH, PROBLEM_PATH, LOG_PATH)
+        exist_tagged = True
 
 if st.sidebar.checkbox("Show original data"):
     df_original = pd.read_csv(TACHO_PATH)
@@ -153,7 +156,7 @@ def load_data():
 # -----------------------------------------------------------------------------
 
 # Don't call again if log not modified
-reload_file = os.path.isfile(CLEAN_LOG_PATH) and not exits_tagged
+reload_file = os.path.isfile(CLEAN_LOG_PATH) and not exist_tagged
 
 if not reload_file:
     cleanLog(LOG_PATH, CLEAN_LOG_FOLDER)
@@ -195,11 +198,12 @@ col2.markdown(text, unsafe_allow_html=True)
 
 st.subheader("Infringements")
 
-infringements = find_infringements(df)
+with st.spinner("Analyzing infringements..."):
+    infringements = find_infringements(df, PROBLEM_PATH, driver)
 
 if infringements:
     for inf in infringements:
-        st.warning("Action {}: {}".format(inf[0],inf[1]))
+        st.warning("Activity {}: {}".format(inf[0],inf[1]))
 elif illegal_seq > 0:
     st.warning("Infringements cause not identified")
 
@@ -337,6 +341,9 @@ with st.spinner("Clustering data..."):
     clusters = get_predictions(X_d2v)
     centroids = get_decoded_centroids_d2v()
     df_clusters = put_clusters_in_df(clusters, df)
+
+# Drop week
+df_clusters.drop(columns="Week", inplace=True)
 
 # Rename Legal values to Yes/No
 df_clusters.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True)

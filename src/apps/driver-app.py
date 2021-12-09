@@ -171,12 +171,12 @@ if st.button("Refresh?"):
     # Infringements
     st.subheader("Infringements")
 
-    infringements = find_infringements(df_no_sug)
+    infringements = find_infringements(df_no_sug, PROBLEM_PATH, DRIVER)
     illegal_seq = True if "none" in df_no_sug.values else False
 
     if infringements:
         for inf in infringements:
-            st.warning("Action {}: {}".format(inf[0],inf[1]))
+            st.warning("Activity {}: {}".format(inf[0],inf[1]))
     elif illegal_seq:
         st.warning("Infringements cause not identified")
     else:
