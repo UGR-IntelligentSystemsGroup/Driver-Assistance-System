@@ -46,7 +46,7 @@ def load_data(CLEAN_LOG_PATH):
 
 #########################################################################
 
-st.title('Driver Functionality')
+st.title('Driver Assistance System - Driver App')
 st.write("Simulating streaming of tachograph data")
 
 # Create temporal directories that don't exists
@@ -244,5 +244,3 @@ if st.button("Refresh?"):
     plot_remaining_time(ax3, metrics.DrivingTimeDay, metrics.RemainingDrivingTimeEDD, "EDD")
 
     st.pyplot(fig)
-
-    st.write(metrics.to_markdown())
