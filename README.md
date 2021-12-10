@@ -2,11 +2,11 @@
 
 # Driver Assistance System
 
-A Driver Assistance System (DAS) to both help truck drivers and traffic managers. Some of functionality includes:
+A Driver Assistance System (DAS) to both help truck drivers and traffic managers. Some of functionality include:
 
 - Monitoring and explaining driver activities in accordance with the Hours Of Service regulation.
 - Identifying infringements and its cause.
-- Suggesting new legal transport activities to fulfill deliveries.
+- Suggesting new legal transport activities to fulfill deliveries based on driver preferences.
 - Cluster driving sequences for an easy monitoring of driver behavior.
 
 ## :unlock: Requirements
@@ -53,7 +53,7 @@ This app simulates the streaming data from a tachograph and displays useful metr
 
 - Actual driving sequence and its compliance with the HOS regulation.
 - Detected infringements and its cause.
-- Next activities recommended for the day.
+- Next activities recommended for the day based on driver preferences.
 - Remaining time before committing an infringement.
 
 It can be launched via the command:
