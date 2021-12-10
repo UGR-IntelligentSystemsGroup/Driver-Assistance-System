@@ -203,7 +203,7 @@ with st.spinner("Analyzing infringements..."):
 
 if infringements:
     for inf in infringements:
-        text = "Activity {}: {}".format(inf[0],inf[1])
+        text = "Activity [{}]: {}".format(inf[0],inf[1])
         
         # If not warning
         if "Possible" in text:
