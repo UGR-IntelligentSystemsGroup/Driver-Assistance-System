@@ -1,3 +1,0 @@
-Driver,DateStart,HourStart,HourEnd,Duration,Distance,Status,Profession,Vehicle,PlaceStart,PlaceEnd,LatitudeStart,LongitudeStart,LatitudeEnd,LongitudeEnd(WRONG),MilometerStart,MilometerEnd
-driver265,dom 15/01/17,11:00,18:09,7h 09m,0.0,Pausa,1,SB32ZFOMI5256H00358,"A2/E314, 3520, Hasselt, BE","A2/E314, 3520, Hasselt, BE",51011631.0,5334914.0,51011631.0,51011577.0,"38,078","38,078"
-driver265,dom 15/01/17,18:12,06:51,12h 39m,0.0,Pausa,1,SB32ZFOMI5256H00358,"A2/E314, 3520, Hasselt, BE","A2/E314, 3520, Hasselt, BE",51011607.0,5334911.0,51011607.0,51011653.0,"38,078","38,078"

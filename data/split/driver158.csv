@@ -1,3 +1,0 @@
-Driver,DateStart,HourStart,HourEnd,Duration,Distance,Status,Profession,Vehicle,PlaceStart,PlaceEnd,LatitudeStart,LongitudeStart,LatitudeEnd,LongitudeEnd(WRONG),MilometerStart,MilometerEnd
-driver158,dom 15/01/17,10:58,21:43,10h 45m,0.1,Pausa,1,SB25RTOMI6086H01465,"A46/E15/E70 Contournement De Lyon, 69360, Vénissieux, FR, 19,5 km sur Lyon","A46/E15/E70 Contournement De Lyon, 69360, Vénissieux, FR, 19,5 km sur Lyon",45591545.0,4827883.0,45591545.0,45591463.0,"252,996","252,996"
-driver158,dom 15/01/17,21:43,02:07,4h 24m,387.3,Conduciendo,1,SB25RTOMI6086H01465,"A46/E15/E70 Contournement De Lyon, 69360, Vénissieux, FR, 19,5 km sur Lyon","A9/E15 La Languedocienne, 11100, Narbonne, FR, 46,1 km norte Perpignan",45591463.0,4828589.0,45591463.0,43114180.0,"252,996","253,383"

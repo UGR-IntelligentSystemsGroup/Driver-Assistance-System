@@ -1,10 +1,12 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-# IMLAP - Driver Activity Recognition
+# Driver Assist
 
-A system to:
+A Driver Assistance System (DAS) to both help truck drivers and traffic managers. Some of  :
 
-- Tag driver activity in compliance with the Hours Of Service regulation.
+- Check if driver activities comply with the Hours Of Service regulation.
+-
+- Identify infringements 
 - Suggest legal transport activities in accordance to fuel consumption.
 - Cluster driving sequences for an easy monitoring of driver behavior.
 
@@ -30,13 +32,16 @@ Nevertheless, if you don't want to use Anaconda the main Python packages are:
 - Pandas
 - Scikit-learn
 - Matplotlib
-- Streamlit (only for the app)
+- Streamlit (only for the apps)
 
 ## :computer: Usage
 
 Each module can be called separately or together via a local web app.
 
-### WEB App
+Input data requires specific formatting, please see our example.
+
+
+### Traffic Manager App
 
 ![App](./doc/app_example1.png)
 ![App](./doc/app_example2.png)

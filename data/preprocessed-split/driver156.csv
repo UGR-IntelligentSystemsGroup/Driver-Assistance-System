@@ -1,3 +1,0 @@
-Driver,DateStart,HourStart,HourEnd,Duration,Distance,Status,Profession,Vehicle,PlaceStart,PlaceEnd,LatitudeStart,LongitudeStart,LatitudeEnd,LongitudeEnd,MilometerStart,MilometerEnd
-driver156,dom 15/01/17,11:04,23:25,12h 21m,0.00824784402566864,Pausa,1,SB45RTOMD2026Q01668,"Vénissieux, 69360, FR, 19,5 km sur Lyon","Vénissieux, 69360, FR, 19,5 km sur Lyon",45.592185,-4.827168,45.592185,-4.827274,"155,451","155,451"
-driver156,dom 15/01/17,23:25,03:33,4h 08m,176.96104073879027,Conduciendo,1,SB45RTOMD2026Q01668,"Vénissieux, 69360, FR, 19,5 km sur Lyon","Béziers, 34350, FR, 64,0 km sudoeste Montpellier",45.592042,-4.827274,45.592042,-2.552928,"155,451","155,805"

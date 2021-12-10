@@ -4,8 +4,21 @@ doc/old
 # Python
 **/__pycache__
 
-# Tmp files
-tmp/
+# Data
+data/**
+!data/example.csv
+!data/header.csv
+
+# Results
+out/**
+!out/centroids.csv
+!out/centroids_description.csv
+
+# Clustering results
+clustering/
+
+# PDDL problems
+hpdl/problems/
 
 # Planner
 planner/

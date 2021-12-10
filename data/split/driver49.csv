@@ -1,8 +1,0 @@
-Driver,DateStart,HourStart,HourEnd,Duration,Distance,Status,Profession,Vehicle,PlaceStart,PlaceEnd,LatitudeStart,LongitudeStart,LatitudeEnd,LongitudeEnd(WRONG),MilometerStart,MilometerEnd
-driver49,mie 4/01/17,11:30,11:32,0h 02m,0.1,Conduciendo,1,3037HTCMD2026Q01660,,,,,,,"523,175","523,175"
-driver49,mie 4/01/17,11:32,11:35,0h 03m,0.0,Otro trabajo,1,3037HTCMD2026Q01660,,"11206, Algeciras, ES",,,,36114765.0,"523,175","523,175"
-driver49,mie 4/01/17,11:35,11:48,0h 13m,3.2,Conduciendo,1,3037HTCMD2026Q01660,"11206, Algeciras, ES","11206, Algeciras, ES",36114765.0,5474766.0,36114765.0,36114592.0,"523,175","523,178"
-driver49,mie 4/01/17,11:48,12:02,0h 14m,0.1,Otro trabajo,1,3037HTCMD2026Q01660,"11206, Algeciras, ES","11206, Algeciras, ES",36114592.0,5474554.0,36114592.0,36114454.0,"523,178","523,178"
-driver49,mie 4/01/17,12:02,12:07,0h 05m,0.2,Conduciendo,1,3037HTCMD2026Q01660,"11206, Algeciras, ES","11206, Algeciras, ES",36114454.0,5474515.0,36114454.0,36114777.0,"523,178","523,178"
-driver49,mie 4/01/17,12:07,12:10,0h 03m,0.0,Otro trabajo,1,3037HTCMD2026Q01660,"11206, Algeciras, ES","11206, Algeciras, ES",36114777.0,5474795.0,36114777.0,36114513.0,"523,178","523,178"
-driver49,mie 4/01/17,12:10,12:32,0h 22m,0.1,Pausa,1,3037HTCMD2026Q01660,"11206, Algeciras, ES","11206, Algeciras, ES",36114513.0,5474593.0,36114513.0,36114547.0,"523,178","523,178"
