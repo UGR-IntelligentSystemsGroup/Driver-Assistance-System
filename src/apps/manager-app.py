@@ -83,7 +83,7 @@ CENTROID_DESCRIPTION_PATH = "out/centroids_description.csv"
 st.sidebar.subheader("Info")
 
 # Documentation
-link = '[Go to documentation](https://github.com/IgnacioVellido/IMLAP-Driver-Activity-Recognition/tree/main/doc/)'
+link = '[Go to documentation](https://github.com/IgnacioVellido/Driver-Assistance-System/tree/main/)'
 st.sidebar.markdown(link, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------

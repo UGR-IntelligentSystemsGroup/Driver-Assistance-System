@@ -13,7 +13,7 @@ A Driver Assistance System (DAS) to both help truck drivers and traffic managers
 
 ### Setting the HTN planner
 
-We use the SIADEX HTN planner based on HPDL. To install it get it [here](https://github.com/IgnacioVellido/VGDL-to-HTN-Parser/tree/master/planners/Siadex), create a directory called ``planner`` under the root directory and compile it in there (a ``planner`` executable file should be generated)
+We use the SIADEX HTN planner based on HPDL. To install it, get it [here](https://github.com/IgnacioVellido/VGDL-to-HTN-Parser/tree/master/planners/Siadex), create a directory called ``planner`` under the root directory and compile it in there (a ``planner`` executable file should be generated)
 
 ### Setting everything else
 
@@ -43,20 +43,20 @@ Please refer to the [wiki](https://github.com/IgnacioVellido/Driver-Assistance-S
 
 Input data requires specific formatting, please see our [tachograph log example](data/driver.csv).
 
-**Note**: We can only provide this small example dataset, but it's enough to test the functionality of this repo. If you want to further experiment with different data, please include each driver log separately in the format ``driverX.csv`` into the ``data`` folder.
+**Note**: We can only provide this small example dataset, but it's enough to test the functionality of this repo. If you want to further experiment with different data, please include each driver log separately as a ``driver<number>.csv`` into the ``data`` folder.
 
 ### Driver App
 
 ![Driver app](./doc/driver.png)
 
-The driver's app simulates the streaming data from a tachograph and displays useful metrics for the driver, as:
+This app simulates the streaming data from a tachograph and displays useful metrics for the driver, as:
 
 - Actual driving sequence and its compliance with the HOS regulation.
 - Detected infringements and its cause.
 - Next activities recommended for the day.
 - Remaining time before committing an infringement.
 
-The app can be launched via the command:
+It can be launched via the command:
 
 ```bash
 streamlit run ./src/driver-app.py
@@ -66,7 +66,7 @@ streamlit run ./src/driver-app.py
 
 ![Manager app](./doc/manager.png)
 
-The traffic manager's app can be used to analyze historic tachograph data from a driver. It display different information to understand the driver behavior and find undesirable patterns while driving.
+This app can be used to analyze historic tachograph data from a driver. It shows different information to understand the driver behavior and find undesirable patterns while driving.
 
 It can be launched via the command:
 
