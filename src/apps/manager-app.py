@@ -61,7 +61,7 @@ driver = st.sidebar.number_input('Select driver log', 1, 290)
 
 # -----------------------------------------------------------------------------
 # Paths
-RAW_PATH = "./data/split/driver{}.csv".format(driver)
+RAW_PATH = "./data/driver{}.csv".format(driver)
 TACHO_PATH = "./out/preprocess/driver{}.csv".format(driver)
 
 PLAN_FOLDER_PATH = "./out/plan"

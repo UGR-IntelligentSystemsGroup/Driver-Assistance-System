@@ -1,13 +1,12 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-# Driver Assist
+# Driver Assistance System
 
-A Driver Assistance System (DAS) to both help truck drivers and traffic managers. Some of  :
+A Driver Assistance System (DAS) to both help truck drivers and traffic managers. Some of functionality includes:
 
-- Check if driver activities comply with the Hours Of Service regulation.
--
-- Identify infringements 
-- Suggest legal transport activities in accordance to fuel consumption.
+- Monitoring and explaining driver activities in accordance with the Hours Of Service regulation.
+- Identifying infringements and its cause.
+- Suggesting new legal transport activities to fulfill deliveries.
 - Cluster driving sequences for an easy monitoring of driver behavior.
 
 ## :unlock: Requirements
@@ -36,70 +35,52 @@ Nevertheless, if you don't want to use Anaconda the main Python packages are:
 
 ## :computer: Usage
 
-Each module can be called separately or together via a local web app.
+Each module can be called separately but we recommend using the GUI provided in the local web apps.
 
-Input data requires specific formatting, please see our example.
+Please refer to the [wiki](https://github.com/IgnacioVellido/Driver-Assistance-System/wiki) for an explanation on how to call each module from the command line.
 
+### Input data
+
+Input data requires specific formatting, please see our [tachograph log example](data/driver.csv).
+
+**Note**: We can only provide this small example dataset, but it's enough to test the functionality of this repo. If you want to further experiment with different data, please include each driver log separately in the format ``driverX.csv`` into the ``data`` folder.
+
+### Driver App
+
+![App](./doc/driver_app1.png)
+![App](./doc/driver_app2.png)
+![App](./doc/driver_app3.png)
+
+The driver's app simulates the streaming data from a tachograph and displays useful metrics for the driver, as:
+
+- Actual driving sequence and its compliance with the HOS regulation.
+- Detected infringements and its cause.
+- Next activities recommended for the day.
+- Remaining time before committing an infringement.
+
+The app can be launched via the command:
+
+```bash
+streamlit run ./src/driver-app.py
+```
 
 ### Traffic Manager App
 
-![App](./doc/app_example1.png)
-![App](./doc/app_example2.png)
-![App](./doc/app_example3.png)
+![App](./doc/manager_app1.png)
+![App](./doc/manager_app2.png)
+![App](./doc/manager_app3.png)
 
-We have made and interactive web app to test each module with our given data.
-Once installed, executing the command will open a tab in your browser:
+The traffic manager's app can be used to analyze historic tachograph data from a driver. It display different information to understand the driver behavior and find undesirable patterns while driving.
 
-```bash
-streamlit run ./src/app.py
-```
-
-### Translating tachograph data into HTN knowledge
-
-We provide Python scripts to transform a tachograph into HTN domains and problems.more precisely, ``./parsers/``
+It can be launched via the command:
 
 ```bash
-python ./src/parsers/fromCSVtoPLAN.py <csv_file> <plan_output_folder_path>
-
-and then, given the <driver_name> for the driver sequence to tag:
-
-python ./src/parsers/fromPLANtoPDDL.py <plan_output_folder_path>/event-log-<driver_name>.plan <problem_output_folder_path>
+streamlit run ./src/manager-app.py
 ```
-
-Please see our data examples as input files require specific formatting.
-
-### Tagging Driver Activities
-
-With a previously defined problem, just call the SIADEX planner with the following command:
-
-```bash
-./planner/planner -d hpdl/domain.pddl -p <problem.pddl> -o <output_path>
-```
-
-or calling the script:
-
-```bash
-./scripts/runPlanner.sh <domain.pddl> <problem.pddl> <ouput_path>
-```
-
-A tagged log in TSV format will be outputted.
-
-### Suggesting driver activities
-
-![Zeno](./doc/zeno_example.png)
-
-The HPDL domain is also capable of suggesting driver activities based on Zeno-Travel while complying with the HOS regulation. After trying to recognize an optional driver log, new _Drive/Break/Load/Unload/Refuel_ activities will be included at the end indicating how to deliver the specified packages to their destinations.
-
-Please see some of our examples (like [this one](https://github.com/IgnacioVellido/IMLAP-Driver-Activity-Recognition/blob/main/hpdl/problem-driver1.pddl#L1281)) for how to define this problems.
-
-### Clustering
-
-We provide a K-Means model pre-trained using Doc2Vec (also called [Paragraph Vector model](https://cs.stanford.edu/~quocle/paragraph_vector.pdf)) in our data, which can be loaded from the ``src/model`` folder.
-Each of the 25 centroids can be found in human readable format the ``out`` folder.
 
 ## ⏲️ HOS Regulation
 
-Detailed information about the regulation on which the project is based can be found [here](doc/HOS_regulation.md).
+Detailed information about the regulation on which the project is based and the notation used in the output tags can be found [here](doc/HOS_regulation.md).
 
 ## :handshake: Contributing
 
