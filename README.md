@@ -47,9 +47,7 @@ Input data requires specific formatting, please see our [tachograph log example]
 
 ### Driver App
 
-![App](./doc/driver_app1.png)
-![App](./doc/driver_app2.png)
-![App](./doc/driver_app3.png)
+![Driver app](./doc/driver.png)
 
 The driver's app simulates the streaming data from a tachograph and displays useful metrics for the driver, as:
 
@@ -66,9 +64,7 @@ streamlit run ./src/driver-app.py
 
 ### Traffic Manager App
 
-![App](./doc/manager_app1.png)
-![App](./doc/manager_app2.png)
-![App](./doc/manager_app3.png)
+![Manager app](./doc/manager.png)
 
 The traffic manager's app can be used to analyze historic tachograph data from a driver. It display different information to understand the driver behavior and find undesirable patterns while driving.
 
