@@ -68,6 +68,9 @@ if not os.path.isdir("./tmp/tagged"):
 if not os.path.isdir("./tmp/problems"):
     os.mkdir("./tmp/problems")
 
+if not os.path.isdir("./tmp/infringements"):
+    os.mkdir("./tmp/infringements")
+
 #########################################################################
 
 # -----------------------------------------------------------------------------
@@ -102,6 +105,8 @@ CLEAN_LOG_FOLDER = "tmp/clean"
 CLEAN_LOG_PATH = "{}/clean-log-{}.csv".format(CLEAN_LOG_FOLDER, DRIVER)
 
 DOMAIN_PATH = "hpdl/domain-zeno.pddl"
+
+INFRINGEMENTS_PATH = "tmp/infringements/inf-{}.csv".format(DRIVER)
 
 # -----------------------------------------------------------------------------
 # Start tachograph simulation
@@ -183,6 +188,10 @@ if st.button("Refresh?"):
                 st.warning(text)
             else:
                 st.error(text)
+
+        # Save to disk
+        df_inf = pd.DataFrame(infringements, columns=["Action", "Details"])
+        df_inf.to_csv(INFRINGEMENTS_PATH, index=False)
 
     elif illegal_seq:
         st.warning("Infringements cause not identified")

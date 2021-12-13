@@ -50,6 +50,9 @@ if not os.path.isdir("./out/plan"):
 if not os.path.isdir("./out/tagged"):
     os.mkdir("./out/tagged")
 
+if not os.path.isdir("./out/infringements"):
+    os.mkdir("./out/infringements")
+
 #########################################################################
 # Recognition
 #########################################################################
@@ -77,6 +80,8 @@ CLEAN_LOG_FOLDER = "out/clean"
 CLEAN_LOG_PATH = "out/clean/clean-log-driver{}.csv".format(driver)
 
 CENTROID_DESCRIPTION_PATH = "out/centroids_description.csv"
+
+INFRINGEMENTS_PATH = "out/infringements/inf-driver{}.csv".format(driver)
 
 # -----------------------------------------------------------------------------
 
@@ -210,6 +215,10 @@ if infringements:
             st.warning(text)
         else:
             st.error(text)
+
+    # Save to disk
+    df_inf = pd.DataFrame(infringements, columns=["Action", "Details"])
+    df_inf.to_csv(INFRINGEMENTS_PATH, index=False)
 
 elif illegal_seq > 0:
     st.warning("Infringements cause not identified")
