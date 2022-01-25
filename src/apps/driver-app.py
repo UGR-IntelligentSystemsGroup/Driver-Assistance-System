@@ -107,6 +107,7 @@ CLEAN_LOG_PATH = "{}/clean-log-{}.csv".format(CLEAN_LOG_FOLDER, DRIVER)
 DOMAIN_PATH = "hpdl/domain-zeno.pddl"
 
 INFRINGEMENTS_PATH = "tmp/infringements/inf-{}.csv".format(DRIVER)
+LOG_WITH_INF_PATH = "tmp/infringements/inf-log-driver{}.csv".format(DRIVER)
 
 # -----------------------------------------------------------------------------
 # Start tachograph simulation
@@ -179,6 +180,10 @@ if st.button("Refresh?"):
     infringements = find_infringements(df_no_sug, PROBLEM_PATH, DRIVER)
     illegal_seq = True if "none" in df_no_sug.values else False
 
+    # Default value for Infraction column
+    df_with_inf = df_no_sug.copy()
+    df_with_inf["Infraction"] = "no"
+
     if infringements:
         for inf in infringements:
             text = "Activity [{}]: {}".format(inf[0],inf[1])
@@ -189,14 +194,24 @@ if st.button("Refresh?"):
             else:
                 st.error(text)
 
+            # Add infraction to df
+            df_with_inf["Infraction"][inf[0]:inf[1]+1] = inf[2]
+
         # Save to disk
-        df_inf = pd.DataFrame(infringements, columns=["Action", "Details"])
+        df_inf = pd.DataFrame(infringements, columns=["Start","End","Details"])
         df_inf.to_csv(INFRINGEMENTS_PATH, index=False)
 
     elif illegal_seq:
         st.warning("Infringements cause not identified")
     else:
         st.info("No infringements detected")
+
+    # Indicate unidentified infractions in log
+    mask = (df_with_inf.Legal == 0) & (df_with_inf.Infraction == "no")
+    df_with_inf.loc[mask, 'Infraction'] =  "unidentified"
+
+    # Save to disk log with infringements
+    df_with_inf.to_csv(LOG_WITH_INF_PATH, index=False)   
 
     # -----------------------------------------------------------------------------
     # Coloring for display - Next recommendations

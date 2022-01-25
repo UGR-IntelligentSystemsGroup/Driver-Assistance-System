@@ -5,7 +5,10 @@
 # 3. Repair according to each illegality
 # 4. Repeat 2 and 3 until no changes
 
-def find_infringements(df, PROBLEM_PATH, DRIVER):
+# Infractions takes the form:
+# (start, end, details)
+
+def find_infringements(df):
     """Receives tagged driver log"""
     infringements = [] # List (starting_action_num, infringement_details)
 
@@ -35,11 +38,11 @@ def find_infringements(df, PROBLEM_PATH, DRIVER):
     infringements = [x for x in infringements if x is not None]
 
     # Call soft constraints if there are illegal sequences not yet recognized
-    if len(infringements) < get_num_illegal(df):
-        infringements.extend(soft_constraints(df, PROBLEM_PATH, DRIVER))
+    # if len(infringements) < get_num_illegal(df):
+    #     infringements.extend(soft_constraints(df, PROBLEM_PATH, DRIVER))
 
     # Sort by activity index
-    infringements.sort(key=lambda tup: tup[0])
+    infringements.sort(key=lambda tup: tup[0]) # Sort by starting point
 
     return infringements
         
@@ -99,8 +102,8 @@ def rest_past_deadline(df):
     if len(action) == 1 and \
        action.Activity in ["DR", "WR"] and \
        not "none" in action.values:
-        
-        infringement = (action.index, details)
+            
+            infringement = (action.index, action.index, details)
     
     return infringement
 
@@ -121,7 +124,7 @@ def excessive_driving_NDD(df, remaining_edds):
     dt_day = get_dt(df)
 
     if dt_day > (9*60) and remaining_edds == 0:
-        infringement = (df.index[0], details)
+        infringement = (df.index[0], df.index[-1], details)
 
     return infringement
 
@@ -140,7 +143,7 @@ def excessive_driving_EDD(df):
     dt_day = get_dt(df)
 
     if dt_day > (10*60):
-        infringement = (df.index[0], details)
+        infringement = (df.index[0], df.index[-1], details)
 
     return infringement
 
@@ -163,7 +166,7 @@ def excessive_driving_seq(df):
         dt_seq = get_dt(group)
 
         if dt_seq > (4.5*60):
-            infringement.append((group.index[0], details))
+            infringement.append((group.index[0], group.index[-1], details))
 
     return infringement
 
@@ -194,21 +197,9 @@ def missing_half_split_rest(df):
             if "DR_T3" in day.values:
                 dr_t3_found = True
 
-        infringement = (index, details)
+        infringement = (index, index, details)
 
     return infringement
-
-# -------------------------------------------------------------------------
-
-# WILL EVER HAPPEN? I THINK DOMAIN PUTS LEGAL BASED ON THE REST OF TAGS
-# IF
-#     Tags - Good
-#     Legal - No
-# THEN
-#     Some kind of weekly problem
-
-# def unknown_weekly_problem(df):
-
 
 # -------------------------------------------------------------------------
 
@@ -243,6 +234,7 @@ def soft_constraints(df, PROBLEM_PATH, DRIVER):
 
     # Get tokens 
     index = df.query("Legal == 0").index
+    # TODO: CHECK IF NO INDEX RETURNED
     soft_tokens = soft_df.loc[index-1].Token.reset_index(drop=True)
     actual_tokens = df.loc[index].Token.reset_index(drop=True)
 
@@ -268,6 +260,6 @@ def soft_constraints(df, PROBLEM_PATH, DRIVER):
     # Loop over values when changes is True
     for i, change, soft, actual in zip(index, changes, soft_tokens, actual_tokens):
         if change:
-            infringements.append((i, details.format(actual, soft)))
+            infringements.append((i, i, details.format(actual, soft)))
 
     return infringements

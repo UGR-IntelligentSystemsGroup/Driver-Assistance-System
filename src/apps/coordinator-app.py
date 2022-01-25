@@ -82,6 +82,7 @@ CLEAN_LOG_PATH = "out/clean/clean-log-driver{}.csv".format(driver)
 CENTROID_DESCRIPTION_PATH = "out/centroids_description.csv"
 
 INFRINGEMENTS_PATH = "out/infringements/inf-driver{}.csv".format(driver)
+LOG_WITH_INF_PATH = "out/infringements/inf-log-driver{}.csv".format(driver)
 
 # -----------------------------------------------------------------------------
 
@@ -206,9 +207,14 @@ st.subheader("Infringements")
 with st.spinner("Analyzing infringements..."):
     infringements = find_infringements(df, PROBLEM_PATH, driver)
 
+# Default value for Infraction column
+df_with_inf = df.copy()
+df_with_inf["Infraction"] = "no"
+
 if infringements:
+
     for inf in infringements:
-        text = "Activity [{}]: {}".format(inf[0],inf[1])
+        text = "Activities [{} to {}]: {}".format(inf[0], inf[1], inf[2])
         
         # If not warning
         if "Possible" in text:
@@ -216,12 +222,24 @@ if infringements:
         else:
             st.error(text)
 
-    # Save to disk
-    df_inf = pd.DataFrame(infringements, columns=["Action", "Details"])
+        # Add infraction to df
+        df_with_inf["Infraction"][inf[0]:inf[1]+1] = inf[2]
+
+    # Save to disk ------------------------------------------------------
+
+    # Descriptions only
+    df_inf = pd.DataFrame(infringements, columns=["Start","End","Details"])
     df_inf.to_csv(INFRINGEMENTS_PATH, index=False)
 
 elif illegal_seq > 0:
     st.warning("Infringements cause not identified")
+
+# Indicate unidentified infractions in log
+mask = (df_with_inf.Legal == 0) & (df_with_inf.Infraction == "no")
+df_with_inf.loc[mask, 'Infraction'] =  "unidentified"
+
+# Save to disk log with infringements
+df_with_inf.to_csv(LOG_WITH_INF_PATH, index=False)   
 
 #########################################################################
 # Encode each column as numeric and join them
