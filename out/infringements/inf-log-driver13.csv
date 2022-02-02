@@ -1,0 +1,9 @@
+Driver,Duration,Activity,Week,Day,DayType,Sequence,BreakType,Token,Legal,Infraction
+driver13,7,Break,1.0,1,ndd,first,uninterrupted,B_T0,1,no
+driver13,1,Driving,1.0,1,ndd,first,uninterrupted,A,1,no
+driver13,1,Idle,1.0,1,ndd,first,uninterrupted,I,1,no
+driver13,2,Other,1.0,1,ndd,first,uninterrupted,A,1,no
+driver13,10,Driving,1.0,1,ndd,first,uninterrupted,A,1,no
+driver13,1,Other,1.0,1,ndd,first,uninterrupted,A,1,no
+driver13,45,Sug-Break,1.0,1,ndd,first,uninterrupted,B_T1,1,no
+driver13,660,Sug-Break,1.0,1,ndd,second,uninterrupted,DR_T1,1,no

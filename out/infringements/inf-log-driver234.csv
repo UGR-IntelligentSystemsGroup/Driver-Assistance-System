@@ -1,0 +1,34 @@
+Driver,Duration,Activity,Week,Day,DayType,Sequence,BreakType,Token,Legal,Infraction
+driver234,120,Idle,1.0,1,ndd,unique,uninterrupted,I,1,no
+driver234,418,Break,1.0,1,ndd,unique,uninterrupted,DR_T3,1,no
+driver234,2,Idle,1.0,2,ndd,first,uninterrupted,I,1,no
+driver234,50,Break,1.0,2,ndd,first,uninterrupted,B_T1,1,no
+driver234,117,Idle,1.0,2,ndd,second,uninterrupted,I,1,no
+driver234,1,Break,1.0,2,ndd,second,uninterrupted,B_T0,1,no
+driver234,209,Driving,1.0,2,ndd,second,uninterrupted,A,1,no
+driver234,1,Break,1.0,2,ndd,second,uninterrupted,B_T0,1,no
+driver234,214,Idle,1.0,2,ndd,second,uninterrupted,I,1,no
+driver234,542,Break,1.0,2,ndd,second,uninterrupted,DR_T4,1,no
+driver234,65,Idle,1.0,3,none,none,none,I,0,unidentified
+driver234,18,Break,1.0,3,none,none,none,none,0,unidentified
+driver234,119,Idle,1.0,3,ndd,unique,split_1,I,1,Excessive Driving without breaks
+driver234,1,Break,1.0,3,ndd,unique,split_1,B_T0,1,Excessive Driving without breaks
+driver234,190,Driving,1.0,3,ndd,unique,split_1,A,1,Excessive Driving without breaks
+driver234,209,Idle,1.0,3,ndd,unique,split_1,I,1,Excessive Driving without breaks
+driver234,19,Break,1.0,3,ndd,unique,split_1,B_T2,1,Excessive Driving without breaks
+driver234,257,Driving,1.0,3,ndd,unique,split_2,A,1,Excessive Driving without breaks
+driver234,1,Break,1.0,3,ndd,unique,split_2,B_T0,1,Excessive Driving without breaks
+driver234,93,Idle,1.0,3,ndd,unique,split_2,I,1,Excessive Driving without breaks
+driver234,565,Break,1.0,3,ndd,unique,split_2,DR_T2,1,Excessive Driving without breaks
+driver234,1456,Break,1.0,4,ndd,unique,uninterrupted,WR_T2,1,no
+driver234,13,Driving,2.0,5,none,none,none,A,0,unidentified
+driver234,60,Other,2.0,5,none,none,none,A,0,unidentified
+driver234,19,Break,2.0,5,none,none,none,none,0,unidentified
+driver234,10,Break,2.0,5,ndd,unique,split_1,B_T0,1,no
+driver234,19,Idle,2.0,5,ndd,unique,split_1,I,1,no
+driver234,1,Break,2.0,5,ndd,unique,split_1,B_T0,1,no
+driver234,29,Break,2.0,5,ndd,unique,split_1,B_T2,1,no
+driver234,551,Break,2.0,5,ndd,unique,split_2,DR_T2,1,no
+driver234,5,Other,2.0,6,ndd,first,uninterrupted,A,1,no
+driver234,45,Sug-Break,2.0,6,ndd,first,uninterrupted,B_T1,1,no
+driver234,660,Sug-Break,2.0,6,ndd,second,uninterrupted,DR_T1,1,no
