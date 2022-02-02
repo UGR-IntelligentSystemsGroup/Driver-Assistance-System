@@ -21,7 +21,7 @@ from utils.subprocess_functions import *
 # Provisional fix supressing the warning
 pd.options.mode.chained_assignment = None
 
-for i in range(1,290):
+for i in range(1,291):
     DRIVER = i
     print("Searching infraction for driver{}".format(i))
 

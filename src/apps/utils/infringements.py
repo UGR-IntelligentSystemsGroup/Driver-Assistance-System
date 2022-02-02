@@ -16,8 +16,6 @@ def find_infringements(df):
     week_groups = df.groupby('Week', sort=False) # False to keep driver ordering
     for _, week_group in week_groups:
 
-        remaining_edds = get_remaining_edds(week_group)
-
         infringements.append(missing_half_split_rest(week_group))
 
         # Search day by day
@@ -26,6 +24,8 @@ def find_infringements(df):
             
             # Must be at least one illegality detected
             if 0 in day_group.Legal.values:
+                remaining_edds = get_remaining_edds(week_group, day_group.index[0])
+
                 infringements.extend([
                     rest_past_deadline(day_group),
                     excessive_driving_NDD(day_group, remaining_edds),
@@ -69,9 +69,11 @@ def get_dt(df):
 
 # -------------------------------------------------------------------------
 
-def get_remaining_edds(df):
-    """Receives one week of data. Returns the number of remaining EDDs this week"""
-    groups = df.groupby('Day', sort=False) # False to keep driver ordering
+def get_remaining_edds(df, last_index):
+    """Receives one week of data and an index. Returns the number of remaining EDDs this week until that point"""
+    first_index = df.index[0]
+
+    groups = df.loc[first_index:last_index].groupby('Day', sort=False) # False to keep driver ordering
 
     num = 0
     for _, group in groups:
@@ -100,8 +102,6 @@ def rest_past_deadline(df):
     action = df.loc[df.Legal == 0]
 
     if len(action) == 1:
-        print(df.Day.unique())
-
         has_dr = df.Token.str.contains("DR_", case=False).any()
         has_wr = df.Token.str.contains("WR_", case=False).any()
         
@@ -126,7 +126,7 @@ def excessive_driving_NDD(df, remaining_edds):
 
     dt_day = get_dt(df)
 
-    if dt_day > (9*60) and remaining_edds == 0:
+    if dt_day > (9*60) and remaining_edds <= 0:
         infringement = (df.index[0], df.index[-1], details)
 
     return infringement
@@ -153,7 +153,7 @@ def excessive_driving_EDD(df):
 # -------------------------------------------------------------------------
 
 # IF
-#     dt_seq > 4.5h
+#     dt_seq_uninterrupted > 4.5h (no breaks)
 # THEN
 #     Excessive Driving without breaks
 #     (Excessive Driving in sequence)
@@ -166,10 +166,18 @@ def excessive_driving_seq(df):
     groups = df.groupby("Sequence", sort=False)
 
     for _, group in groups:
-        dt_seq = get_dt(group)
 
-        if dt_seq > (4.5*60):
-            infringement.append((group.index[0], group.index[-1], details))
+        dt = 0
+        for _, row in group.iterrows():
+            if row.Activity == "Driving":
+                dt += row.Duration
+            elif row.Activity == "Break":
+                dt = 0
+            
+            if dt > (4.5*60):
+                infringement.append((group.index[0], group.index[-1], details))
+                dt = 0
+
 
     return infringement
 
