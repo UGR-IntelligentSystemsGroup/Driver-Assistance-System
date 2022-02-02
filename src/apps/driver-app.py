@@ -177,7 +177,7 @@ if st.button("Refresh?"):
     # Infringements
     st.subheader("Infringements")
 
-    infringements = find_infringements(df_no_sug, PROBLEM_PATH, DRIVER)
+    infringements = find_infringements(df_no_sug)
     illegal_seq = True if "none" in df_no_sug.values else False
 
     # Default value for Infraction column

@@ -3,7 +3,6 @@
 # Web app to test Driver Recognition functionality
 #########################################################################
 
-from genericpath import exists
 import os
 import pandas as pd
 import streamlit as st
@@ -205,7 +204,7 @@ col2.markdown(text, unsafe_allow_html=True)
 st.subheader("Infringements")
 
 with st.spinner("Analyzing infringements..."):
-    infringements = find_infringements(df, PROBLEM_PATH, driver)
+    infringements = find_infringements(df)
 
 # Default value for Infraction column
 df_with_inf = df.copy()
@@ -239,7 +238,7 @@ mask = (df_with_inf.Legal == 0) & (df_with_inf.Infraction == "no")
 df_with_inf.loc[mask, 'Infraction'] =  "unidentified"
 
 # Save to disk log with infringements
-df_with_inf.to_csv(LOG_WITH_INF_PATH, index=False)   
+df_with_inf.to_csv(LOG_WITH_INF_PATH, index=False)
 
 #########################################################################
 # Encode each column as numeric and join them
