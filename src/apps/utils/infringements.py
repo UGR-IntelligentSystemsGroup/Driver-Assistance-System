@@ -99,10 +99,13 @@ def rest_past_deadline(df):
     # Get illegal actions
     action = df.loc[df.Legal == 0]
 
-    if len(action) == 1 and \
-       action.Activity in ["DR", "WR"] and \
-       not "none" in action.values:
-            
+    if len(action) == 1:
+        print(df.Day.unique())
+
+        has_dr = df.Token.str.contains("DR_", case=False).any()
+        has_wr = df.Token.str.contains("WR_", case=False).any()
+        
+        if (has_dr or has_wr) and not "none" in action.values:
             infringement = (action.index, action.index, details)
     
     return infringement
@@ -183,7 +186,11 @@ def missing_half_split_rest(df):
     details = "Missing other half of split daily rest"
     infringement = None
 
-    if "DR_T3" in df.values and not "DR_T4" and not "WR" in df.values:
+    has_drt3 = df.Token.str.contains("DR_T3", case=False).any()
+    has_drt4 = df.Token.str.contains("DR_T4", case=False).any()
+    has_wr   = df.Token.str.contains("WR_", case=False).any()
+
+    if has_drt3 and not (has_drt4 or has_wr):
         index = df.index[0]
 
         # Find expected DR_T4 index
