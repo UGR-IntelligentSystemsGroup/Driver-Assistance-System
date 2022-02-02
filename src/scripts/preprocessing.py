@@ -31,6 +31,7 @@ def distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2):
 
 
 def get_distance(row):
+  """In Km"""
   return distanceInKmBetweenEarthCoordinates(row.LatitudeStart, row.LongitudeStart,
                                              row.LatitudeEnd, row.LongitudeEnd)
 
@@ -97,13 +98,61 @@ def main(argv):
     df["previous_status"] = df.Status.shift(+1)
     df["next_status"] = df.Status.shift(-1)
 
+    # Make sure we process rows from the same driver
+    df["next_row_driver"] = df.Driver.shift(-1)
+
     # *************************************************************************
     # -------------------------------------------------------------------------
     # *************************************************************************
     # Query rows to eliminate
 
-    # df.query("Distance < 0.1 and (Status == 'Espera' or Status == 'Otro trabajo')")
-    index = df.query("Distance < 0.1 and previous_status == 'Pausa' and next_status == 'Pausa'").index
+    # Remove consecutive break
+    index = df.query("Status == 'Pausa' and next_status == 'Pausa' and Driver == next_row_driver").index
+
+    # Calculate new rows
+    to_delete = index.to_list()
+
+    for i in index:
+        actual = df.iloc[i] 
+        next = df.iloc[i+1]
+
+        # Start with the previous break row
+        new_row = actual.copy()
+
+        # Getting final metrics from next row
+        new_row.HourEnd = next.HourEnd
+        new_row.LatitudeEnd = next.LatitudeEnd
+        new_row.LongitudeEnd = next.LongitudeEnd
+        new_row.PlaceEnd = next.PlaceEnd
+        new_row.MilometerEnd = next.MilometerEnd
+
+        # New distance is the sum of the two rows
+        new_row.Distance += next.Distance
+
+        # The same with duration (NOTE: WE COULD REMOVE ACTUAL ROW DURATION)
+        new_row.Duration = durationToMinutes(actual.Duration) + \
+                            durationToMinutes(next.Duration)
+
+        new_row.Duration = minutesToDuration(new_row.Duration)
+
+        # Set next row with new row
+        df.iloc[i+1, :] = new_row
+
+    # Drop rows
+    to_delete.sort()
+    df.drop(index=to_delete, inplace=True)
+
+    # Reset index
+    df.reset_index(drop=True, inplace=True)
+
+    # *************************************************************************
+    # -------------------------------------------------------------------------
+    # *************************************************************************
+    # Second query
+
+    # Actions between two breaks and with low distance movements
+    # (Target situation: Parking the truck or moving it a short distance)
+    index = df.query("Distance < 0.1 and previous_status == 'Pausa' and next_status == 'Pausa' and Driver == next_row_driver").index
 
     # -------------------------------------------------------------------------
     # Calculate new rows
@@ -125,7 +174,7 @@ def main(argv):
         new_row.MilometerEnd = next.MilometerEnd
 
         # New distance is the sum of the three rows
-        new_row.Distance += actual.Distance + new_row.Distance
+        new_row.Distance += actual.Distance + next.Distance
 
         # The same with duration (NOTE: WE COULD REMOVE ACTUAL ROW DURATION)
         new_row.Duration = durationToMinutes(previous.Duration) + \
@@ -138,12 +187,16 @@ def main(argv):
         df.iloc[i+1, :] = new_row
         to_delete.append(i-1)
 
+    # Drop rows
     to_delete.sort()
-
-    # -------------------------------------------------------------------------
-    # Drop rows and columns
     df.drop(index=to_delete, inplace=True)
-    df.drop(columns=["previous_status","next_status"], inplace=True)
+
+    # *************************************************************************
+    # -------------------------------------------------------------------------
+    # *************************************************************************
+
+    # Drop rows and columns
+    df.drop(columns=["previous_status","next_status","next_row_driver"], inplace=True)
 
     # -------------------------------------------------------------------------
     # Save
