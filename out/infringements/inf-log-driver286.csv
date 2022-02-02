@@ -5,14 +5,14 @@ driver286,54,Driving,1.0,1,ndd,first,split_1,A,1,no
 driver286,29,Break,1.0,1,ndd,first,split_1,B_T2,1,no
 driver286,9,Driving,1.0,1,ndd,first,split_2,A,1,no
 driver286,95,Break,1.0,1,ndd,first,split_2,B_T3,1,no
-driver286,121,Driving,1.0,1,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver286,8,Break,1.0,1,ndd,second,split_1,B_T0,1,Excessive Driving without breaks
-driver286,97,Driving,1.0,1,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver286,51,Break,1.0,1,ndd,second,split_1,B_T2,1,Excessive Driving without breaks
-driver286,51,Driving,1.0,1,ndd,second,split_2,A,1,Excessive Driving without breaks
-driver286,2,Other,1.0,1,ndd,second,split_2,A,1,Excessive Driving without breaks
-driver286,2,Driving,1.0,1,ndd,second,split_2,A,1,Excessive Driving without breaks
-driver286,661,Break,1.0,1,ndd,second,split_2,DR_T1,1,Excessive Driving without breaks
+driver286,121,Driving,1.0,1,ndd,second,split_1,A,1,no
+driver286,8,Break,1.0,1,ndd,second,split_1,B_T0,1,no
+driver286,97,Driving,1.0,1,ndd,second,split_1,A,1,no
+driver286,51,Break,1.0,1,ndd,second,split_1,B_T2,1,no
+driver286,51,Driving,1.0,1,ndd,second,split_2,A,1,no
+driver286,2,Other,1.0,1,ndd,second,split_2,A,1,no
+driver286,2,Driving,1.0,1,ndd,second,split_2,A,1,no
+driver286,661,Break,1.0,1,ndd,second,split_2,DR_T1,1,no
 driver286,2,Driving,1.0,2,ndd,unique,split_1,A,1,no
 driver286,7,Other,1.0,2,ndd,unique,split_1,A,1,no
 driver286,1,Driving,1.0,2,ndd,unique,split_1,A,1,no

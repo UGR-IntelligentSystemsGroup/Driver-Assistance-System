@@ -1,18 +1,18 @@
 Driver,Duration,Activity,Week,Day,DayType,Sequence,BreakType,Token,Legal,Infraction
-driver208,268,Idle,1.0,1,none,none,none,I,0,Excessive Driving without breaks
-driver208,1,Other,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver208,3,Break,1.0,1,none,none,none,B_T0,0,Excessive Driving without breaks
-driver208,263,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver208,26,Idle,1.0,1,none,none,none,I,0,Excessive Driving without breaks
-driver208,5,Break,1.0,1,none,none,none,B_T0,0,Excessive Driving without breaks
-driver208,204,Idle,1.0,1,none,none,none,I,0,Excessive Driving without breaks
-driver208,14,Break,1.0,1,none,none,none,B_T0,0,Excessive Driving without breaks
-driver208,52,Idle,1.0,1,none,none,none,I,0,Excessive Driving without breaks
-driver208,2,Other,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver208,227,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver208,16,Break,1.0,1,none,none,none,none,0,Excessive Driving without breaks
-driver208,4,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver208,21,Break,1.0,1,none,none,none,none,0,Excessive Driving without breaks
+driver208,268,Idle,1.0,1,none,none,none,I,0,unidentified
+driver208,1,Other,1.0,1,none,none,none,A,0,unidentified
+driver208,3,Break,1.0,1,none,none,none,B_T0,0,unidentified
+driver208,263,Driving,1.0,1,none,none,none,A,0,unidentified
+driver208,26,Idle,1.0,1,none,none,none,I,0,unidentified
+driver208,5,Break,1.0,1,none,none,none,B_T0,0,unidentified
+driver208,204,Idle,1.0,1,none,none,none,I,0,unidentified
+driver208,14,Break,1.0,1,none,none,none,B_T0,0,unidentified
+driver208,52,Idle,1.0,1,none,none,none,I,0,unidentified
+driver208,2,Other,1.0,1,none,none,none,A,0,unidentified
+driver208,227,Driving,1.0,1,none,none,none,A,0,unidentified
+driver208,16,Break,1.0,1,none,none,none,none,0,unidentified
+driver208,4,Driving,1.0,1,none,none,none,A,0,unidentified
+driver208,21,Break,1.0,1,none,none,none,none,0,unidentified
 driver208,1,Driving,1.0,1,ndd,unique,split_1,A,1,no
 driver208,16,Break,1.0,1,ndd,unique,split_1,B_T2,1,no
 driver208,12,Driving,1.0,1,ndd,unique,split_2,A,1,no
@@ -139,18 +139,18 @@ driver208,11,Break,2.0,9,edd,second,uninterrupted,B_T0,1,no
 driver208,4,Driving,2.0,9,edd,second,uninterrupted,A,1,no
 driver208,6,Other,2.0,9,edd,second,uninterrupted,A,1,no
 driver208,85,Break,2.0,9,edd,second,uninterrupted,B_T1,1,no
-driver208,206,Driving,2.0,9,edd,third,split_1,A,1,Excessive Driving without breaks
-driver208,262,Idle,2.0,9,edd,third,split_1,I,1,Excessive Driving without breaks
-driver208,2,Other,2.0,9,edd,third,split_1,A,1,Excessive Driving without breaks
-driver208,22,Driving,2.0,9,edd,third,split_1,A,1,Excessive Driving without breaks
-driver208,13,Break,2.0,9,edd,third,split_1,B_T0,1,Excessive Driving without breaks
-driver208,101,Driving,2.0,9,edd,third,split_1,A,1,Excessive Driving without breaks
-driver208,15,Break,2.0,9,edd,third,split_1,B_T2,1,Excessive Driving without breaks
-driver208,1,Driving,2.0,9,edd,third,split_2,A,1,Excessive Driving without breaks
-driver208,9,Other,2.0,9,edd,third,split_2,A,1,Excessive Driving without breaks
-driver208,117,Driving,2.0,9,edd,third,split_2,A,1,Excessive Driving without breaks
-driver208,82,Idle,2.0,9,edd,third,split_2,I,1,Excessive Driving without breaks
-driver208,546,Break,2.0,9,edd,third,split_2,DR_T2,1,Excessive Driving without breaks
+driver208,206,Driving,2.0,9,edd,third,split_1,A,1,no
+driver208,262,Idle,2.0,9,edd,third,split_1,I,1,no
+driver208,2,Other,2.0,9,edd,third,split_1,A,1,no
+driver208,22,Driving,2.0,9,edd,third,split_1,A,1,no
+driver208,13,Break,2.0,9,edd,third,split_1,B_T0,1,no
+driver208,101,Driving,2.0,9,edd,third,split_1,A,1,no
+driver208,15,Break,2.0,9,edd,third,split_1,B_T2,1,no
+driver208,1,Driving,2.0,9,edd,third,split_2,A,1,no
+driver208,9,Other,2.0,9,edd,third,split_2,A,1,no
+driver208,117,Driving,2.0,9,edd,third,split_2,A,1,no
+driver208,82,Idle,2.0,9,edd,third,split_2,I,1,no
+driver208,546,Break,2.0,9,edd,third,split_2,DR_T2,1,no
 driver208,269,Idle,2.0,10,ndd,unique,uninterrupted,I,1,no
 driver208,1,Other,2.0,10,ndd,unique,uninterrupted,A,1,no
 driver208,233,Driving,2.0,10,ndd,unique,uninterrupted,A,1,no

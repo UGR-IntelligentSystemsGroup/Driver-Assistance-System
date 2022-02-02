@@ -141,21 +141,21 @@ driver72,37,Idle,2.0,7,edd,third,split_2,I,1,no
 driver72,2855,Break,2.0,7,edd,third,split_2,WR_T1,1,no
 driver72,133,Idle,3.0,8,none,none,none,I,0,unidentified
 driver72,19,Break,3.0,8,none,none,none,none,0,unidentified
-driver72,126,Idle,3.0,8,ndd,first,split_1,I,1,Excessive Driving without breaks
-driver72,2,Break,3.0,8,ndd,first,split_1,B_T0,1,Excessive Driving without breaks
-driver72,3,Break,3.0,8,ndd,first,split_1,B_T0,1,Excessive Driving without breaks
-driver72,265,Driving,3.0,8,ndd,first,split_1,A,1,Excessive Driving without breaks
-driver72,2,Break,3.0,8,ndd,first,split_1,B_T0,1,Excessive Driving without breaks
-driver72,248,Idle,3.0,8,ndd,first,split_1,I,1,Excessive Driving without breaks
-driver72,1,Break,3.0,8,ndd,first,split_1,B_T0,1,Excessive Driving without breaks
-driver72,3,Break,3.0,8,ndd,first,split_1,B_T0,1,Excessive Driving without breaks
-driver72,79,Driving,3.0,8,ndd,first,split_1,A,1,Excessive Driving without breaks
-driver72,19,Break,3.0,8,ndd,first,split_1,B_T2,1,Excessive Driving without breaks
-driver72,104,Driving,3.0,8,ndd,first,split_2,A,1,Excessive Driving without breaks
-driver72,3,Other,3.0,8,ndd,first,split_2,A,1,Excessive Driving without breaks
-driver72,2,Driving,3.0,8,ndd,first,split_2,A,1,Excessive Driving without breaks
-driver72,3,Other,3.0,8,ndd,first,split_2,A,1,Excessive Driving without breaks
-driver72,31,Break,3.0,8,ndd,first,split_2,B_T3,1,Excessive Driving without breaks
+driver72,126,Idle,3.0,8,ndd,first,split_1,I,1,no
+driver72,2,Break,3.0,8,ndd,first,split_1,B_T0,1,no
+driver72,3,Break,3.0,8,ndd,first,split_1,B_T0,1,no
+driver72,265,Driving,3.0,8,ndd,first,split_1,A,1,no
+driver72,2,Break,3.0,8,ndd,first,split_1,B_T0,1,no
+driver72,248,Idle,3.0,8,ndd,first,split_1,I,1,no
+driver72,1,Break,3.0,8,ndd,first,split_1,B_T0,1,no
+driver72,3,Break,3.0,8,ndd,first,split_1,B_T0,1,no
+driver72,79,Driving,3.0,8,ndd,first,split_1,A,1,no
+driver72,19,Break,3.0,8,ndd,first,split_1,B_T2,1,no
+driver72,104,Driving,3.0,8,ndd,first,split_2,A,1,no
+driver72,3,Other,3.0,8,ndd,first,split_2,A,1,no
+driver72,2,Driving,3.0,8,ndd,first,split_2,A,1,no
+driver72,3,Other,3.0,8,ndd,first,split_2,A,1,no
+driver72,31,Break,3.0,8,ndd,first,split_2,B_T3,1,no
 driver72,1,Driving,3.0,8,ndd,second,uninterrupted,A,1,no
 driver72,34,Other,3.0,8,ndd,second,uninterrupted,A,1,no
 driver72,2704,Break,3.0,8,ndd,second,uninterrupted,WR_T1,1,no

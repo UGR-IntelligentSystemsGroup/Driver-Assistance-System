@@ -6,10 +6,10 @@ driver177,5,Other,1.0,1,ndd,first,split_1,A,1,no
 driver177,22,Break,1.0,1,ndd,first,split_1,B_T2,1,no
 driver177,90,Driving,1.0,1,ndd,first,split_2,A,1,no
 driver177,47,Break,1.0,1,ndd,first,split_2,B_T3,1,no
-driver177,188,Driving,1.0,1,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver177,50,Break,1.0,1,ndd,second,split_1,B_T2,1,Excessive Driving without breaks
-driver177,139,Driving,1.0,1,ndd,second,split_2,A,1,Excessive Driving without breaks
-driver177,560,Break,1.0,1,ndd,second,split_2,DR_T2,1,Excessive Driving without breaks
+driver177,188,Driving,1.0,1,ndd,second,split_1,A,1,no
+driver177,50,Break,1.0,1,ndd,second,split_1,B_T2,1,no
+driver177,139,Driving,1.0,1,ndd,second,split_2,A,1,no
+driver177,560,Break,1.0,1,ndd,second,split_2,DR_T2,1,no
 driver177,87,Driving,1.0,2,edd,first,split_1,A,1,no
 driver177,17,Break,1.0,2,edd,first,split_1,B_T2,1,no
 driver177,181,Driving,1.0,2,edd,first,split_2,A,1,no

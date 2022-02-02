@@ -17,25 +17,25 @@ driver19,51,Break,1.0,3,ndd,first,uninterrupted,B_T1,1,no
 driver19,2,Driving,1.0,3,ndd,second,uninterrupted,A,1,no
 driver19,2,Other,1.0,3,ndd,second,uninterrupted,A,1,no
 driver19,2415,Break,1.0,3,ndd,second,uninterrupted,WR_T2,1,no
-driver19,1,Driving,2.0,4,none,none,none,A,0,Excessive Driving in day (NDD)
-driver19,11,Break,2.0,4,none,none,none,B_T0,0,Excessive Driving in day (NDD)
-driver19,3,Driving,2.0,4,none,none,none,A,0,Excessive Driving in day (NDD)
-driver19,24,Break,2.0,4,none,none,none,none,0,Excessive Driving in day (NDD)
-driver19,1,Driving,2.0,4,edd,first,split_1,A,1,Excessive Driving in day (NDD)
-driver19,16,Break,2.0,4,edd,first,split_1,B_T2,1,Excessive Driving in day (NDD)
-driver19,50,Driving,2.0,4,edd,first,split_2,A,1,Excessive Driving in day (NDD)
-driver19,10,Break,2.0,4,edd,first,split_2,B_T0,1,Excessive Driving in day (NDD)
-driver19,189,Driving,2.0,4,edd,first,split_2,A,1,Excessive Driving in day (NDD)
-driver19,92,Break,2.0,4,edd,first,split_2,B_T3,1,Excessive Driving in day (NDD)
-driver19,150,Driving,2.0,4,edd,second,uninterrupted,A,1,Excessive Driving in day (NDD)
-driver19,92,Break,2.0,4,edd,second,uninterrupted,B_T1,1,Excessive Driving in day (NDD)
-driver19,166,Driving,2.0,4,edd,third,split_1,A,1,Excessive Driving in day (NDD)
-driver19,34,Break,2.0,4,edd,third,split_1,B_T2,1,Excessive Driving in day (NDD)
-driver19,3,Driving,2.0,4,edd,third,split_2,A,1,Excessive Driving in day (NDD)
-driver19,14,Break,2.0,4,edd,third,split_2,B_T0,1,Excessive Driving in day (NDD)
-driver19,7,Driving,2.0,4,edd,third,split_2,A,1,Excessive Driving in day (NDD)
-driver19,1,Other,2.0,4,edd,third,split_2,A,1,Excessive Driving in day (NDD)
-driver19,643,Break,2.0,4,edd,third,split_2,DR_T2,1,Excessive Driving in day (NDD)
+driver19,1,Driving,2.0,4,none,none,none,A,0,unidentified
+driver19,11,Break,2.0,4,none,none,none,B_T0,0,unidentified
+driver19,3,Driving,2.0,4,none,none,none,A,0,unidentified
+driver19,24,Break,2.0,4,none,none,none,none,0,unidentified
+driver19,1,Driving,2.0,4,edd,first,split_1,A,1,no
+driver19,16,Break,2.0,4,edd,first,split_1,B_T2,1,no
+driver19,50,Driving,2.0,4,edd,first,split_2,A,1,no
+driver19,10,Break,2.0,4,edd,first,split_2,B_T0,1,no
+driver19,189,Driving,2.0,4,edd,first,split_2,A,1,no
+driver19,92,Break,2.0,4,edd,first,split_2,B_T3,1,no
+driver19,150,Driving,2.0,4,edd,second,uninterrupted,A,1,no
+driver19,92,Break,2.0,4,edd,second,uninterrupted,B_T1,1,no
+driver19,166,Driving,2.0,4,edd,third,split_1,A,1,no
+driver19,34,Break,2.0,4,edd,third,split_1,B_T2,1,no
+driver19,3,Driving,2.0,4,edd,third,split_2,A,1,no
+driver19,14,Break,2.0,4,edd,third,split_2,B_T0,1,no
+driver19,7,Driving,2.0,4,edd,third,split_2,A,1,no
+driver19,1,Other,2.0,4,edd,third,split_2,A,1,no
+driver19,643,Break,2.0,4,edd,third,split_2,DR_T2,1,no
 driver19,1,Driving,2.0,5,edd,first,split_1,A,1,no
 driver19,26,Break,2.0,5,edd,first,split_1,B_T2,1,no
 driver19,243,Driving,2.0,5,edd,first,split_2,A,1,no

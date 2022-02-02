@@ -184,12 +184,12 @@ driver150,17,Driving,3.0,10,ndd,second,split_1,A,1,no
 driver150,26,Break,3.0,10,ndd,second,split_1,B_T2,1,no
 driver150,82,Driving,3.0,10,ndd,second,split_2,A,1,no
 driver150,691,Break,3.0,10,ndd,second,split_2,DR_T1,1,no
-driver150,248,Driving,3.0,11,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver150,54,Break,3.0,11,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver150,169,Driving,3.0,11,none,none,none,A,0,Excessive Driving without breaks
-driver150,2,Other,3.0,11,none,none,none,A,0,Excessive Driving without breaks
-driver150,13,Driving,3.0,11,none,none,none,A,0,Excessive Driving without breaks
-driver150,16,Break,3.0,11,none,none,none,none,0,Excessive Driving without breaks
+driver150,248,Driving,3.0,11,none,none,uninterrupted,A,0,unidentified
+driver150,54,Break,3.0,11,none,none,uninterrupted,B_T1,0,unidentified
+driver150,169,Driving,3.0,11,none,none,none,A,0,unidentified
+driver150,2,Other,3.0,11,none,none,none,A,0,unidentified
+driver150,13,Driving,3.0,11,none,none,none,A,0,unidentified
+driver150,16,Break,3.0,11,none,none,none,none,0,unidentified
 driver150,2,Driving,3.0,11,ndd,unique,split_1,A,1,no
 driver150,6,Break,3.0,11,ndd,unique,split_1,B_T0,1,no
 driver150,1,Other,3.0,11,ndd,unique,split_1,A,1,no

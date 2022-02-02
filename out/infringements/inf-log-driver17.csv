@@ -197,20 +197,20 @@ driver17,1,Driving,2.0,7,ndd,second,split_2,A,1,no
 driver17,8,Other,2.0,7,ndd,second,split_2,A,1,no
 driver17,21,Driving,2.0,7,ndd,second,split_2,A,1,no
 driver17,777,Break,2.0,7,ndd,second,split_2,DR_T1,1,no
-driver17,33,Driving,2.0,8,none,none,split_1,A,0,Excessive Driving without breaks
-driver17,4,Break,2.0,8,none,none,split_1,B_T0,0,Excessive Driving without breaks
-driver17,69,Driving,2.0,8,none,none,split_1,A,0,Excessive Driving without breaks
-driver17,16,Break,2.0,8,none,none,split_1,B_T2,0,Excessive Driving without breaks
-driver17,86,Driving,2.0,8,none,none,split_2,A,0,Excessive Driving without breaks
-driver17,2,Other,2.0,8,none,none,split_2,A,0,Excessive Driving without breaks
-driver17,24,Driving,2.0,8,none,none,split_2,A,0,Excessive Driving without breaks
-driver17,82,Break,2.0,8,none,none,split_2,B_T3,0,Excessive Driving without breaks
-driver17,1,Driving,2.0,8,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver17,59,Break,2.0,8,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver17,3,Driving,2.0,8,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver17,48,Break,2.0,8,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver17,78,Driving,2.0,8,none,none,none,A,0,Excessive Driving without breaks
-driver17,24,Break,2.0,8,none,none,none,none,0,Excessive Driving without breaks
+driver17,33,Driving,2.0,8,none,none,split_1,A,0,unidentified
+driver17,4,Break,2.0,8,none,none,split_1,B_T0,0,unidentified
+driver17,69,Driving,2.0,8,none,none,split_1,A,0,unidentified
+driver17,16,Break,2.0,8,none,none,split_1,B_T2,0,unidentified
+driver17,86,Driving,2.0,8,none,none,split_2,A,0,unidentified
+driver17,2,Other,2.0,8,none,none,split_2,A,0,unidentified
+driver17,24,Driving,2.0,8,none,none,split_2,A,0,unidentified
+driver17,82,Break,2.0,8,none,none,split_2,B_T3,0,unidentified
+driver17,1,Driving,2.0,8,none,none,uninterrupted,A,0,unidentified
+driver17,59,Break,2.0,8,none,none,uninterrupted,B_T1,0,unidentified
+driver17,3,Driving,2.0,8,none,none,uninterrupted,A,0,unidentified
+driver17,48,Break,2.0,8,none,none,uninterrupted,B_T1,0,unidentified
+driver17,78,Driving,2.0,8,none,none,none,A,0,unidentified
+driver17,24,Break,2.0,8,none,none,none,none,0,unidentified
 driver17,21,Driving,2.0,8,ndd,unique,split_1,A,1,no
 driver17,3,Break,2.0,8,ndd,unique,split_1,B_T0,1,no
 driver17,103,Driving,2.0,8,ndd,unique,split_1,A,1,no

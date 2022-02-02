@@ -26,12 +26,12 @@ driver92,6,Other,2.0,3,ndd,first,split_1,A,1,no
 driver92,19,Break,2.0,3,ndd,first,split_1,B_T2,1,no
 driver92,7,Other,2.0,3,ndd,first,split_2,A,1,no
 driver92,55,Break,2.0,3,ndd,first,split_2,B_T3,1,no
-driver92,1,Driving,2.0,3,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver92,2,Other,2.0,3,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver92,239,Driving,2.0,3,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver92,48,Break,2.0,3,ndd,second,split_1,B_T2,1,Excessive Driving without breaks
-driver92,259,Driving,2.0,3,ndd,second,split_2,A,1,Excessive Driving without breaks
-driver92,669,Break,2.0,3,ndd,second,split_2,DR_T1,1,Excessive Driving without breaks
+driver92,1,Driving,2.0,3,ndd,second,split_1,A,1,no
+driver92,2,Other,2.0,3,ndd,second,split_1,A,1,no
+driver92,239,Driving,2.0,3,ndd,second,split_1,A,1,no
+driver92,48,Break,2.0,3,ndd,second,split_1,B_T2,1,no
+driver92,259,Driving,2.0,3,ndd,second,split_2,A,1,no
+driver92,669,Break,2.0,3,ndd,second,split_2,DR_T1,1,no
 driver92,59,Driving,2.0,4,ndd,first,split_1,A,1,no
 driver92,21,Other,2.0,4,ndd,first,split_1,A,1,no
 driver92,1,Driving,2.0,4,ndd,first,split_1,A,1,no

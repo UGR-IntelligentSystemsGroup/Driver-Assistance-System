@@ -228,9 +228,9 @@ import pandas as pd
 from os import remove
 from os.path import isfile
 from utils.subprocess_functions import runPlanner
-import streamlit as st
+# import streamlit as st
 
-@st.cache
+# @st.cache
 def soft_constraints(df, PROBLEM_PATH, DRIVER):
     """Receives week log, PDDL problem path and driver ID"""
     DOMAIN_PATH = "hpdl/domain-soft.pddl"

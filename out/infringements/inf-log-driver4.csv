@@ -60,11 +60,11 @@ driver4,157,Driving,1.0,6,ndd,first,split_1,A,1,no
 driver4,26,Break,1.0,6,ndd,first,split_1,B_T2,1,no
 driver4,1,Driving,1.0,6,ndd,first,split_2,A,1,no
 driver4,56,Break,1.0,6,ndd,first,split_2,B_T3,1,no
-driver4,162,Driving,1.0,6,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver4,49,Break,1.0,6,ndd,second,split_1,B_T2,1,Excessive Driving without breaks
-driver4,194,Driving,1.0,6,ndd,second,split_2,A,1,Excessive Driving without breaks
-driver4,2,Other,1.0,6,ndd,second,split_2,A,1,Excessive Driving without breaks
-driver4,724,Break,1.0,6,ndd,second,split_2,DR_T1,1,Excessive Driving without breaks
+driver4,162,Driving,1.0,6,ndd,second,split_1,A,1,no
+driver4,49,Break,1.0,6,ndd,second,split_1,B_T2,1,no
+driver4,194,Driving,1.0,6,ndd,second,split_2,A,1,no
+driver4,2,Other,1.0,6,ndd,second,split_2,A,1,no
+driver4,724,Break,1.0,6,ndd,second,split_2,DR_T1,1,no
 driver4,147,Driving,1.0,7,edd,first,uninterrupted,A,1,no
 driver4,64,Break,1.0,7,edd,first,uninterrupted,B_T1,1,no
 driver4,1,Other,1.0,7,edd,second,split_1,A,1,no

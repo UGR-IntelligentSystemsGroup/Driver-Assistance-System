@@ -1,15 +1,15 @@
 Driver,Duration,Activity,Week,Day,DayType,Sequence,BreakType,Token,Legal,Infraction
 driver23,80,Driving,1.0,1,ndd,unique,uninterrupted,A,1,no
 driver23,549,Break,1.0,1,ndd,unique,uninterrupted,DR_T2,1,no
-driver23,104,Driving,1.0,2,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver23,45,Break,1.0,2,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver23,137,Driving,1.0,2,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver23,13,Break,1.0,2,none,none,uninterrupted,B_T0,0,Excessive Driving without breaks
-driver23,10,Driving,1.0,2,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver23,47,Break,1.0,2,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver23,75,Driving,1.0,2,none,none,none,A,0,Excessive Driving without breaks
-driver23,4,Other,1.0,2,none,none,none,A,0,Excessive Driving without breaks
-driver23,28,Break,1.0,2,none,none,none,none,0,Excessive Driving without breaks
+driver23,104,Driving,1.0,2,none,none,uninterrupted,A,0,unidentified
+driver23,45,Break,1.0,2,none,none,uninterrupted,B_T1,0,unidentified
+driver23,137,Driving,1.0,2,none,none,uninterrupted,A,0,unidentified
+driver23,13,Break,1.0,2,none,none,uninterrupted,B_T0,0,unidentified
+driver23,10,Driving,1.0,2,none,none,uninterrupted,A,0,unidentified
+driver23,47,Break,1.0,2,none,none,uninterrupted,B_T1,0,unidentified
+driver23,75,Driving,1.0,2,none,none,none,A,0,unidentified
+driver23,4,Other,1.0,2,none,none,none,A,0,unidentified
+driver23,28,Break,1.0,2,none,none,none,none,0,unidentified
 driver23,1,Other,1.0,2,ndd,unique,split_1,A,1,no
 driver23,40,Driving,1.0,2,ndd,unique,split_1,A,1,no
 driver23,3,Other,1.0,2,ndd,unique,split_1,A,1,no

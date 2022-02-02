@@ -47,28 +47,28 @@ driver3,174,Driving,1.0,3,ndd,second,split_1,A,1,no
 driver3,49,Break,1.0,3,ndd,second,split_1,B_T2,1,no
 driver3,136,Driving,1.0,3,ndd,second,split_2,A,1,no
 driver3,639,Break,1.0,3,ndd,second,split_2,DR_T2,1,no
-driver3,32,Driving,1.0,4,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
-driver3,3,Break,1.0,4,none,none,uninterrupted,B_T0,0,Excessive Driving in day (NDD)
-driver3,123,Driving,1.0,4,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
-driver3,12,Break,1.0,4,none,none,uninterrupted,B_T0,0,Excessive Driving in day (NDD)
-driver3,78,Driving,1.0,4,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
-driver3,3,Break,1.0,4,none,none,uninterrupted,B_T0,0,Excessive Driving in day (NDD)
-driver3,2,Driving,1.0,4,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
-driver3,8,Break,1.0,4,none,none,uninterrupted,B_T0,0,Excessive Driving in day (NDD)
-driver3,3,Driving,1.0,4,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
-driver3,1,Other,1.0,4,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
-driver3,63,Break,1.0,4,none,none,uninterrupted,B_T1,0,Excessive Driving in day (NDD)
-driver3,1,Other,1.0,4,edd,first,split_1,A,1,Excessive Driving in day (NDD)
-driver3,29,Break,1.0,4,edd,first,split_1,B_T2,1,Excessive Driving in day (NDD)
-driver3,2,Driving,1.0,4,edd,first,split_2,A,1,Excessive Driving in day (NDD)
-driver3,3,Other,1.0,4,edd,first,split_2,A,1,Excessive Driving in day (NDD)
-driver3,60,Break,1.0,4,edd,first,split_2,B_T3,1,Excessive Driving in day (NDD)
-driver3,35,Driving,1.0,4,edd,second,uninterrupted,A,1,Excessive Driving in day (NDD)
-driver3,109,Break,1.0,4,edd,second,uninterrupted,B_T1,1,Excessive Driving in day (NDD)
-driver3,50,Driving,1.0,4,edd,third,split_1,A,1,Excessive Driving without breaks
-driver3,31,Break,1.0,4,edd,third,split_1,B_T2,1,Excessive Driving without breaks
-driver3,239,Driving,1.0,4,edd,third,split_2,A,1,Excessive Driving without breaks
-driver3,4342,Break,1.0,4,edd,third,split_2,WR_T1,1,Excessive Driving without breaks
+driver3,32,Driving,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver3,3,Break,1.0,4,none,none,uninterrupted,B_T0,0,unidentified
+driver3,123,Driving,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver3,12,Break,1.0,4,none,none,uninterrupted,B_T0,0,unidentified
+driver3,78,Driving,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver3,3,Break,1.0,4,none,none,uninterrupted,B_T0,0,unidentified
+driver3,2,Driving,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver3,8,Break,1.0,4,none,none,uninterrupted,B_T0,0,unidentified
+driver3,3,Driving,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver3,1,Other,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver3,63,Break,1.0,4,none,none,uninterrupted,B_T1,0,unidentified
+driver3,1,Other,1.0,4,edd,first,split_1,A,1,no
+driver3,29,Break,1.0,4,edd,first,split_1,B_T2,1,no
+driver3,2,Driving,1.0,4,edd,first,split_2,A,1,no
+driver3,3,Other,1.0,4,edd,first,split_2,A,1,no
+driver3,60,Break,1.0,4,edd,first,split_2,B_T3,1,no
+driver3,35,Driving,1.0,4,edd,second,uninterrupted,A,1,no
+driver3,109,Break,1.0,4,edd,second,uninterrupted,B_T1,1,no
+driver3,50,Driving,1.0,4,edd,third,split_1,A,1,no
+driver3,31,Break,1.0,4,edd,third,split_1,B_T2,1,no
+driver3,239,Driving,1.0,4,edd,third,split_2,A,1,no
+driver3,4342,Break,1.0,4,edd,third,split_2,WR_T1,1,no
 driver3,4719,Break,2.0,5,ndd,unique,uninterrupted,WR_T1,1,no
 driver3,57,Driving,3.0,6,none,none,split_1,A,0,unidentified
 driver3,3,Break,3.0,6,none,none,split_1,B_T0,0,unidentified

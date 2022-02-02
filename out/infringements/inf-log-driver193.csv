@@ -56,10 +56,10 @@ driver193,244,Driving,1.0,5,ndd,second,split_1,A,1,no
 driver193,54,Break,1.0,5,ndd,second,split_1,B_T2,1,no
 driver193,110,Driving,1.0,5,ndd,second,split_2,A,1,no
 driver193,681,Break,1.0,5,ndd,second,split_2,DR_T1,1,no
-driver193,133,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver193,54,Break,1.0,6,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver193,178,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver193,23,Break,1.0,6,none,none,none,none,0,Excessive Driving without breaks
+driver193,133,Driving,1.0,6,none,none,uninterrupted,A,0,unidentified
+driver193,54,Break,1.0,6,none,none,uninterrupted,B_T1,0,unidentified
+driver193,178,Driving,1.0,6,none,none,none,A,0,unidentified
+driver193,23,Break,1.0,6,none,none,none,none,0,unidentified
 driver193,2,Driving,1.0,6,ndd,unique,split_1,A,1,no
 driver193,24,Break,1.0,6,ndd,unique,split_1,B_T2,1,no
 driver193,1,Driving,1.0,6,ndd,unique,split_2,A,1,no

@@ -70,12 +70,12 @@ driver60,19,Driving,1.0,4,edd,third,split_2,A,1,no
 driver60,3,Other,1.0,4,edd,third,split_2,A,1,no
 driver60,1,Driving,1.0,4,edd,third,split_2,A,1,no
 driver60,548,Break,1.0,4,edd,third,split_2,DR_T2,1,no
-driver60,2,Driving,1.0,5,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver60,2,Other,1.0,5,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver60,240,Driving,1.0,5,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver60,47,Break,1.0,5,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver60,47,Driving,1.0,5,none,none,none,A,0,Excessive Driving without breaks
-driver60,25,Break,1.0,5,none,none,none,none,0,Excessive Driving without breaks
+driver60,2,Driving,1.0,5,none,none,uninterrupted,A,0,unidentified
+driver60,2,Other,1.0,5,none,none,uninterrupted,A,0,unidentified
+driver60,240,Driving,1.0,5,none,none,uninterrupted,A,0,unidentified
+driver60,47,Break,1.0,5,none,none,uninterrupted,B_T1,0,unidentified
+driver60,47,Driving,1.0,5,none,none,none,A,0,unidentified
+driver60,25,Break,1.0,5,none,none,none,none,0,unidentified
 driver60,1,Driving,1.0,5,ndd,first,split_1,A,1,no
 driver60,23,Break,1.0,5,ndd,first,split_1,B_T2,1,no
 driver60,6,Driving,1.0,5,ndd,first,split_2,A,1,no

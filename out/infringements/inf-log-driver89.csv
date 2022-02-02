@@ -1,20 +1,20 @@
 Driver,Duration,Activity,Week,Day,DayType,Sequence,BreakType,Token,Legal,Infraction
-driver89,7,Other,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver89,260,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver89,2,Break,1.0,1,none,none,none,B_T0,0,Excessive Driving without breaks
-driver89,264,Idle,1.0,1,none,none,none,I,0,Excessive Driving without breaks
-driver89,1,Other,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver89,26,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver89,5,Break,1.0,1,none,none,none,B_T0,0,Excessive Driving without breaks
-driver89,203,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver89,15,Break,1.0,1,none,none,none,none,0,Excessive Driving without breaks
-driver89,1,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver89,20,Other,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver89,30,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver89,229,Idle,1.0,1,none,none,none,I,0,Excessive Driving without breaks
-driver89,14,Break,1.0,1,none,none,none,B_T0,0,Excessive Driving without breaks
-driver89,4,Idle,1.0,1,none,none,none,I,0,Excessive Driving without breaks
-driver89,21,Break,1.0,1,none,none,none,none,0,Excessive Driving without breaks
+driver89,7,Other,1.0,1,none,none,none,A,0,unidentified
+driver89,260,Driving,1.0,1,none,none,none,A,0,unidentified
+driver89,2,Break,1.0,1,none,none,none,B_T0,0,unidentified
+driver89,264,Idle,1.0,1,none,none,none,I,0,unidentified
+driver89,1,Other,1.0,1,none,none,none,A,0,unidentified
+driver89,26,Driving,1.0,1,none,none,none,A,0,unidentified
+driver89,5,Break,1.0,1,none,none,none,B_T0,0,unidentified
+driver89,203,Driving,1.0,1,none,none,none,A,0,unidentified
+driver89,15,Break,1.0,1,none,none,none,none,0,unidentified
+driver89,1,Driving,1.0,1,none,none,none,A,0,unidentified
+driver89,20,Other,1.0,1,none,none,none,A,0,unidentified
+driver89,30,Driving,1.0,1,none,none,none,A,0,unidentified
+driver89,229,Idle,1.0,1,none,none,none,I,0,unidentified
+driver89,14,Break,1.0,1,none,none,none,B_T0,0,unidentified
+driver89,4,Idle,1.0,1,none,none,none,I,0,unidentified
+driver89,21,Break,1.0,1,none,none,none,none,0,unidentified
 driver89,1,Idle,1.0,1,ndd,unique,split_1,I,1,no
 driver89,16,Break,1.0,1,ndd,unique,split_1,B_T2,1,no
 driver89,16,Idle,1.0,1,ndd,unique,split_2,I,1,no
@@ -113,18 +113,18 @@ driver89,18,Idle,2.0,9,edd,second,uninterrupted,I,1,no
 driver89,11,Break,2.0,9,edd,second,uninterrupted,B_T0,1,no
 driver89,10,Idle,2.0,9,edd,second,uninterrupted,I,1,no
 driver89,85,Break,2.0,9,edd,second,uninterrupted,B_T1,1,no
-driver89,207,Idle,2.0,9,edd,third,split_1,I,1,Excessive Driving without breaks
-driver89,1,Other,2.0,9,edd,third,split_1,A,1,Excessive Driving without breaks
-driver89,261,Driving,2.0,9,edd,third,split_1,A,1,Excessive Driving without breaks
-driver89,22,Idle,2.0,9,edd,third,split_1,I,1,Excessive Driving without breaks
-driver89,13,Break,2.0,9,edd,third,split_1,B_T0,1,Excessive Driving without breaks
-driver89,101,Idle,2.0,9,edd,third,split_1,I,1,Excessive Driving without breaks
-driver89,15,Break,2.0,9,edd,third,split_1,B_T2,1,Excessive Driving without breaks
-driver89,128,Idle,2.0,9,edd,third,split_2,I,1,Excessive Driving without breaks
-driver89,23,Other,2.0,9,edd,third,split_2,A,1,Excessive Driving without breaks
-driver89,55,Driving,2.0,9,edd,third,split_2,A,1,Excessive Driving without breaks
-driver89,5,Other,2.0,9,edd,third,split_2,A,1,Excessive Driving without breaks
-driver89,546,Break,2.0,9,edd,third,split_2,DR_T2,1,Excessive Driving without breaks
+driver89,207,Idle,2.0,9,edd,third,split_1,I,1,no
+driver89,1,Other,2.0,9,edd,third,split_1,A,1,no
+driver89,261,Driving,2.0,9,edd,third,split_1,A,1,no
+driver89,22,Idle,2.0,9,edd,third,split_1,I,1,no
+driver89,13,Break,2.0,9,edd,third,split_1,B_T0,1,no
+driver89,101,Idle,2.0,9,edd,third,split_1,I,1,no
+driver89,15,Break,2.0,9,edd,third,split_1,B_T2,1,no
+driver89,128,Idle,2.0,9,edd,third,split_2,I,1,no
+driver89,23,Other,2.0,9,edd,third,split_2,A,1,no
+driver89,55,Driving,2.0,9,edd,third,split_2,A,1,no
+driver89,5,Other,2.0,9,edd,third,split_2,A,1,no
+driver89,546,Break,2.0,9,edd,third,split_2,DR_T2,1,no
 driver89,268,Driving,2.0,10,none,none,none,A,0,unidentified
 driver89,234,Idle,2.0,10,ndd,unique,uninterrupted,I,1,no
 driver89,1,Other,2.0,10,ndd,unique,uninterrupted,A,1,no

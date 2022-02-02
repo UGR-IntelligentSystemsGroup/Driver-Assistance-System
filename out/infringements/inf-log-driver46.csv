@@ -1,36 +1,36 @@
 Driver,Duration,Activity,Week,Day,DayType,Sequence,BreakType,Token,Legal,Infraction
 driver46,296,Break,1.0,1,ndd,unique,uninterrupted,DR_T3,1,no
-driver46,25,Driving,1.0,2,none,none,none,A,0,Excessive Driving without breaks
-driver46,2,Break,1.0,2,none,none,none,B_T0,0,Excessive Driving without breaks
-driver46,13,Driving,1.0,2,none,none,none,A,0,Excessive Driving without breaks
-driver46,16,Break,1.0,2,none,none,none,none,0,Excessive Driving without breaks
-driver46,1,Driving,1.0,2,none,none,split_1,A,0,Excessive Driving without breaks
-driver46,7,Break,1.0,2,none,none,split_1,B_T0,0,Excessive Driving without breaks
-driver46,2,Driving,1.0,2,none,none,split_1,A,0,Excessive Driving without breaks
-driver46,9,Break,1.0,2,none,none,split_1,B_T0,0,Excessive Driving without breaks
-driver46,1,Driving,1.0,2,none,none,split_1,A,0,Excessive Driving without breaks
-driver46,2,Other,1.0,2,none,none,split_1,A,0,Excessive Driving without breaks
-driver46,6,Break,1.0,2,none,none,split_1,B_T0,0,Excessive Driving without breaks
-driver46,2,Driving,1.0,2,none,none,split_1,A,0,Excessive Driving without breaks
-driver46,2,Break,1.0,2,none,none,split_1,B_T0,0,Excessive Driving without breaks
-driver46,1,Driving,1.0,2,none,none,split_1,A,0,Excessive Driving without breaks
-driver46,29,Break,1.0,2,none,none,split_1,B_T2,0,Excessive Driving without breaks
-driver46,5,Driving,1.0,2,none,none,split_2,A,0,Excessive Driving without breaks
-driver46,30,Break,1.0,2,none,none,split_2,B_T3,0,Excessive Driving without breaks
-driver46,98,Driving,1.0,2,none,none,none,A,0,Excessive Driving without breaks
-driver46,9,Break,1.0,2,none,none,none,B_T0,0,Excessive Driving without breaks
-driver46,3,Driving,1.0,2,none,none,none,A,0,Excessive Driving without breaks
-driver46,15,Break,1.0,2,none,none,none,none,0,Excessive Driving without breaks
-driver46,6,Break,1.0,2,none,none,none,B_T0,0,Excessive Driving without breaks
-driver46,4,Driving,1.0,2,none,none,none,A,0,Excessive Driving without breaks
-driver46,2,Break,1.0,2,none,none,none,B_T0,0,Excessive Driving without breaks
-driver46,1,Driving,1.0,2,none,none,none,A,0,Excessive Driving without breaks
-driver46,8,Break,1.0,2,none,none,none,B_T0,0,Excessive Driving without breaks
-driver46,22,Break,1.0,2,none,none,none,none,0,Excessive Driving without breaks
-driver46,119,Driving,1.0,2,none,none,none,A,0,Excessive Driving without breaks
-driver46,2,Break,1.0,2,none,none,none,B_T0,0,Excessive Driving without breaks
-driver46,114,Driving,1.0,2,none,none,none,A,0,Excessive Driving without breaks
-driver46,298,Break,1.0,2,none,none,none,none,0,Excessive Driving without breaks
+driver46,25,Driving,1.0,2,none,none,none,A,0,unidentified
+driver46,2,Break,1.0,2,none,none,none,B_T0,0,unidentified
+driver46,13,Driving,1.0,2,none,none,none,A,0,unidentified
+driver46,16,Break,1.0,2,none,none,none,none,0,unidentified
+driver46,1,Driving,1.0,2,none,none,split_1,A,0,unidentified
+driver46,7,Break,1.0,2,none,none,split_1,B_T0,0,unidentified
+driver46,2,Driving,1.0,2,none,none,split_1,A,0,unidentified
+driver46,9,Break,1.0,2,none,none,split_1,B_T0,0,unidentified
+driver46,1,Driving,1.0,2,none,none,split_1,A,0,unidentified
+driver46,2,Other,1.0,2,none,none,split_1,A,0,unidentified
+driver46,6,Break,1.0,2,none,none,split_1,B_T0,0,unidentified
+driver46,2,Driving,1.0,2,none,none,split_1,A,0,unidentified
+driver46,2,Break,1.0,2,none,none,split_1,B_T0,0,unidentified
+driver46,1,Driving,1.0,2,none,none,split_1,A,0,unidentified
+driver46,29,Break,1.0,2,none,none,split_1,B_T2,0,unidentified
+driver46,5,Driving,1.0,2,none,none,split_2,A,0,unidentified
+driver46,30,Break,1.0,2,none,none,split_2,B_T3,0,unidentified
+driver46,98,Driving,1.0,2,none,none,none,A,0,unidentified
+driver46,9,Break,1.0,2,none,none,none,B_T0,0,unidentified
+driver46,3,Driving,1.0,2,none,none,none,A,0,unidentified
+driver46,15,Break,1.0,2,none,none,none,none,0,unidentified
+driver46,6,Break,1.0,2,none,none,none,B_T0,0,unidentified
+driver46,4,Driving,1.0,2,none,none,none,A,0,unidentified
+driver46,2,Break,1.0,2,none,none,none,B_T0,0,unidentified
+driver46,1,Driving,1.0,2,none,none,none,A,0,unidentified
+driver46,8,Break,1.0,2,none,none,none,B_T0,0,unidentified
+driver46,22,Break,1.0,2,none,none,none,none,0,unidentified
+driver46,119,Driving,1.0,2,none,none,none,A,0,unidentified
+driver46,2,Break,1.0,2,none,none,none,B_T0,0,unidentified
+driver46,114,Driving,1.0,2,none,none,none,A,0,unidentified
+driver46,298,Break,1.0,2,none,none,none,none,0,unidentified
 driver46,2,Driving,1.0,2,ndd,unique,split_1,A,1,no
 driver46,34,Break,1.0,2,ndd,unique,split_1,B_T2,1,no
 driver46,1,Driving,1.0,2,ndd,unique,split_2,A,1,no

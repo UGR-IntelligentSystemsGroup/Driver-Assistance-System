@@ -127,12 +127,12 @@ driver125,29,Driving,1.0,7,ndd,first,split_2,A,1,Excessive Driving in day (NDD)
 driver125,7,Other,1.0,7,ndd,first,split_2,A,1,Excessive Driving in day (NDD)
 driver125,169,Driving,1.0,7,ndd,first,split_2,A,1,Excessive Driving in day (NDD)
 driver125,36,Break,1.0,7,ndd,first,split_2,B_T3,1,Excessive Driving in day (NDD)
-driver125,255,Driving,1.0,7,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver125,7,Break,1.0,7,ndd,second,split_1,B_T0,1,Excessive Driving without breaks
-driver125,1,Driving,1.0,7,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver125,47,Break,1.0,7,ndd,second,split_1,B_T2,1,Excessive Driving without breaks
-driver125,85,Driving,1.0,7,ndd,second,split_2,A,1,Excessive Driving without breaks
-driver125,673,Break,1.0,7,ndd,second,split_2,DR_T1,1,Excessive Driving without breaks
+driver125,255,Driving,1.0,7,ndd,second,split_1,A,1,Excessive Driving in day (NDD)
+driver125,7,Break,1.0,7,ndd,second,split_1,B_T0,1,Excessive Driving in day (NDD)
+driver125,1,Driving,1.0,7,ndd,second,split_1,A,1,Excessive Driving in day (NDD)
+driver125,47,Break,1.0,7,ndd,second,split_1,B_T2,1,Excessive Driving in day (NDD)
+driver125,85,Driving,1.0,7,ndd,second,split_2,A,1,Excessive Driving in day (NDD)
+driver125,673,Break,1.0,7,ndd,second,split_2,DR_T1,1,Excessive Driving in day (NDD)
 driver125,8,Driving,1.0,8,ndd,unique,uninterrupted,A,1,no
 driver125,5,Break,1.0,8,ndd,unique,uninterrupted,B_T0,1,no
 driver125,33,Driving,1.0,8,ndd,unique,uninterrupted,A,1,no
@@ -184,27 +184,27 @@ driver125,2,Other,2.0,9,edd,third,split_2,A,1,no
 driver125,1,Driving,2.0,9,edd,third,split_2,A,1,no
 driver125,1,Other,2.0,9,edd,third,split_2,A,1,no
 driver125,545,Break,2.0,9,edd,third,split_2,DR_T2,1,no
-driver125,181,Driving,2.0,10,none,none,none,A,0,Excessive Driving in day (NDD)
-driver125,4,Other,2.0,10,none,none,none,A,0,Excessive Driving in day (NDD)
-driver125,3,Driving,2.0,10,none,none,none,A,0,Excessive Driving in day (NDD)
-driver125,20,Other,2.0,10,none,none,none,A,0,Excessive Driving in day (NDD)
-driver125,1,Driving,2.0,10,none,none,none,A,0,Excessive Driving in day (NDD)
-driver125,1,Other,2.0,10,none,none,none,A,0,Excessive Driving in day (NDD)
-driver125,20,Break,2.0,10,none,none,none,none,0,Excessive Driving in day (NDD)
-driver125,1,Driving,2.0,10,ndd,first,split_1,A,1,Excessive Driving in day (NDD)
-driver125,1,Other,2.0,10,ndd,first,split_1,A,1,Excessive Driving in day (NDD)
-driver125,16,Break,2.0,10,ndd,first,split_1,B_T2,1,Excessive Driving in day (NDD)
-driver125,2,Other,2.0,10,ndd,first,split_2,A,1,Excessive Driving in day (NDD)
-driver125,6,Driving,2.0,10,ndd,first,split_2,A,1,Excessive Driving in day (NDD)
-driver125,74,Break,2.0,10,ndd,first,split_2,B_T3,1,Excessive Driving in day (NDD)
-driver125,125,Driving,2.0,10,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver125,9,Break,2.0,10,ndd,second,split_1,B_T0,1,Excessive Driving without breaks
-driver125,111,Driving,2.0,10,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver125,2,Other,2.0,10,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver125,14,Driving,2.0,10,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver125,47,Break,2.0,10,ndd,second,split_1,B_T2,1,Excessive Driving without breaks
-driver125,139,Driving,2.0,10,ndd,second,split_2,A,1,Excessive Driving without breaks
-driver125,548,Break,2.0,10,ndd,second,split_2,DR_T2,1,Excessive Driving without breaks
+driver125,181,Driving,2.0,10,none,none,none,A,0,unidentified
+driver125,4,Other,2.0,10,none,none,none,A,0,unidentified
+driver125,3,Driving,2.0,10,none,none,none,A,0,unidentified
+driver125,20,Other,2.0,10,none,none,none,A,0,unidentified
+driver125,1,Driving,2.0,10,none,none,none,A,0,unidentified
+driver125,1,Other,2.0,10,none,none,none,A,0,unidentified
+driver125,20,Break,2.0,10,none,none,none,none,0,unidentified
+driver125,1,Driving,2.0,10,ndd,first,split_1,A,1,no
+driver125,1,Other,2.0,10,ndd,first,split_1,A,1,no
+driver125,16,Break,2.0,10,ndd,first,split_1,B_T2,1,no
+driver125,2,Other,2.0,10,ndd,first,split_2,A,1,no
+driver125,6,Driving,2.0,10,ndd,first,split_2,A,1,no
+driver125,74,Break,2.0,10,ndd,first,split_2,B_T3,1,no
+driver125,125,Driving,2.0,10,ndd,second,split_1,A,1,no
+driver125,9,Break,2.0,10,ndd,second,split_1,B_T0,1,no
+driver125,111,Driving,2.0,10,ndd,second,split_1,A,1,no
+driver125,2,Other,2.0,10,ndd,second,split_1,A,1,no
+driver125,14,Driving,2.0,10,ndd,second,split_1,A,1,no
+driver125,47,Break,2.0,10,ndd,second,split_1,B_T2,1,no
+driver125,139,Driving,2.0,10,ndd,second,split_2,A,1,no
+driver125,548,Break,2.0,10,ndd,second,split_2,DR_T2,1,no
 driver125,175,Driving,2.0,11,edd,first,split_1,A,1,no
 driver125,15,Break,2.0,11,edd,first,split_1,B_T2,1,no
 driver125,71,Driving,2.0,11,edd,first,split_2,A,1,no

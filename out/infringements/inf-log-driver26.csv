@@ -16,66 +16,66 @@ driver26,81,Driving,1.0,3,ndd,second,split_1,A,1,no
 driver26,35,Break,1.0,3,ndd,second,split_1,B_T2,1,no
 driver26,159,Driving,1.0,3,ndd,second,split_2,A,1,no
 driver26,222,Break,1.0,3,ndd,second,split_2,DR_T3,1,no
-driver26,4,Driving,1.0,4,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,5,Break,1.0,4,none,none,split_1,B_T0,0,Excessive Driving without breaks
-driver26,4,Driving,1.0,4,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,4,Break,1.0,4,none,none,split_1,B_T0,0,Excessive Driving without breaks
-driver26,4,Driving,1.0,4,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,1,Other,1.0,4,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,19,Break,1.0,4,none,none,split_1,B_T2,0,Excessive Driving without breaks
-driver26,88,Driving,1.0,4,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,34,Break,1.0,4,none,none,split_2,B_T3,0,Excessive Driving without breaks
-driver26,13,Driving,1.0,4,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,3,Break,1.0,4,none,none,uninterrupted,B_T0,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,4,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,3,Break,1.0,4,none,none,uninterrupted,B_T0,0,Excessive Driving without breaks
-driver26,8,Driving,1.0,4,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,14,Break,1.0,4,none,none,uninterrupted,B_T0,0,Excessive Driving without breaks
-driver26,4,Driving,1.0,4,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,1,Other,1.0,4,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,2,Break,1.0,4,none,none,uninterrupted,B_T0,0,Excessive Driving without breaks
-driver26,5,Other,1.0,4,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,4,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,3,Other,1.0,4,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,2,Driving,1.0,4,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,5,Other,1.0,4,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,3,Driving,1.0,4,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,2,Other,1.0,4,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,80,Driving,1.0,4,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,105,Break,1.0,4,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver26,2,Other,1.0,4,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,4,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,11,Break,1.0,4,none,none,split_1,B_T0,0,Excessive Driving without breaks
-driver26,4,Driving,1.0,4,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,6,Other,1.0,4,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,4,Driving,1.0,4,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,25,Break,1.0,4,none,none,split_1,B_T2,0,Excessive Driving without breaks
-driver26,2,Break,1.0,4,none,none,split_2,B_T0,0,Excessive Driving without breaks
-driver26,5,Driving,1.0,4,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,1,Other,1.0,4,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,10,Break,1.0,4,none,none,split_2,B_T0,0,Excessive Driving without breaks
-driver26,15,Driving,1.0,4,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,6,Break,1.0,4,none,none,split_2,B_T0,0,Excessive Driving without breaks
-driver26,2,Driving,1.0,4,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,4,Break,1.0,4,none,none,split_2,B_T0,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,4,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,5,Break,1.0,4,none,none,split_2,B_T0,0,Excessive Driving without breaks
-driver26,3,Driving,1.0,4,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,4,Break,1.0,4,none,none,split_2,B_T0,0,Excessive Driving without breaks
-driver26,71,Driving,1.0,4,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,12,Break,1.0,4,none,none,split_2,B_T0,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,4,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,33,Break,1.0,4,none,none,split_2,B_T3,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,4,none,none,none,A,0,Excessive Driving without breaks
-driver26,38,Break,1.0,4,none,none,none,none,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,4,none,none,none,A,0,Excessive Driving without breaks
-driver26,2,Break,1.0,4,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,2,Driving,1.0,4,none,none,none,A,0,Excessive Driving without breaks
-driver26,3,Break,1.0,4,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,4,none,none,none,A,0,Excessive Driving without breaks
-driver26,16,Break,1.0,4,none,none,none,none,0,Excessive Driving without breaks
-driver26,82,Driving,1.0,4,none,none,none,A,0,Excessive Driving without breaks
-driver26,19,Break,1.0,4,none,none,none,none,0,Excessive Driving without breaks
+driver26,4,Driving,1.0,4,none,none,split_1,A,0,unidentified
+driver26,5,Break,1.0,4,none,none,split_1,B_T0,0,unidentified
+driver26,4,Driving,1.0,4,none,none,split_1,A,0,unidentified
+driver26,4,Break,1.0,4,none,none,split_1,B_T0,0,unidentified
+driver26,4,Driving,1.0,4,none,none,split_1,A,0,unidentified
+driver26,1,Other,1.0,4,none,none,split_1,A,0,unidentified
+driver26,19,Break,1.0,4,none,none,split_1,B_T2,0,unidentified
+driver26,88,Driving,1.0,4,none,none,split_2,A,0,unidentified
+driver26,34,Break,1.0,4,none,none,split_2,B_T3,0,unidentified
+driver26,13,Driving,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver26,3,Break,1.0,4,none,none,uninterrupted,B_T0,0,unidentified
+driver26,1,Driving,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver26,3,Break,1.0,4,none,none,uninterrupted,B_T0,0,unidentified
+driver26,8,Driving,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver26,14,Break,1.0,4,none,none,uninterrupted,B_T0,0,unidentified
+driver26,4,Driving,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver26,1,Other,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver26,2,Break,1.0,4,none,none,uninterrupted,B_T0,0,unidentified
+driver26,5,Other,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver26,1,Driving,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver26,3,Other,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver26,2,Driving,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver26,5,Other,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver26,3,Driving,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver26,2,Other,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver26,80,Driving,1.0,4,none,none,uninterrupted,A,0,unidentified
+driver26,105,Break,1.0,4,none,none,uninterrupted,B_T1,0,unidentified
+driver26,2,Other,1.0,4,none,none,split_1,A,0,unidentified
+driver26,1,Driving,1.0,4,none,none,split_1,A,0,unidentified
+driver26,11,Break,1.0,4,none,none,split_1,B_T0,0,unidentified
+driver26,4,Driving,1.0,4,none,none,split_1,A,0,unidentified
+driver26,6,Other,1.0,4,none,none,split_1,A,0,unidentified
+driver26,4,Driving,1.0,4,none,none,split_1,A,0,unidentified
+driver26,25,Break,1.0,4,none,none,split_1,B_T2,0,unidentified
+driver26,2,Break,1.0,4,none,none,split_2,B_T0,0,unidentified
+driver26,5,Driving,1.0,4,none,none,split_2,A,0,unidentified
+driver26,1,Other,1.0,4,none,none,split_2,A,0,unidentified
+driver26,10,Break,1.0,4,none,none,split_2,B_T0,0,unidentified
+driver26,15,Driving,1.0,4,none,none,split_2,A,0,unidentified
+driver26,6,Break,1.0,4,none,none,split_2,B_T0,0,unidentified
+driver26,2,Driving,1.0,4,none,none,split_2,A,0,unidentified
+driver26,4,Break,1.0,4,none,none,split_2,B_T0,0,unidentified
+driver26,1,Driving,1.0,4,none,none,split_2,A,0,unidentified
+driver26,5,Break,1.0,4,none,none,split_2,B_T0,0,unidentified
+driver26,3,Driving,1.0,4,none,none,split_2,A,0,unidentified
+driver26,4,Break,1.0,4,none,none,split_2,B_T0,0,unidentified
+driver26,71,Driving,1.0,4,none,none,split_2,A,0,unidentified
+driver26,12,Break,1.0,4,none,none,split_2,B_T0,0,unidentified
+driver26,1,Driving,1.0,4,none,none,split_2,A,0,unidentified
+driver26,33,Break,1.0,4,none,none,split_2,B_T3,0,unidentified
+driver26,1,Driving,1.0,4,none,none,none,A,0,unidentified
+driver26,38,Break,1.0,4,none,none,none,none,0,unidentified
+driver26,1,Driving,1.0,4,none,none,none,A,0,unidentified
+driver26,2,Break,1.0,4,none,none,none,B_T0,0,unidentified
+driver26,2,Driving,1.0,4,none,none,none,A,0,unidentified
+driver26,3,Break,1.0,4,none,none,none,B_T0,0,unidentified
+driver26,1,Driving,1.0,4,none,none,none,A,0,unidentified
+driver26,16,Break,1.0,4,none,none,none,none,0,unidentified
+driver26,82,Driving,1.0,4,none,none,none,A,0,unidentified
+driver26,19,Break,1.0,4,none,none,none,none,0,unidentified
 driver26,4,Driving,1.0,4,ndd,first,split_1,A,1,no
 driver26,19,Break,1.0,4,ndd,first,split_1,B_T2,1,no
 driver26,2,Driving,1.0,4,ndd,first,split_2,A,1,no
@@ -98,100 +98,100 @@ driver26,2,Driving,1.0,5,ndd,unique,split_2,A,1,no
 driver26,3,Break,1.0,5,ndd,unique,split_2,B_T0,1,no
 driver26,3,Driving,1.0,5,ndd,unique,split_2,A,1,no
 driver26,214,Break,1.0,5,ndd,unique,split_2,DR_T3,1,no
-driver26,2,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,6,Other,1.0,6,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,3,Other,1.0,6,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,12,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,2,Other,1.0,6,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,6,Break,1.0,6,none,none,uninterrupted,B_T0,0,Excessive Driving without breaks
-driver26,2,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,2,Other,1.0,6,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,19,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,72,Break,1.0,6,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver26,1,Other,1.0,6,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,6,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,7,Break,1.0,6,none,none,split_1,B_T0,0,Excessive Driving without breaks
-driver26,1,Other,1.0,6,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,2,Driving,1.0,6,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,22,Break,1.0,6,none,none,split_1,B_T2,0,Excessive Driving without breaks
-driver26,15,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,4,Break,1.0,6,none,none,split_2,B_T0,0,Excessive Driving without breaks
-driver26,2,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,8,Break,1.0,6,none,none,split_2,B_T0,0,Excessive Driving without breaks
-driver26,2,Other,1.0,6,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,4,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,3,Other,1.0,6,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,4,Other,1.0,6,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,3,Break,1.0,6,none,none,split_2,B_T0,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,2,Break,1.0,6,none,none,split_2,B_T0,0,Excessive Driving without breaks
-driver26,2,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,2,Other,1.0,6,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,82,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,97,Break,1.0,6,none,none,split_2,B_T3,0,Excessive Driving without breaks
-driver26,22,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,98,Break,1.0,6,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,2,Other,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,2,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,1,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,7,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,1,Other,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,53,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,20,Break,1.0,6,none,none,none,none,0,Excessive Driving without breaks
-driver26,42,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,14,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,2,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,1,Other,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,351,Break,1.0,6,none,none,none,none,0,Excessive Driving without breaks
-driver26,6,Driving,1.0,6,none,none,split_1,A,0,Excessive Driving without breaks
-driver26,39,Break,1.0,6,none,none,split_1,B_T2,0,Excessive Driving without breaks
-driver26,14,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving without breaks
-driver26,158,Break,1.0,6,none,none,split_2,B_T3,0,Excessive Driving without breaks
-driver26,88,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver26,54,Break,1.0,6,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver26,5,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,2,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,4,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,1,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,4,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,6,Other,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,4,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,9,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,12,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,4,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,5,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,13,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,10,Other,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,4,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,531,Break,1.0,6,none,none,none,none,0,Excessive Driving without breaks
-driver26,1,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,4,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,11,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,4,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,9,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,30,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,2,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,8,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,3,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,25,Break,1.0,6,none,none,none,none,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,10,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,2,Other,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,83,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,7,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,5,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,3,Other,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,5,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving without breaks
-driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving without breaks
-driver26,18,Break,1.0,6,none,none,none,none,0,Excessive Driving without breaks
+driver26,2,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver26,6,Other,1.0,6,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver26,1,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver26,3,Other,1.0,6,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver26,12,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver26,2,Other,1.0,6,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver26,1,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver26,6,Break,1.0,6,none,none,uninterrupted,B_T0,0,Excessive Driving in day (NDD)
+driver26,2,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver26,2,Other,1.0,6,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver26,19,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver26,72,Break,1.0,6,none,none,uninterrupted,B_T1,0,Excessive Driving in day (NDD)
+driver26,1,Other,1.0,6,none,none,split_1,A,0,Excessive Driving in day (NDD)
+driver26,1,Driving,1.0,6,none,none,split_1,A,0,Excessive Driving in day (NDD)
+driver26,7,Break,1.0,6,none,none,split_1,B_T0,0,Excessive Driving in day (NDD)
+driver26,1,Other,1.0,6,none,none,split_1,A,0,Excessive Driving in day (NDD)
+driver26,2,Driving,1.0,6,none,none,split_1,A,0,Excessive Driving in day (NDD)
+driver26,22,Break,1.0,6,none,none,split_1,B_T2,0,Excessive Driving in day (NDD)
+driver26,15,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver26,4,Break,1.0,6,none,none,split_2,B_T0,0,Excessive Driving in day (NDD)
+driver26,2,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver26,8,Break,1.0,6,none,none,split_2,B_T0,0,Excessive Driving in day (NDD)
+driver26,2,Other,1.0,6,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver26,4,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver26,3,Other,1.0,6,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver26,1,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver26,4,Other,1.0,6,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver26,3,Break,1.0,6,none,none,split_2,B_T0,0,Excessive Driving in day (NDD)
+driver26,1,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver26,2,Break,1.0,6,none,none,split_2,B_T0,0,Excessive Driving in day (NDD)
+driver26,2,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver26,2,Other,1.0,6,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver26,82,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver26,97,Break,1.0,6,none,none,split_2,B_T3,0,Excessive Driving in day (NDD)
+driver26,22,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver26,98,Break,1.0,6,none,none,uninterrupted,B_T1,0,Excessive Driving in day (NDD)
+driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,2,Other,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,2,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,1,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,7,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,1,Other,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,53,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,20,Break,1.0,6,none,none,none,none,0,Excessive Driving in day (NDD)
+driver26,42,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,14,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,2,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,1,Other,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,351,Break,1.0,6,none,none,none,none,0,Excessive Driving in day (NDD)
+driver26,6,Driving,1.0,6,none,none,split_1,A,0,Excessive Driving in day (NDD)
+driver26,39,Break,1.0,6,none,none,split_1,B_T2,0,Excessive Driving in day (NDD)
+driver26,14,Driving,1.0,6,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver26,158,Break,1.0,6,none,none,split_2,B_T3,0,Excessive Driving in day (NDD)
+driver26,88,Driving,1.0,6,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver26,54,Break,1.0,6,none,none,uninterrupted,B_T1,0,Excessive Driving in day (NDD)
+driver26,5,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,2,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,4,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,1,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,4,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,6,Other,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,4,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,9,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,12,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,4,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,5,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,13,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,10,Other,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,4,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,531,Break,1.0,6,none,none,none,none,0,Excessive Driving in day (NDD)
+driver26,1,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,4,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,11,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,4,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,9,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,30,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,2,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,8,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,3,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,25,Break,1.0,6,none,none,none,none,0,Excessive Driving in day (NDD)
+driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,10,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,2,Other,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,83,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,7,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,5,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,3,Other,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,5,Break,1.0,6,none,none,none,B_T0,0,Excessive Driving in day (NDD)
+driver26,1,Driving,1.0,6,none,none,none,A,0,Excessive Driving in day (NDD)
+driver26,18,Break,1.0,6,none,none,none,none,0,Excessive Driving in day (NDD)
 driver26,2,Driving,1.0,6,ndd,first,split_1,A,1,Excessive Driving in day (NDD)
 driver26,4,Break,1.0,6,ndd,first,split_1,B_T0,1,Excessive Driving in day (NDD)
 driver26,5,Driving,1.0,6,ndd,first,split_1,A,1,Excessive Driving in day (NDD)

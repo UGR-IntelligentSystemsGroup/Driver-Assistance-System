@@ -192,21 +192,21 @@ driver239,2,Other,3.0,12,none,none,split_2,A,0,unidentified
 driver239,1,Driving,3.0,12,none,none,split_2,A,0,unidentified
 driver239,2,Other,3.0,12,none,none,split_2,A,0,unidentified
 driver239,44,Break,3.0,12,none,none,split_2,B_T3,0,unidentified
-driver239,3,Other,3.0,12,ndd,first,split_1,A,1,Excessive Driving without breaks
-driver239,1,Driving,3.0,12,ndd,first,split_1,A,1,Excessive Driving without breaks
-driver239,7,Other,3.0,12,ndd,first,split_1,A,1,Excessive Driving without breaks
-driver239,26,Driving,3.0,12,ndd,first,split_1,A,1,Excessive Driving without breaks
-driver239,3,Other,3.0,12,ndd,first,split_1,A,1,Excessive Driving without breaks
-driver239,6,Driving,3.0,12,ndd,first,split_1,A,1,Excessive Driving without breaks
-driver239,22,Other,3.0,12,ndd,first,split_1,A,1,Excessive Driving without breaks
-driver239,106,Driving,3.0,12,ndd,first,split_1,A,1,Excessive Driving without breaks
-driver239,2,Other,3.0,12,ndd,first,split_1,A,1,Excessive Driving without breaks
-driver239,111,Driving,3.0,12,ndd,first,split_1,A,1,Excessive Driving without breaks
-driver239,47,Break,3.0,12,ndd,first,split_1,B_T2,1,Excessive Driving without breaks
-driver239,41,Driving,3.0,12,ndd,first,split_2,A,1,Excessive Driving without breaks
-driver239,3,Other,3.0,12,ndd,first,split_2,A,1,Excessive Driving without breaks
-driver239,1,Driving,3.0,12,ndd,first,split_2,A,1,Excessive Driving without breaks
-driver239,62,Break,3.0,12,ndd,first,split_2,B_T3,1,Excessive Driving without breaks
+driver239,3,Other,3.0,12,ndd,first,split_1,A,1,no
+driver239,1,Driving,3.0,12,ndd,first,split_1,A,1,no
+driver239,7,Other,3.0,12,ndd,first,split_1,A,1,no
+driver239,26,Driving,3.0,12,ndd,first,split_1,A,1,no
+driver239,3,Other,3.0,12,ndd,first,split_1,A,1,no
+driver239,6,Driving,3.0,12,ndd,first,split_1,A,1,no
+driver239,22,Other,3.0,12,ndd,first,split_1,A,1,no
+driver239,106,Driving,3.0,12,ndd,first,split_1,A,1,no
+driver239,2,Other,3.0,12,ndd,first,split_1,A,1,no
+driver239,111,Driving,3.0,12,ndd,first,split_1,A,1,no
+driver239,47,Break,3.0,12,ndd,first,split_1,B_T2,1,no
+driver239,41,Driving,3.0,12,ndd,first,split_2,A,1,no
+driver239,3,Other,3.0,12,ndd,first,split_2,A,1,no
+driver239,1,Driving,3.0,12,ndd,first,split_2,A,1,no
+driver239,62,Break,3.0,12,ndd,first,split_2,B_T3,1,no
 driver239,5,Other,3.0,12,ndd,second,split_1,A,1,no
 driver239,3,Driving,3.0,12,ndd,second,split_1,A,1,no
 driver239,167,Break,3.0,12,ndd,second,split_1,B_T2,1,no

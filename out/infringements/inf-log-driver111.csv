@@ -147,29 +147,29 @@ driver111,29,Driving,2.0,6,ndd,second,split_2,A,1,no
 driver111,14,Break,2.0,6,ndd,second,split_2,B_T0,1,no
 driver111,33,Driving,2.0,6,ndd,second,split_2,A,1,no
 driver111,541,Break,2.0,6,ndd,second,split_2,DR_T2,1,no
-driver111,192,Driving,2.0,7,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver111,2,Break,2.0,7,none,none,uninterrupted,B_T0,0,Excessive Driving without breaks
-driver111,75,Driving,2.0,7,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver111,47,Break,2.0,7,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver111,21,Driving,2.0,7,none,none,none,A,0,Excessive Driving without breaks
-driver111,20,Break,2.0,7,none,none,none,none,0,Excessive Driving without breaks
-driver111,4,Driving,2.0,7,none,none,split_1,A,0,Excessive Driving without breaks
-driver111,4,Other,2.0,7,none,none,split_1,A,0,Excessive Driving without breaks
-driver111,215,Driving,2.0,7,none,none,split_1,A,0,Excessive Driving without breaks
-driver111,15,Break,2.0,7,none,none,split_1,B_T2,0,Excessive Driving without breaks
-driver111,2,Driving,2.0,7,none,none,split_2,A,0,Excessive Driving without breaks
-driver111,7,Break,2.0,7,none,none,split_2,B_T0,0,Excessive Driving without breaks
-driver111,2,Other,2.0,7,none,none,split_2,A,0,Excessive Driving without breaks
-driver111,42,Break,2.0,7,none,none,split_2,B_T3,0,Excessive Driving without breaks
-driver111,9,Driving,2.0,7,edd,first,uninterrupted,A,1,Excessive Driving in day (NDD)
-driver111,155,Break,2.0,7,edd,first,uninterrupted,B_T1,1,Excessive Driving in day (NDD)
-driver111,23,Driving,2.0,7,edd,second,split_1,A,1,Excessive Driving in day (NDD)
-driver111,4,Break,2.0,7,edd,second,split_1,B_T0,1,Excessive Driving in day (NDD)
-driver111,2,Driving,2.0,7,edd,second,split_1,A,1,Excessive Driving in day (NDD)
-driver111,24,Break,2.0,7,edd,second,split_1,B_T2,1,Excessive Driving in day (NDD)
-driver111,1,Driving,2.0,7,edd,second,split_2,A,1,Excessive Driving in day (NDD)
-driver111,40,Break,2.0,7,edd,second,split_2,B_T3,1,Excessive Driving in day (NDD)
-driver111,976,Break,2.0,7,edd,third,uninterrupted,DR_T1,1,Excessive Driving in day (NDD)
+driver111,192,Driving,2.0,7,none,none,uninterrupted,A,0,unidentified
+driver111,2,Break,2.0,7,none,none,uninterrupted,B_T0,0,unidentified
+driver111,75,Driving,2.0,7,none,none,uninterrupted,A,0,unidentified
+driver111,47,Break,2.0,7,none,none,uninterrupted,B_T1,0,unidentified
+driver111,21,Driving,2.0,7,none,none,none,A,0,unidentified
+driver111,20,Break,2.0,7,none,none,none,none,0,unidentified
+driver111,4,Driving,2.0,7,none,none,split_1,A,0,unidentified
+driver111,4,Other,2.0,7,none,none,split_1,A,0,unidentified
+driver111,215,Driving,2.0,7,none,none,split_1,A,0,unidentified
+driver111,15,Break,2.0,7,none,none,split_1,B_T2,0,unidentified
+driver111,2,Driving,2.0,7,none,none,split_2,A,0,unidentified
+driver111,7,Break,2.0,7,none,none,split_2,B_T0,0,unidentified
+driver111,2,Other,2.0,7,none,none,split_2,A,0,unidentified
+driver111,42,Break,2.0,7,none,none,split_2,B_T3,0,unidentified
+driver111,9,Driving,2.0,7,edd,first,uninterrupted,A,1,no
+driver111,155,Break,2.0,7,edd,first,uninterrupted,B_T1,1,no
+driver111,23,Driving,2.0,7,edd,second,split_1,A,1,no
+driver111,4,Break,2.0,7,edd,second,split_1,B_T0,1,no
+driver111,2,Driving,2.0,7,edd,second,split_1,A,1,no
+driver111,24,Break,2.0,7,edd,second,split_1,B_T2,1,no
+driver111,1,Driving,2.0,7,edd,second,split_2,A,1,no
+driver111,40,Break,2.0,7,edd,second,split_2,B_T3,1,no
+driver111,976,Break,2.0,7,edd,third,uninterrupted,DR_T1,1,no
 driver111,2,Driving,2.0,8,ndd,first,uninterrupted,A,1,no
 driver111,134,Break,2.0,8,ndd,first,uninterrupted,B_T1,1,no
 driver111,11,Driving,2.0,8,ndd,second,uninterrupted,A,1,no

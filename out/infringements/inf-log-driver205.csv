@@ -1,18 +1,18 @@
 Driver,Duration,Activity,Week,Day,DayType,Sequence,BreakType,Token,Legal,Infraction
-driver205,44,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver205,19,Break,1.0,1,none,none,none,none,0,Excessive Driving without breaks
-driver205,91,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver205,9,Other,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver205,121,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver205,31,Break,1.0,1,none,none,none,none,0,Excessive Driving without breaks
-driver205,6,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver205,3,Break,1.0,1,none,none,none,B_T0,0,Excessive Driving without breaks
-driver205,3,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver205,5,Other,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver205,5,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver205,7,Break,1.0,1,none,none,none,B_T0,0,Excessive Driving without breaks
-driver205,2,Driving,1.0,1,none,none,none,A,0,Excessive Driving without breaks
-driver205,17,Break,1.0,1,none,none,none,none,0,Excessive Driving without breaks
+driver205,44,Driving,1.0,1,none,none,none,A,0,unidentified
+driver205,19,Break,1.0,1,none,none,none,none,0,unidentified
+driver205,91,Driving,1.0,1,none,none,none,A,0,unidentified
+driver205,9,Other,1.0,1,none,none,none,A,0,unidentified
+driver205,121,Driving,1.0,1,none,none,none,A,0,unidentified
+driver205,31,Break,1.0,1,none,none,none,none,0,unidentified
+driver205,6,Driving,1.0,1,none,none,none,A,0,unidentified
+driver205,3,Break,1.0,1,none,none,none,B_T0,0,unidentified
+driver205,3,Driving,1.0,1,none,none,none,A,0,unidentified
+driver205,5,Other,1.0,1,none,none,none,A,0,unidentified
+driver205,5,Driving,1.0,1,none,none,none,A,0,unidentified
+driver205,7,Break,1.0,1,none,none,none,B_T0,0,unidentified
+driver205,2,Driving,1.0,1,none,none,none,A,0,unidentified
+driver205,17,Break,1.0,1,none,none,none,none,0,unidentified
 driver205,1,Driving,1.0,1,ndd,unique,split_1,A,1,no
 driver205,3,Other,1.0,1,ndd,unique,split_1,A,1,no
 driver205,2,Driving,1.0,1,ndd,unique,split_1,A,1,no

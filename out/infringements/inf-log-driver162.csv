@@ -153,7 +153,7 @@ driver162,24,Break,2.0,8,none,none,split_1,B_T2,0,Excessive Driving without brea
 driver162,226,Driving,2.0,8,none,none,split_2,A,0,Excessive Driving without breaks
 driver162,46,Break,2.0,8,none,none,split_2,B_T3,0,Excessive Driving without breaks
 driver162,272,Driving,2.0,8,none,none,none,A,0,Excessive Driving without breaks
-driver162,688,Break,2.0,8,ndd,unique,uninterrupted,DR_T1,1,Excessive Driving in day (NDD)
+driver162,688,Break,2.0,8,ndd,unique,uninterrupted,DR_T1,1,no
 driver162,2,Other,2.0,9,edd,first,uninterrupted,A,1,no
 driver162,242,Driving,2.0,9,edd,first,uninterrupted,A,1,no
 driver162,47,Break,2.0,9,edd,first,uninterrupted,B_T1,1,no

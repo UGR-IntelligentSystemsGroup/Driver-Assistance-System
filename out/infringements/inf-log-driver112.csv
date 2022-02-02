@@ -60,29 +60,29 @@ driver112,67,Driving,1.0,4,ndd,unique,uninterrupted,A,1,no
 driver112,1071,Break,1.0,4,ndd,unique,uninterrupted,DR_T1,1,no
 driver112,20,Driving,1.0,5,none,none,none,A,0,unidentified
 driver112,23,Break,1.0,5,none,none,none,none,0,unidentified
-driver112,21,Driving,1.0,5,ndd,unique,split_1,A,1,Excessive Driving without breaks
-driver112,6,Break,1.0,5,ndd,unique,split_1,B_T0,1,Excessive Driving without breaks
-driver112,187,Driving,1.0,5,ndd,unique,split_1,A,1,Excessive Driving without breaks
-driver112,1,Break,1.0,5,ndd,unique,split_1,B_T0,1,Excessive Driving without breaks
-driver112,6,Break,1.0,5,ndd,unique,split_1,B_T0,1,Excessive Driving without breaks
-driver112,156,Idle,1.0,5,ndd,unique,split_1,I,1,Excessive Driving without breaks
-driver112,9,Break,1.0,5,ndd,unique,split_1,B_T0,1,Excessive Driving without breaks
-driver112,84,Idle,1.0,5,ndd,unique,split_1,I,1,Excessive Driving without breaks
-driver112,8,Break,1.0,5,ndd,unique,split_1,B_T0,1,Excessive Driving without breaks
-driver112,3,Break,1.0,5,ndd,unique,split_1,B_T0,1,Excessive Driving without breaks
-driver112,142,Driving,1.0,5,ndd,unique,split_1,A,1,Excessive Driving without breaks
-driver112,17,Break,1.0,5,ndd,unique,split_1,B_T2,1,Excessive Driving without breaks
-driver112,1,Driving,1.0,5,ndd,unique,split_2,A,1,Excessive Driving without breaks
-driver112,10,Break,1.0,5,ndd,unique,split_2,B_T0,1,Excessive Driving without breaks
-driver112,76,Driving,1.0,5,ndd,unique,split_2,A,1,Excessive Driving without breaks
-driver112,8,Break,1.0,5,ndd,unique,split_2,B_T0,1,Excessive Driving without breaks
-driver112,3,Driving,1.0,5,ndd,unique,split_2,A,1,Excessive Driving without breaks
-driver112,8,Break,1.0,5,ndd,unique,split_2,B_T0,1,Excessive Driving without breaks
-driver112,12,Driving,1.0,5,ndd,unique,split_2,A,1,Excessive Driving without breaks
-driver112,2,Break,1.0,5,ndd,unique,split_2,B_T0,1,Excessive Driving without breaks
-driver112,1,Driving,1.0,5,ndd,unique,split_2,A,1,Excessive Driving without breaks
-driver112,2,Other,1.0,5,ndd,unique,split_2,A,1,Excessive Driving without breaks
-driver112,250,Break,1.0,5,ndd,unique,split_2,DR_T3,1,Excessive Driving without breaks
+driver112,21,Driving,1.0,5,ndd,unique,split_1,A,1,no
+driver112,6,Break,1.0,5,ndd,unique,split_1,B_T0,1,no
+driver112,187,Driving,1.0,5,ndd,unique,split_1,A,1,no
+driver112,1,Break,1.0,5,ndd,unique,split_1,B_T0,1,no
+driver112,6,Break,1.0,5,ndd,unique,split_1,B_T0,1,no
+driver112,156,Idle,1.0,5,ndd,unique,split_1,I,1,no
+driver112,9,Break,1.0,5,ndd,unique,split_1,B_T0,1,no
+driver112,84,Idle,1.0,5,ndd,unique,split_1,I,1,no
+driver112,8,Break,1.0,5,ndd,unique,split_1,B_T0,1,no
+driver112,3,Break,1.0,5,ndd,unique,split_1,B_T0,1,no
+driver112,142,Driving,1.0,5,ndd,unique,split_1,A,1,no
+driver112,17,Break,1.0,5,ndd,unique,split_1,B_T2,1,no
+driver112,1,Driving,1.0,5,ndd,unique,split_2,A,1,no
+driver112,10,Break,1.0,5,ndd,unique,split_2,B_T0,1,no
+driver112,76,Driving,1.0,5,ndd,unique,split_2,A,1,no
+driver112,8,Break,1.0,5,ndd,unique,split_2,B_T0,1,no
+driver112,3,Driving,1.0,5,ndd,unique,split_2,A,1,no
+driver112,8,Break,1.0,5,ndd,unique,split_2,B_T0,1,no
+driver112,12,Driving,1.0,5,ndd,unique,split_2,A,1,no
+driver112,2,Break,1.0,5,ndd,unique,split_2,B_T0,1,no
+driver112,1,Driving,1.0,5,ndd,unique,split_2,A,1,no
+driver112,2,Other,1.0,5,ndd,unique,split_2,A,1,no
+driver112,250,Break,1.0,5,ndd,unique,split_2,DR_T3,1,no
 driver112,1,Driving,1.0,6,ndd,unique,uninterrupted,A,1,no
 driver112,1822,Break,1.0,6,ndd,unique,uninterrupted,WR_T2,1,no
 driver112,2,Other,2.0,7,none,none,uninterrupted,A,0,unidentified
@@ -226,22 +226,22 @@ driver112,9,Driving,2.0,12,none,none,none,A,0,unidentified
 driver112,3,Break,2.0,12,none,none,none,B_T0,0,unidentified
 driver112,1,Other,2.0,12,none,none,none,A,0,unidentified
 driver112,24,Break,2.0,12,none,none,none,none,0,unidentified
-driver112,1,Driving,2.0,12,ndd,unique,split_1,A,1,Excessive Driving without breaks
-driver112,15,Break,2.0,12,ndd,unique,split_1,B_T2,1,Excessive Driving without breaks
-driver112,1,Driving,2.0,12,ndd,unique,split_2,A,1,Excessive Driving without breaks
-driver112,10,Break,2.0,12,ndd,unique,split_2,B_T0,1,Excessive Driving without breaks
-driver112,38,Driving,2.0,12,ndd,unique,split_2,A,1,Excessive Driving without breaks
-driver112,3,Other,2.0,12,ndd,unique,split_2,A,1,Excessive Driving without breaks
-driver112,7,Driving,2.0,12,ndd,unique,split_2,A,1,Excessive Driving without breaks
-driver112,1,Break,2.0,12,ndd,unique,split_2,B_T0,1,Excessive Driving without breaks
-driver112,108,Idle,2.0,12,ndd,unique,split_2,I,1,Excessive Driving without breaks
-driver112,11,Break,2.0,12,ndd,unique,split_2,B_T0,1,Excessive Driving without breaks
-driver112,126,Idle,2.0,12,ndd,unique,split_2,I,1,Excessive Driving without breaks
-driver112,4,Break,2.0,12,ndd,unique,split_2,B_T0,1,Excessive Driving without breaks
-driver112,1,Break,2.0,12,ndd,unique,split_2,B_T0,1,Excessive Driving without breaks
-driver112,225,Driving,2.0,12,ndd,unique,split_2,A,1,Excessive Driving without breaks
-driver112,112,Idle,2.0,12,ndd,unique,split_2,I,1,Excessive Driving without breaks
-driver112,542,Break,2.0,12,ndd,unique,split_2,DR_T2,1,Excessive Driving without breaks
+driver112,1,Driving,2.0,12,ndd,unique,split_1,A,1,no
+driver112,15,Break,2.0,12,ndd,unique,split_1,B_T2,1,no
+driver112,1,Driving,2.0,12,ndd,unique,split_2,A,1,no
+driver112,10,Break,2.0,12,ndd,unique,split_2,B_T0,1,no
+driver112,38,Driving,2.0,12,ndd,unique,split_2,A,1,no
+driver112,3,Other,2.0,12,ndd,unique,split_2,A,1,no
+driver112,7,Driving,2.0,12,ndd,unique,split_2,A,1,no
+driver112,1,Break,2.0,12,ndd,unique,split_2,B_T0,1,no
+driver112,108,Idle,2.0,12,ndd,unique,split_2,I,1,no
+driver112,11,Break,2.0,12,ndd,unique,split_2,B_T0,1,no
+driver112,126,Idle,2.0,12,ndd,unique,split_2,I,1,no
+driver112,4,Break,2.0,12,ndd,unique,split_2,B_T0,1,no
+driver112,1,Break,2.0,12,ndd,unique,split_2,B_T0,1,no
+driver112,225,Driving,2.0,12,ndd,unique,split_2,A,1,no
+driver112,112,Idle,2.0,12,ndd,unique,split_2,I,1,no
+driver112,542,Break,2.0,12,ndd,unique,split_2,DR_T2,1,no
 driver112,1,Break,2.0,13,ndd,unique,split_1,B_T0,1,no
 driver112,100,Driving,2.0,13,ndd,unique,split_1,A,1,no
 driver112,3,Break,2.0,13,ndd,unique,split_1,B_T0,1,no

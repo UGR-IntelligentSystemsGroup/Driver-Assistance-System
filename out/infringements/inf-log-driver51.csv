@@ -76,16 +76,16 @@ driver51,144,Driving,2.0,6,edd,second,split_2,A,1,no
 driver51,43,Break,2.0,6,edd,second,split_2,B_T3,1,no
 driver51,193,Driving,2.0,6,edd,third,uninterrupted,A,1,no
 driver51,1791,Break,2.0,6,edd,third,uninterrupted,WR_T2,1,no
-driver51,125,Driving,3.0,7,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver51,12,Break,3.0,7,none,none,uninterrupted,B_T0,0,Excessive Driving without breaks
-driver51,116,Driving,3.0,7,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver51,91,Break,3.0,7,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver51,165,Driving,3.0,7,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver51,3,Break,3.0,7,none,none,uninterrupted,B_T0,0,Excessive Driving without breaks
-driver51,2,Driving,3.0,7,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver51,164,Break,3.0,7,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver51,8,Driving,3.0,7,none,none,none,A,0,Excessive Driving without breaks
-driver51,22,Break,3.0,7,none,none,none,none,0,Excessive Driving without breaks
+driver51,125,Driving,3.0,7,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver51,12,Break,3.0,7,none,none,uninterrupted,B_T0,0,Excessive Driving in day (NDD)
+driver51,116,Driving,3.0,7,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver51,91,Break,3.0,7,none,none,uninterrupted,B_T1,0,Excessive Driving in day (NDD)
+driver51,165,Driving,3.0,7,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver51,3,Break,3.0,7,none,none,uninterrupted,B_T0,0,Excessive Driving in day (NDD)
+driver51,2,Driving,3.0,7,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver51,164,Break,3.0,7,none,none,uninterrupted,B_T1,0,Excessive Driving in day (NDD)
+driver51,8,Driving,3.0,7,none,none,none,A,0,Excessive Driving in day (NDD)
+driver51,22,Break,3.0,7,none,none,none,none,0,Excessive Driving in day (NDD)
 driver51,4,Driving,3.0,7,ndd,first,split_1,A,1,Excessive Driving in day (NDD)
 driver51,8,Other,3.0,7,ndd,first,split_1,A,1,Excessive Driving in day (NDD)
 driver51,16,Break,3.0,7,ndd,first,split_1,B_T2,1,Excessive Driving in day (NDD)
@@ -96,16 +96,16 @@ driver51,3,Break,3.0,7,ndd,first,split_2,B_T0,1,Excessive Driving in day (NDD)
 driver51,2,Driving,3.0,7,ndd,first,split_2,A,1,Excessive Driving in day (NDD)
 driver51,1,Break,3.0,7,ndd,first,split_2,B_T0,1,Excessive Driving in day (NDD)
 driver51,152,Break,3.0,7,ndd,first,split_2,B_T3,1,Excessive Driving in day (NDD)
-driver51,9,Driving,3.0,7,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver51,2,Other,3.0,7,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver51,10,Driving,3.0,7,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver51,7,Other,3.0,7,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver51,13,Driving,3.0,7,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver51,7,Break,3.0,7,ndd,second,split_1,B_T0,1,Excessive Driving without breaks
-driver51,200,Driving,3.0,7,ndd,second,split_1,A,1,Excessive Driving without breaks
-driver51,47,Break,3.0,7,ndd,second,split_1,B_T2,1,Excessive Driving without breaks
-driver51,269,Driving,3.0,7,ndd,second,split_2,A,1,Excessive Driving without breaks
-driver51,549,Break,3.0,7,ndd,second,split_2,DR_T2,0,Excessive Driving without breaks
+driver51,9,Driving,3.0,7,ndd,second,split_1,A,1,Excessive Driving in day (NDD)
+driver51,2,Other,3.0,7,ndd,second,split_1,A,1,Excessive Driving in day (NDD)
+driver51,10,Driving,3.0,7,ndd,second,split_1,A,1,Excessive Driving in day (NDD)
+driver51,7,Other,3.0,7,ndd,second,split_1,A,1,Excessive Driving in day (NDD)
+driver51,13,Driving,3.0,7,ndd,second,split_1,A,1,Excessive Driving in day (NDD)
+driver51,7,Break,3.0,7,ndd,second,split_1,B_T0,1,Excessive Driving in day (NDD)
+driver51,200,Driving,3.0,7,ndd,second,split_1,A,1,Excessive Driving in day (NDD)
+driver51,47,Break,3.0,7,ndd,second,split_1,B_T2,1,Excessive Driving in day (NDD)
+driver51,269,Driving,3.0,7,ndd,second,split_2,A,1,Excessive Driving in day (NDD)
+driver51,549,Break,3.0,7,ndd,second,split_2,DR_T2,0,Excessive Driving in day (NDD)
 driver51,93,Driving,3.0,8,edd,first,split_1,A,1,no
 driver51,35,Break,3.0,8,edd,first,split_1,B_T2,1,no
 driver51,139,Driving,3.0,8,edd,first,split_2,A,1,no

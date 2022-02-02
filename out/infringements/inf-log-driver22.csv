@@ -79,23 +79,23 @@ driver22,3,Other,2.0,6,edd,first,split_2,A,1,no
 driver22,174,Break,2.0,6,edd,first,split_2,B_T3,1,no
 driver22,4,Driving,2.0,6,edd,second,uninterrupted,A,1,no
 driver22,140,Break,2.0,6,edd,second,uninterrupted,B_T1,1,no
-driver22,236,Driving,2.0,6,edd,third,split_1,A,1,Excessive Driving without breaks
-driver22,47,Break,2.0,6,edd,third,split_1,B_T2,1,Excessive Driving without breaks
-driver22,178,Driving,2.0,6,edd,third,split_2,A,1,Excessive Driving without breaks
-driver22,1,Other,2.0,6,edd,third,split_2,A,1,Excessive Driving without breaks
-driver22,569,Break,2.0,6,edd,third,split_2,DR_T2,1,Excessive Driving without breaks
-driver22,20,Driving,2.0,7,none,none,none,A,0,Excessive Driving in day (NDD)
-driver22,2,Other,2.0,7,none,none,none,A,0,Excessive Driving in day (NDD)
-driver22,21,Break,2.0,7,none,none,none,none,0,Excessive Driving in day (NDD)
-driver22,2,Other,2.0,7,edd,first,split_1,A,1,Excessive Driving in day (NDD)
-driver22,18,Break,2.0,7,edd,first,split_1,B_T2,1,Excessive Driving in day (NDD)
-driver22,2,Other,2.0,7,edd,first,split_2,A,1,Excessive Driving in day (NDD)
-driver22,198,Driving,2.0,7,edd,first,split_2,A,1,Excessive Driving in day (NDD)
-driver22,60,Break,2.0,7,edd,first,split_2,B_T3,1,Excessive Driving in day (NDD)
-driver22,219,Driving,2.0,7,edd,second,uninterrupted,A,1,Excessive Driving in day (NDD)
-driver22,51,Break,2.0,7,edd,second,uninterrupted,B_T1,1,Excessive Driving in day (NDD)
-driver22,155,Driving,2.0,7,edd,third,uninterrupted,A,1,Excessive Driving in day (NDD)
-driver22,680,Break,2.0,7,edd,third,uninterrupted,DR_T1,1,Excessive Driving in day (NDD)
+driver22,236,Driving,2.0,6,edd,third,split_1,A,1,no
+driver22,47,Break,2.0,6,edd,third,split_1,B_T2,1,no
+driver22,178,Driving,2.0,6,edd,third,split_2,A,1,no
+driver22,1,Other,2.0,6,edd,third,split_2,A,1,no
+driver22,569,Break,2.0,6,edd,third,split_2,DR_T2,1,no
+driver22,20,Driving,2.0,7,none,none,none,A,0,unidentified
+driver22,2,Other,2.0,7,none,none,none,A,0,unidentified
+driver22,21,Break,2.0,7,none,none,none,none,0,unidentified
+driver22,2,Other,2.0,7,edd,first,split_1,A,1,no
+driver22,18,Break,2.0,7,edd,first,split_1,B_T2,1,no
+driver22,2,Other,2.0,7,edd,first,split_2,A,1,no
+driver22,198,Driving,2.0,7,edd,first,split_2,A,1,no
+driver22,60,Break,2.0,7,edd,first,split_2,B_T3,1,no
+driver22,219,Driving,2.0,7,edd,second,uninterrupted,A,1,no
+driver22,51,Break,2.0,7,edd,second,uninterrupted,B_T1,1,no
+driver22,155,Driving,2.0,7,edd,third,uninterrupted,A,1,no
+driver22,680,Break,2.0,7,edd,third,uninterrupted,DR_T1,1,no
 driver22,224,Driving,2.0,8,ndd,first,uninterrupted,A,1,no
 driver22,62,Break,2.0,8,ndd,first,uninterrupted,B_T1,1,no
 driver22,82,Driving,2.0,8,ndd,second,uninterrupted,A,1,no

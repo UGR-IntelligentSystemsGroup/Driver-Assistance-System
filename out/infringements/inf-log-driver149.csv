@@ -38,18 +38,18 @@ driver149,118,Break,2.0,4,ndd,second,split_1,B_T2,1,no
 driver149,170,Driving,2.0,4,ndd,second,split_2,A,1,no
 driver149,1,Other,2.0,4,ndd,second,split_2,A,1,no
 driver149,562,Break,2.0,4,ndd,second,split_2,DR_T2,1,no
-driver149,163,Driving,2.0,5,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver149,66,Break,2.0,5,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver149,153,Driving,2.0,5,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver149,4,Break,2.0,5,none,none,uninterrupted,B_T0,0,Excessive Driving without breaks
-driver149,79,Driving,2.0,5,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver149,2,Other,2.0,5,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver149,12,Driving,2.0,5,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver149,14,Break,2.0,5,none,none,uninterrupted,B_T0,0,Excessive Driving without breaks
-driver149,11,Driving,2.0,5,none,none,uninterrupted,A,0,Excessive Driving without breaks
-driver149,46,Break,2.0,5,none,none,uninterrupted,B_T1,0,Excessive Driving without breaks
-driver149,4,Driving,2.0,5,none,none,none,A,0,Excessive Driving without breaks
-driver149,27,Break,2.0,5,none,none,none,none,0,Excessive Driving without breaks
+driver149,163,Driving,2.0,5,none,none,uninterrupted,A,0,unidentified
+driver149,66,Break,2.0,5,none,none,uninterrupted,B_T1,0,unidentified
+driver149,153,Driving,2.0,5,none,none,uninterrupted,A,0,unidentified
+driver149,4,Break,2.0,5,none,none,uninterrupted,B_T0,0,unidentified
+driver149,79,Driving,2.0,5,none,none,uninterrupted,A,0,unidentified
+driver149,2,Other,2.0,5,none,none,uninterrupted,A,0,unidentified
+driver149,12,Driving,2.0,5,none,none,uninterrupted,A,0,unidentified
+driver149,14,Break,2.0,5,none,none,uninterrupted,B_T0,0,unidentified
+driver149,11,Driving,2.0,5,none,none,uninterrupted,A,0,unidentified
+driver149,46,Break,2.0,5,none,none,uninterrupted,B_T1,0,unidentified
+driver149,4,Driving,2.0,5,none,none,none,A,0,unidentified
+driver149,27,Break,2.0,5,none,none,none,none,0,unidentified
 driver149,22,Driving,2.0,5,ndd,unique,split_1,A,1,no
 driver149,12,Break,2.0,5,ndd,unique,split_1,B_T0,1,no
 driver149,3,Driving,2.0,5,ndd,unique,split_1,A,1,no
