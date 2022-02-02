@@ -16,8 +16,14 @@ from utils.infringements import find_infringements
 # Subprocess
 from utils.subprocess_functions import *
 
-for i in range(259,290):
+# https://stackoverflow.com/questions/20625582/how-to-deal-with-settingwithcopywarning-in-pandas
+# TODO: Fix, see link above
+# Provisional fix supressing the warning
+pd.options.mode.chained_assignment = None
+
+for i in range(1,290):
     DRIVER = i
+    print("Searching infraction for driver{}".format(i))
 
     # -----------------------------------------------------------------------------
     # Paths
@@ -41,7 +47,8 @@ for i in range(259,290):
     INFRINGEMENTS_PATH = "out/infringements/inf-driver{}.csv".format(DRIVER)
     LOG_WITH_INF_PATH = "out/infringements/inf-log-driver{}.csv".format(DRIVER)
 
-    if os.path.isfile(CLEAN_LOG_PATH):
+    # Don't call planner in those that loops
+    if not os.path.isfile(LOG_WITH_INF_PATH):
         continue
 
     # Don't call again if PDDL already defined
@@ -132,3 +139,5 @@ for i in range(259,290):
 
     # Save to disk log with infringements
     df_with_inf.to_csv(LOG_WITH_INF_PATH, index=False)
+    
+    print("Infractions saved for driver{}".format(i))
