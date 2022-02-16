@@ -89,7 +89,7 @@ def get_remaining_edds(df, last_index):
 #     Only 1 illegal action
 #     DR/WR - Token
 #     Legal tag - No
-#     Rest tags - Not None
+#     Remaining contexts - Not None
 # THEN
 #     Rest past the deadline
 
