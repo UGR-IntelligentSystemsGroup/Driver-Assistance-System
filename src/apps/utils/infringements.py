@@ -22,7 +22,7 @@ def find_infringements(df):
         day_groups = week_group.groupby('Day', sort=False)
         for _, day_group in day_groups:
             
-            # Must be at least one illegality detected
+            # Must have at least one illegality detected
             if 0 in day_group.Legal.values:
                 remaining_edds = get_remaining_edds(week_group, day_group.index[0])
 
