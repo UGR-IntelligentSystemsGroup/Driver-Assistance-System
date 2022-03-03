@@ -1,0 +1,90 @@
+Driver,Duration,Activity,Week,Day,DayType,Sequence,BreakType,Token,Legal,Infraction
+driver288,8,Break,1.0,1,ndd,first,uninterrupted,B_T0,1,no
+driver288,240,Driving,1.0,1,ndd,first,uninterrupted,A,1,no
+driver288,58,Break,1.0,1,ndd,first,uninterrupted,B_T1,1,no
+driver288,170,Driving,1.0,1,ndd,second,uninterrupted,A,1,no
+driver288,2,Break,1.0,1,ndd,second,uninterrupted,B_T0,1,no
+driver288,4,Driving,1.0,1,ndd,second,uninterrupted,A,1,no
+driver288,562,Break,1.0,1,ndd,second,uninterrupted,DR_T2,1,no
+driver288,220,Driving,1.0,2,none,none,uninterrupted,A,0,Excessive Driving in day (NDD)
+driver288,1,Idle,1.0,2,none,none,uninterrupted,I,0,Excessive Driving in day (NDD)
+driver288,55,Break,1.0,2,none,none,uninterrupted,B_T1,0,Excessive Driving in day (NDD)
+driver288,1,Driving,1.0,2,none,none,split_1,A,0,Excessive Driving in day (NDD)
+driver288,12,Break,1.0,2,none,none,split_1,B_T0,0,Excessive Driving in day (NDD)
+driver288,177,Driving,1.0,2,none,none,split_1,A,0,Excessive Driving in day (NDD)
+driver288,15,Break,1.0,2,none,none,split_1,B_T2,0,Excessive Driving in day (NDD)
+driver288,2,Driving,1.0,2,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver288,5,Break,1.0,2,none,none,split_2,B_T0,0,Excessive Driving in day (NDD)
+driver288,3,Driving,1.0,2,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver288,3,Other,1.0,2,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver288,11,Driving,1.0,2,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver288,2,Break,1.0,2,none,none,split_2,B_T0,0,Excessive Driving in day (NDD)
+driver288,12,Driving,1.0,2,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver288,7,Break,1.0,2,none,none,split_2,B_T0,0,Excessive Driving in day (NDD)
+driver288,9,Driving,1.0,2,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver288,12,Break,1.0,2,none,none,split_2,B_T0,0,Excessive Driving in day (NDD)
+driver288,1,Driving,1.0,2,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver288,5,Other,1.0,2,none,none,split_2,A,0,Excessive Driving in day (NDD)
+driver288,38,Break,1.0,2,none,none,split_2,B_T3,0,Excessive Driving in day (NDD)
+driver288,8,Driving,1.0,2,ndd,first,uninterrupted,A,1,Excessive Driving in day (NDD)
+driver288,155,Break,1.0,2,ndd,first,uninterrupted,B_T1,1,Excessive Driving in day (NDD)
+driver288,2,Driving,1.0,2,ndd,second,split_1,A,1,Excessive Driving in day (NDD)
+driver288,2,Break,1.0,2,ndd,second,split_1,B_T0,1,Excessive Driving in day (NDD)
+driver288,1,Other,1.0,2,ndd,second,split_1,A,1,Excessive Driving in day (NDD)
+driver288,12,Driving,1.0,2,ndd,second,split_1,A,1,Excessive Driving in day (NDD)
+driver288,12,Break,1.0,2,ndd,second,split_1,B_T0,1,Excessive Driving in day (NDD)
+driver288,242,Driving,1.0,2,ndd,second,split_1,A,1,Excessive Driving in day (NDD)
+driver288,54,Break,1.0,2,ndd,second,split_1,B_T2,1,Excessive Driving in day (NDD)
+driver288,240,Driving,1.0,2,ndd,second,split_2,A,1,Excessive Driving in day (NDD)
+driver288,554,Break,1.0,2,ndd,second,split_2,DR_T2,1,Excessive Driving in day (NDD)
+driver288,196,Driving,1.0,3,edd,first,uninterrupted,A,1,no
+driver288,49,Break,1.0,3,edd,first,uninterrupted,B_T1,1,no
+driver288,146,Driving,1.0,3,edd,second,uninterrupted,A,1,no
+driver288,52,Break,1.0,3,edd,second,uninterrupted,B_T1,1,no
+driver288,206,Driving,1.0,3,edd,third,uninterrupted,A,1,no
+driver288,558,Break,1.0,3,edd,third,uninterrupted,DR_T2,1,no
+driver288,264,Driving,1.0,4,ndd,first,uninterrupted,A,1,no
+driver288,49,Break,1.0,4,ndd,first,uninterrupted,B_T1,1,no
+driver288,171,Driving,1.0,4,ndd,second,split_1,A,1,no
+driver288,2,Break,1.0,4,ndd,second,split_1,B_T0,1,no
+driver288,30,Driving,1.0,4,ndd,second,split_1,A,1,no
+driver288,1,Other,1.0,4,ndd,second,split_1,A,1,no
+driver288,6,Break,1.0,4,ndd,second,split_1,B_T0,1,no
+driver288,1,Driving,1.0,4,ndd,second,split_1,A,1,no
+driver288,16,Break,1.0,4,ndd,second,split_1,B_T2,1,no
+driver288,3,Other,1.0,4,ndd,second,split_2,A,1,no
+driver288,2894,Break,1.0,4,ndd,second,split_2,WR_T1,1,no
+driver288,1,Driving,2.0,5,ndd,first,uninterrupted,A,1,no
+driver288,8,Break,2.0,5,ndd,first,uninterrupted,B_T0,1,no
+driver288,6,Other,2.0,5,ndd,first,uninterrupted,A,1,no
+driver288,260,Driving,2.0,5,ndd,first,uninterrupted,A,1,no
+driver288,48,Break,2.0,5,ndd,first,uninterrupted,B_T1,1,no
+driver288,218,Driving,2.0,5,ndd,second,uninterrupted,A,1,no
+driver288,4,Break,2.0,5,ndd,second,uninterrupted,B_T0,1,no
+driver288,1,Driving,2.0,5,ndd,second,uninterrupted,A,1,no
+driver288,1,Break,2.0,5,ndd,second,uninterrupted,B_T0,1,no
+driver288,1,Other,2.0,5,ndd,second,uninterrupted,A,1,no
+driver288,552,Break,2.0,5,ndd,second,uninterrupted,DR_T2,1,no
+driver288,146,Driving,2.0,6,ndd,first,split_1,A,1,no
+driver288,29,Break,2.0,6,ndd,first,split_1,B_T2,1,no
+driver288,63,Driving,2.0,6,ndd,first,split_2,A,1,no
+driver288,35,Break,2.0,6,ndd,first,split_2,B_T3,1,no
+driver288,62,Driving,2.0,6,ndd,second,split_1,A,1,no
+driver288,53,Break,2.0,6,ndd,second,split_1,B_T2,1,no
+driver288,237,Driving,2.0,6,ndd,second,split_2,A,1,no
+driver288,669,Break,2.0,6,ndd,second,split_2,DR_T1,1,no
+driver288,261,Driving,2.0,7,ndd,first,uninterrupted,A,1,no
+driver288,49,Break,2.0,7,ndd,first,uninterrupted,B_T1,1,no
+driver288,240,Driving,2.0,7,ndd,second,uninterrupted,A,1,no
+driver288,3,Break,2.0,7,ndd,second,uninterrupted,B_T0,1,no
+driver288,11,Driving,2.0,7,ndd,second,uninterrupted,A,1,no
+driver288,9,Break,2.0,7,ndd,second,uninterrupted,B_T0,1,no
+driver288,3,Driving,2.0,7,ndd,second,uninterrupted,A,1,no
+driver288,1,Other,2.0,7,ndd,second,uninterrupted,A,1,no
+driver288,10,Break,2.0,7,ndd,second,uninterrupted,B_T0,1,no
+driver288,1,Driving,2.0,7,ndd,second,uninterrupted,A,1,no
+driver288,2,Break,2.0,7,ndd,second,uninterrupted,B_T0,1,no
+driver288,1,Other,2.0,7,ndd,second,uninterrupted,A,1,no
+driver288,5,Break,2.0,7,ndd,second,uninterrupted,B_T0,1,no
+driver288,8,Driving,2.0,7,ndd,second,uninterrupted,A,1,no
+driver288,660,Sug-Break,2.0,7,ndd,second,uninterrupted,DR_T1,1,no
