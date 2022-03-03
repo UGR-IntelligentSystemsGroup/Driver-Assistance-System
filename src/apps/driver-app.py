@@ -46,7 +46,7 @@ def load_data(CLEAN_LOG_PATH):
 
 #########################################################################
 
-st.title('Driver Functionality')
+st.title('Driver Assistance System - Driver App')
 st.write("Simulating streaming of tachograph data")
 
 # Create temporal directories that don't exists
@@ -85,7 +85,7 @@ change_preference = st.sidebar.checkbox("Change driver preferences")
 
 # Documentation
 st.sidebar.subheader("Info")
-link = '[Go to documentation](https://github.com/IgnacioVellido/IMLAP-Driver-Activity-Recognition/tree/main/doc/)'
+link = '[Go to documentation](https://github.com/IgnacioVellido/Driver-Assistance-System/tree/main/)'
 st.sidebar.markdown(link, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
@@ -268,5 +268,3 @@ if st.button("Refresh?"):
     plot_remaining_time(ax3, metrics.DrivingTimeDay, metrics.RemainingDrivingTimeEDD, "EDD")
 
     st.pyplot(fig)
-
-    st.write(metrics.to_markdown())

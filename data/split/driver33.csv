@@ -1,4 +1,0 @@
-Driver,DateStart,HourStart,HourEnd,Duration,Distance,Status,Profession,Vehicle,PlaceStart,PlaceEnd,LatitudeStart,LongitudeStart,LatitudeEnd,LongitudeEnd(WRONG),MilometerStart,MilometerEnd
-driver33,vie 13/01/17,16:44,17:21,0h 37m,46.7,En espera,2,9988HMLMD2026Q01288,"11205, Algeciras, GI, próximo a Gibraltar","11180, GI, 46,1 km noroeste Gibraltar",36144675.0,5454245.0,36144675.0,36438197.0,"538,218","538,265"
-driver33,vie 13/01/17,17:21,17:47,0h 26m,0.1,Pausa,2,9988HMLMD2026Q01288,"11180, GI, 46,1 km noroeste Gibraltar","11180, GI, 46,1 km noroeste Gibraltar",36438197.0,5717785.0,36438197.0,36438368.0,"538,265","538,265"
-driver33,vie 13/01/17,17:47,18:42,0h 55m,54.1,En espera,2,9988HMLMD2026Q01288,"11180, GI, 46,1 km noroeste Gibraltar","11519, Puerto Real, ES, próximo a Cádiz",36438368.0,5717560.0,36438368.0,36519672.0,"538,265","538,319"

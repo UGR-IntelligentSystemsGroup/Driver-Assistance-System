@@ -39,38 +39,3 @@ We used the following notation for activity tokens:
 | | |
 | WR_T1  | Normal Weekly Rest (>45h)              |
 | WR_T2  | Reduced Weekly Rest [24h,45h]          |
-
-## :books: Experimentation and output example
-
-Results are based in our data are stored in the **out** folder, and in this table you can find an example for a legal driving sequence followed by a transport suggestion:
-
-| **#Driver** | **DateTimeStart** | **DateTimeEnd**  | **Duration(min)** | **Activity** | **Week** | **Day**   | **DayType** | **Sequence** | **BreakType** | **Token** | **Legal** | **ZenoInfo** |
-|-------------|-------------------|------------------|-------------------|--------------|----------|-----------|-------------|--------------|---------------|-----------|-----------|--------------|
-| driver1 | 15/01/2017 11:56 | 15/01/2017 12:00 | 4   | Driving     | 3 | 12 | edd | first  | uninterrupted | A     | yes |                   |
-| driver1 | 15/01/2017 12:00 | 15/01/2017 12:04 | 4   | Break       | 3 | 12 | edd | first  | uninterrupted | B_T0  | yes |                   |
-| driver1 | 15/01/2017 12:04 | 15/01/2017 12:05 | 1   | Driving     | 3 | 12 | edd | first  | uninterrupted | A     | yes |                   |
-| driver1 | 15/01/2017 12:05 | 15/01/2017 12:08 | 3   | Other       | 3 | 12 | edd | first  | uninterrupted | A     | yes |                   |
-| driver1 | 15/01/2017 12:08 | 15/01/2017 14:16 | 128 | Break       | 3 | 12 | edd | first  | uninterrupted | B_T1  | yes |                   |
-| driver1 | 15/01/2017 14:16 | 15/01/2017 14:19 | 3   | Driving     | 3 | 12 | edd | second | split_1       | A     | yes |                   |
-| driver1 | 15/01/2017 14:19 | 15/01/2017 14:25 | 6   | Break       | 3 | 12 | edd | second | split_1       | B_T0  | yes |                   |
-| driver1 | 15/01/2017 14:25 | 15/01/2017 14:28 | 3   | Other       | 3 | 12 | edd | second | split_1       | A     | yes |                   |
-| driver1 | 15/01/2017 14:28 | 15/01/2017 14:29 | 1   | Driving     | 3 | 12 | edd | second | split_1       | A     | yes |                   |
-| driver1 | 15/01/2017 14:29 | 15/01/2017 14:39 | 10  | Break       | 3 | 12 | edd | second | split_1       | B_T0  | yes |                   |
-| driver1 | 15/01/2017 14:39 | 15/01/2017 14:55 | 16  | Driving     | 3 | 12 | edd | second | split_1       | A     | yes |                   |
-| driver1 | 15/01/2017 14:55 | 15/01/2017 15:21 | 26  | Break       | 3 | 12 | edd | second | split_1       | B_T2  | yes |                   |
-| driver1 | 15/01/2017 15:21 | 15/01/2017 19:16 | 235 | Driving     | 3 | 12 | edd | second | split_2       | A     | yes |                   |
-| driver1 | 15/01/2017 19:16 | 15/01/2017 19:48 | 32  | Break       | 3 | 12 | edd | second | split_2       | B_T3  | yes |                   |
-| driver1 | 15/01/2017 19:48 | 15/01/2017 21:48 | 120 | Driving     | 3 | 12 | edd | third  | split_1       | A     | yes |                   |
-| driver1 | 15/01/2017 21:48 | 15/01/2017 22:23 | 35  | Break       | 3 | 12 | edd | third  | split_1       | B_T2  | yes |                   |
-| driver1 | 15/01/2017 22:23 | 16/01/2017 00:24 | 121 | Driving     | 3 | 12 | edd | third  | split_2       | A     | yes |                   |
-| driver1 | 16/01/2017 00:24 | 16/01/2017 11:24 | 660 | Sug-Break   | 3 | 12 | edd | third  | split_2       | DR_T1 | yes |                   |
-| driver1 | 16/01/2017 11:24 | 16/01/2017 11:27 | 3   | Sug-Load    | 3 | 13 | ndd | first  | uninterrupted | A     | yes | box2              |
-| driver1 | 16/01/2017 11:27 | 16/01/2017 11:30 | 3   | Sug-Load    | 3 | 13 | ndd | first  | uninterrupted | A     | yes | box1              |
-| driver1 | 16/01/2017 11:30 | 16/01/2017 11:33 | 3   | Sug-Load    | 3 | 13 | ndd | first  | uninterrupted | A     | yes | box3              |
-| driver1 | 16/01/2017 11:33 | 16/01/2017 11:43 | 10  | Sug-Refuel  | 3 | 13 | ndd | first  | uninterrupted | A     | yes |                   |
-| driver1 | 16/01/2017 11:43 | 16/01/2017 15:49 | 246 | Sug-Driving | 3 | 13 | ndd | first  | uninterrupted | A     | yes | sevilla-almeria   |
-| driver1 | 16/01/2017 15:49 | 16/01/2017 15:52 | 3   | Sug-Unload  | 3 | 13 | ndd | first  | uninterrupted | A     | yes | box2              |
-| driver1 | 16/01/2017 15:52 | 16/01/2017 16:16 | 24  | Sug-Driving | 3 | 13 | ndd | first  | uninterrupted | A     | yes | almeria-barcelona |
-| driver1 | 16/01/2017 16:16 | 16/01/2017 17:01 | 45  | Sug-Break   | 3 | 13 | ndd | first  | uninterrupted | B_T1  | yes |                   |
-| driver1 | 16/01/2017 17:01 | 16/01/2017 21:31 | 270 | Sug-Driving | 3 | 13 | ndd | second | uninterrupted | A     | yes | almeria-barcelona |
-| driver1 | 16/01/2017 21:31 | 17/01/2017 08:31 | 660 | Sug-Break   | 3 | 13 | ndd | second | uninterrupted | DR_T1 | yes |                   |

@@ -28,7 +28,7 @@ from utils.infringements import find_infringements
 
 #########################################################################
 
-st.title('Driver Activity Recognition')
+st.title('Driver Assistance System - Traffic Manager App')
 
 # Create output directories that don't exists
 if not os.path.isdir("./out"):
@@ -63,7 +63,7 @@ driver = st.sidebar.number_input('Select driver log', 1, 290)
 
 # -----------------------------------------------------------------------------
 # Paths
-RAW_PATH = "./data/split/driver{}.csv".format(driver)
+RAW_PATH = "./data/driver{}.csv".format(driver)
 TACHO_PATH = "./out/preprocess/driver{}.csv".format(driver)
 
 PLAN_FOLDER_PATH = "./out/plan"
@@ -88,7 +88,7 @@ LOG_WITH_INF_PATH = "out/infringements/inf-log-driver{}.csv".format(driver)
 st.sidebar.subheader("Info")
 
 # Documentation
-link = '[Go to documentation](https://github.com/IgnacioVellido/IMLAP-Driver-Activity-Recognition/tree/main/doc/)'
+link = '[Go to documentation](https://github.com/IgnacioVellido/Driver-Assistance-System/tree/main/)'
 st.sidebar.markdown(link, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
@@ -175,8 +175,8 @@ df_colored = df.drop(columns=["Driver","Week"])
 df_colored.replace({"Legal": {1: 'Yes', 0: 'No'}}, inplace=True) # Rename Legal values to Yes/No
 df_colored = df_colored.style.applymap(color_tagged_df, subset=["DayType", "Sequence", "BreakType", "Token", "Legal"])
 
-st.subheader("Tagging")
-st.write("Tagged data", df_colored)
+st.subheader("Tagged data")
+st.write(df_colored)
 
 #########################################################################
 # Display metrics

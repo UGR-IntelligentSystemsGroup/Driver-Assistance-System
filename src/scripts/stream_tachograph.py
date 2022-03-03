@@ -11,7 +11,7 @@ from time import sleep
 # ID received as an argument
 
 DRIVER_ID = sys.argv[1]
-DATA_PATH = "data/split/{}.csv".format(DRIVER_ID)
+DATA_PATH = "data/{}.csv".format(DRIVER_ID)
 OUT_PATH = "tmp/{}.csv".format(DRIVER_ID)
 
 ###########################################################################
