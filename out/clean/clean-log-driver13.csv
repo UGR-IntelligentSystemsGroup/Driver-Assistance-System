@@ -1,9 +1,0 @@
-#Driver	DateTimeStart	DateTimeEnd	Duration(min)	Activity	Week	Day	DayType	Sequence	BreakType	Token	Legal	ZenoInfo
-driver13	15/01/2017 18:45	15/01/2017 18:52	7.000000	Break	1.000000	1.000000	ndd	first	uninterrupted	B_T0	yes
-driver13	15/01/2017 18:52	15/01/2017 18:53	1.000000	Driving	1.000000	1.000000	ndd	first	uninterrupted	A	yes
-driver13	15/01/2017 18:53	15/01/2017 18:54	1.000000	Idle	1.000000	1.000000	ndd	first	uninterrupted	I	yes
-driver13	15/01/2017 18:54	15/01/2017 18:56	2.000000	Other	1.000000	1.000000	ndd	first	uninterrupted	A	yes
-driver13	15/01/2017 18:56	15/01/2017 19:06	10.000000	Driving	1.000000	1.000000	ndd	first	uninterrupted	A	yes
-driver13	15/01/2017 19:06	15/01/2017 19:07	1.000000	Other	1.000000	1.000000	ndd	first	uninterrupted	A	yes
-driver13	15/01/2017 19:07	15/01/2017 19:52	45.000000	Sug-Break	1.000000	1.000000	ndd	first	uninterrupted	B_T1	yes
-driver13	15/01/2017 19:52	16/01/2017 06:52	660.000000	Sug-Break	1.000000	1.000000	ndd	second	uninterrupted	DR_T1	yes
