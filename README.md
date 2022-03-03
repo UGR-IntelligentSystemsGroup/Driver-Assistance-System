@@ -7,7 +7,7 @@ A Driver Assistance System (DAS) to both help truck drivers and traffic managers
 - Explaining driver activities in accordance with the Hours Of Service regulation.
 - Identifying infringements and their cause.
 - Suggesting new legal transport activities to fulfill deliveries based on driver preferences.
-- Cluster driving sequences for an easy monitoring of driver behavior.
+- Clustering and summarization of driving sequences for an easy monitoring of driver behavior.
 
 ## :unlock: Requirements
 
