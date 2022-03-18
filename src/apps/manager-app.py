@@ -52,6 +52,9 @@ if not os.path.isdir("./out/tagged"):
 if not os.path.isdir("./out/infringements"):
     os.mkdir("./out/infringements")
 
+if not os.path.isdir("./hpdl/problems"):
+    os.mkdir("./hpdl/problems")
+
 #########################################################################
 # Recognition
 #########################################################################
