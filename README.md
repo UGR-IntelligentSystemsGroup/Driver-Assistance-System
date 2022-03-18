@@ -59,7 +59,7 @@ This app simulates the streaming data from a tachograph and displays useful metr
 It can be launched via the command:
 
 ```bash
-streamlit run ./src/driver-app.py
+streamlit run ./src/apps/driver-app.py
 ```
 
 ### Traffic Manager App
@@ -71,7 +71,7 @@ This app can be used to analyze historic tachograph data from a driver. It shows
 It can be launched via the command:
 
 ```bash
-streamlit run ./src/manager-app.py
+streamlit run ./src/apps/manager-app.py
 ```
 
 ## ⏲️ HOS Regulation
