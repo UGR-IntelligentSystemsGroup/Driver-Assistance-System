@@ -206,7 +206,13 @@ def missing_half_split_rest(df):
         dr_t3_found = False
         for _, day in groups:
             if dr_t3_found:
-                index = day.query("Activity == 'Break' & Token == 'none'").index[0]
+                index = day.query("Activity == 'Break' & Token == 'none'").index
+
+                # If no index: Driver app
+                if index:
+                    index = index[0]
+                else:
+                    return None
 
             # Missing DR_T4 in next iteration
             if "DR_T3" in day.values:
