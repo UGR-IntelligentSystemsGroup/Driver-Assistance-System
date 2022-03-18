@@ -76,21 +76,6 @@ def main(argv):
     df = pd.read_csv(INPUT_PATH)
 
     # -------------------------------------------------------------------------
-    # Comment this lines when code is public 
-    # (this is needed due to a mistake in our data)
-
-    # Lag longitude
-    df['LongitudeEnd(WRONG)'] = df.LongitudeStart.shift(-1)
-
-    # Rename LongitudEnd(Wrong)
-    df.rename(columns={"LongitudeEnd(WRONG)": "LongitudeEnd"}, inplace=True)
-
-    df.LatitudeStart  = df.LatitudeStart.apply(fix_latitude)
-    df.LatitudeEnd    = df.LatitudeEnd.apply(fix_latitude)
-    df.LongitudeStart = df.LongitudeStart.apply(fix_longitude)
-    df.LongitudeEnd   = df.LongitudeEnd.apply(fix_longitude)
-
-    # -------------------------------------------------------------------------
     # Calculate distance (km)
     df["Distance"] = df.apply(get_distance, axis=1)
 
